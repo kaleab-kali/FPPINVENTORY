@@ -1,0 +1,23 @@
+.horizontalMenu {
+    padding: 0 50px;
+}
+
+.personCard {
+    margin-top: 30px;
+    padding: 0 50px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.link {
+    color: grey;
+    padding: 0 10px;
+  }
+  
+  .link.active {
+    color: blue;
+    font-weight: bold;
+    text-decoration: underline;
+  }

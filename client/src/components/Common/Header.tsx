@@ -1,6 +1,6 @@
 import React from "react";
 import { Layout, Row, Col,} from "antd";
-import image from '../../assets/fpp.jpg'
+// import image from '../../assets/fpp.jpg'
 const { Header: AntdHeader } = Layout;
 // const { Search } = Input;
 
@@ -22,7 +22,7 @@ const Header: React.FC = () => {
       <Row>
         <Col span={12} style={{ padding: "6px 2px" }}>
           <img
-            src={image}
+            src='/fpp.jpg'
             alt="Company Logo"
             style={{ height: "50px", borderRadius: "50px" }}
           />

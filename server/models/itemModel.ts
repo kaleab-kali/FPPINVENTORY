@@ -34,7 +34,7 @@ export interface ItemInfo extends Document {
   description?: string;
   quantity?: number;
   price?: number;
-  categoryId?: Category;
+  categoryId?: string;
 
 }
 
@@ -45,7 +45,7 @@ const itemSchema = new Schema<ItemInfo>(
     description: { type: String },
     quantity: { type: Number },
     price: { type: Number },
-    categoryId: categorySchema,
+    categoryId: { type: String },
   },
   { timestamps: true }
 );

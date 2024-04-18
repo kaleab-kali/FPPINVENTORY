@@ -4,6 +4,11 @@ import { Button, Flex } from "antd";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { Table } from "antd";
 import { IoSearch } from "react-icons/io5";
+import {
+  useAllItems,
+  useItems,
+  useItemIds
+} from "../../services/queries/inventoryqueries";
 import "./css.css"
 
 interface DataType {
@@ -22,38 +27,48 @@ const columns = [
     dataIndex: "name",
     key: "name",
   },
-  {
-    title: "Code",
-    dataIndex: "code",
-    key: "code",
-  },
-  {
-    title: "Type",
-    dataIndex: "type",
-    key: "type",
-  },
+  // {
+  //   title: "Code",
+  //   dataIndex: "code",
+  //   key: "code",
+  // },
+  // {
+  //   title: "Type",
+  //   dataIndex: "type",
+  //   key: "type",
+  // },
   {
     title: "Price",
     dataIndex: "price",
     key: "price",
   },
   {
+    title: "Description",
+    dataIndex: "description",
+    key: "description",
+  },
+  {
+    title: "Category",
+    dataIndex: "categoryId",
+    key: "categoryId",
+  },
+  {
     title: "Quantity",
     dataIndex: "quantity",
     key: "quantity",
   },
-  {
-    title: "Image",
-    dataIndex: "image",
-    key: "image",
-    render: (image: string) => (
-      <img
-        src={image}
-        alt="product"
-        style={{ width: "50px", height: "50px" }}
-      />
-    ),
-  },
+  // {
+  //   title: "Image",
+  //   dataIndex: "image",
+  //   key: "image",
+  //   render: (image: string) => (
+  //     <img
+  //       src={image}
+  //       alt="product"
+  //       style={{ width: "50px", height: "50px" }}
+  //     />
+  //   ),
+  // },
 ];
 
 const data: DataType[] = [
@@ -133,6 +148,10 @@ const rowSelection = {
 };
 
 const ItemTable = () => {
+  // const itemIdQuery = useItemIds();
+  const itemQueries = useAllItems();
+  const d=itemQueries.data
+  console.log("hello "+itemQueries.data)
   return (
     <div>
       <div style={{ backgroundColor: "#F4F5FC" }}>
@@ -179,7 +198,7 @@ const ItemTable = () => {
             ...rowSelection,
           }}
           columns={columns}
-          dataSource={data}
+          dataSource={d}
           rowClassName={() => "custom-row"}
         />
       </div>

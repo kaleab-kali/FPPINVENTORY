@@ -11,7 +11,7 @@ import {
   Typography,
   message,
 } from "antd";
-
+import { useCreateItem } from "../../services/mutations/inventorymutation";
 
 const { Content } = Layout;
 const { Option } = Select;
@@ -19,11 +19,20 @@ const { Title } = Typography;
 
 const InventoryRegistrationForm: React.FC = () => {
   const [form] = Form.useForm();
+  const createItemMutuation = useCreateItem();
 
-  const onFinish = (values: any) => {
+  const onFinish = async (values: any) => {
     const id = generateID(); 
     const formData = { id, ...values }; 
     console.log("Form data:", formData);
+    try {
+      // await form.validateFields();
+
+      createItemMutuation.mutate(formData);
+    } catch (error) {
+      console.error("Validation failed:", error);
+    }
+    message.success("Form submitted successfully!");
   };
 
   const onValuesChange = (changedValues: any, allValues: any) => {

@@ -9,6 +9,8 @@ import {  Route, Routes } from "react-router-dom";
 
 import InventoryProfilePage from "./InventoryProfile/InventoryProfilePage";
 import Stat from "./Stat";
+import InventoryRegistrationPage from "./InventoryRegistration/InventoryRegistrationPage";
+import InventoryDeletingForm from "../components/InventoryOperations/InventoryDelete";
 // import Stat from "./Stat";
 
 const { Content } = Layout;
@@ -26,7 +28,7 @@ const Dashboard: React.FC = () => {
             <Route path="/inventory">
               <Route
                 path="registration"
-                element={<InventoryProfilePage />}
+                element={<InventoryRegistrationPage />}
               />
 
               <Route path="view" element={<InventoryProfilePage />} />
@@ -35,7 +37,7 @@ const Dashboard: React.FC = () => {
                 element={<EmployeeDetailedProfilePage />}
               /> */}
 
-              {/* <Route path="edit" element={<ComplaintForm />} /> */}
+              <Route path="edit" element={<InventoryDeletingForm />} />
             </Route>
 
             <Route path="/dispatch">

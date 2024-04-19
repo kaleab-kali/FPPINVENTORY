@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createItem, deleteItem, updateItem } from "../api/inventoryitemapi";
+import { createItem, createUpload, deleteItem, updateItem } from "../api/inventoryitemapi";
 import { ItemInfo } from "../../../../shared/types/itemTypes";
 
 export function useCreateItem() {
@@ -25,6 +25,36 @@ export function useCreateItem() {
     },
   });
 }
+
+export function useCreateUpload() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: any) => createUpload(data),
+    onMutate: () => {
+      console.log("Mutating");
+    },
+    onError: () => {
+      console.log("error");
+    },
+    onSuccess: (data: { filePath: any; fileName: any; }) => {
+      console.log("Success");
+      // Access the data.filePath and data.fileName here
+      console.log("File uploaded successfully:", data.filePath);
+      console.log("File Name:", data.fileName);
+
+      // Further processing if needed
+    },
+    onSettled: async (_: any, error: any) => {
+      console.log("settled");
+      if (error) {
+        console.log(error);
+      } else {
+        await queryClient.invalidateQueries({ queryKey: ["uploads"] });
+      }
+    },
+  });
+}
+
 
 export function useUpdateItem() {
   const queryClient = useQueryClient();

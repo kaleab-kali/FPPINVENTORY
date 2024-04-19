@@ -74,7 +74,28 @@ export const createItem = async (data: ItemInfo) => {
     body: JSON.stringify(data),
   });
 };
+export async function createUpload(data: FormData): Promise<any> {
+  try {
+    const response = await fetch(`${BASE_URL}/uploads`, {
+      method: "POST",
+      body: data,
+    });
 
+    if (!response.ok) {
+      throw new Error(`Failed to upload file: ${response.statusText}`);
+    }
+
+    const { message, filePath, fileName } = await response.json();
+
+    console.log(message, filePath, fileName);
+
+    // You can return any data you need from this mutation
+    return { message, filePath, fileName };
+  } catch (error) {
+    console.error("Error during file upload:", error);
+    throw error; // Rethrow the error to propagate it to the caller
+  }
+}
 export const updateItem = async (data: any) => {
   const response = await fetch(`${BASE_URL}/items/${data._id}`, {
     method: "PUT",

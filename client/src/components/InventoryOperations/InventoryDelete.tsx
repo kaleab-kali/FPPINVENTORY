@@ -1,12 +1,15 @@
 import React from "react";
 import { Form, Input, Button, Layout, Typography } from "antd";
+import { useDeleteItem } from "../../services/mutations/inventorymutation";
 
 const { Content } = Layout;
 const { Title } = Typography;
 
 const InventoryDeletingForm: React.FC = () => {
+  const deleteItemMutuation = useDeleteItem();
   const onFinish = (values: any) => {
-    console.log("Deleted item:", values);
+    console.log("Deleted item:", values.id);
+    deleteItemMutuation.mutate(values.id);
   };
 
   return (

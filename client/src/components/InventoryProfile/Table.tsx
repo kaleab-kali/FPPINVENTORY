@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Input} from "antd";
 import { Button, Flex } from "antd";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { Table } from "antd";
 import { IoSearch } from "react-icons/io5";
+// import { Input, Button, Flex, Table } from "antd";
+import { useNavigate } from "react-router-dom";
 import {
   useAllItems,
   useItems,
@@ -18,121 +20,12 @@ interface DataType {
   type: string;
   price: number;
   quantity: number;
-  image: string;
+  photo: string;
 }
 
-const columns = [
-  {
-    title: "Name",
-    dataIndex: "name",
-    key: "name",
-  },
-  // {
-  //   title: "Code",
-  //   dataIndex: "code",
-  //   key: "code",
-  // },
-  // {
-  //   title: "Type",
-  //   dataIndex: "type",
-  //   key: "type",
-  // },
-  {
-    title: "Price",
-    dataIndex: "price",
-    key: "price",
-  },
-  {
-    title: "Description",
-    dataIndex: "description",
-    key: "description",
-  },
-  {
-    title: "Category",
-    dataIndex: "categoryId",
-    key: "categoryId",
-  },
-  {
-    title: "Quantity",
-    dataIndex: "quantity",
-    key: "quantity",
-  },
-  // {
-  //   title: "Image",
-  //   dataIndex: "image",
-  //   key: "image",
-  //   render: (image: string) => (
-  //     <img
-  //       src={image}
-  //       alt="product"
-  //       style={{ width: "50px", height: "50px" }}
-  //     />
-  //   ),
-  // },
-];
 
-const data: DataType[] = [
-  {
-    key: "1",
-    name: "Product 1",
-    code: "P001",
-    type: "Type A",
-    price: 10.99,
-    quantity: 20,
-    image:
-      "https://media.istockphoto.com/id/1546442230/photo/front-view-skin-care-products-on-wooden-decorative-piece.webp?b=1&s=170667a&w=0&k=20&c=ODFMGn1FLGl-xXAqS-GDEUBmhnqTD9PZ85yhhD2fDnE=",
-  },
-  {
-    key: "2",
-    name: "Product 2",
-    code: "P002",
-    type: "Type B",
-    price: 15.99,
-    quantity: 15,
-    image:
-      "https://media.istockphoto.com/id/1495664030/photo/sneakers-on-dark-gray-concrete-background-texture-of-the-old-dark-stone-or-broken-brick-the.webp?b=1&s=170667a&w=0&k=20&c=X6_aRYTqlF8VA_apfu6fTmCS6PRmAhFQOUD81eXyDQk=",
-  },
-  {
-    key: "3",
-    name: "Product 3",
-    code: "P003",
-    type: "Type C",
-    price: 20.99,
-    quantity: 25,
-    image:
-      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cHJvZHVjdHxlbnwwfHwwfHx8MA%3D%3D",
-  },
-  {
-    key: "1",
-    name: "Product 1",
-    code: "P001",
-    type: "Type A",
-    price: 10.99,
-    quantity: 20,
-    image:
-      "https://media.istockphoto.com/id/1546442230/photo/front-view-skin-care-products-on-wooden-decorative-piece.webp?b=1&s=170667a&w=0&k=20&c=ODFMGn1FLGl-xXAqS-GDEUBmhnqTD9PZ85yhhD2fDnE=",
-  },
-  {
-    key: "2",
-    name: "Product 2",
-    code: "P002",
-    type: "Type B",
-    price: 15.99,
-    quantity: 15,
-    image:
-      "https://media.istockphoto.com/id/1495664030/photo/sneakers-on-dark-gray-concrete-background-texture-of-the-old-dark-stone-or-broken-brick-the.webp?b=1&s=170667a&w=0&k=20&c=X6_aRYTqlF8VA_apfu6fTmCS6PRmAhFQOUD81eXyDQk=",
-  },
-  {
-    key: "3",
-    name: "Product 3",
-    code: "P003",
-    type: "Type C",
-    price: 20.99,
-    quantity: 25,
-    image:
-      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cHJvZHVjdHxlbnwwfHwwfHx8MA%3D%3D",
-  },
-];
+
+
 const rowSelection = {
   onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
     console.log(
@@ -142,16 +35,82 @@ const rowSelection = {
     );
   },
   getCheckboxProps: (record: DataType) => ({
-    disabled: record.name === "Disabled User", // Column configuration not to be checked
+    disabled: record.name === "Disabled User", 
     name: record.name,
   }),
 };
 
 const ItemTable = () => {
   // const itemIdQuery = useItemIds();
+  const navigate = useNavigate(); // Initialize useNavigate hook
+
+  const handleClick = () => {
+    // Navigate to the registration page
+    navigate("/inventory/registration");
+  };
   const itemQueries = useAllItems();
-  const d=itemQueries.data
-  console.log("hello "+itemQueries.data)
+  const [data, setData] = useState<DataType[]>(itemQueries.data || []);
+  useEffect(() => {
+    if (itemQueries.data) {
+      setData(itemQueries.data);
+    }
+  }, [itemQueries.data]);
+  const handleSearch = (value: string) => {
+    const filteredData = itemQueries.data?.filter(
+      (item: { name: string; }) =>
+        item.name && item.name.toLowerCase().includes(value.toLowerCase())
+    );
+    setData(filteredData || []);
+  };
+  const columns = [
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+    },
+    // {
+    //   title: "Code",
+    //   dataIndex: "code",
+    //   key: "code",
+    // },
+    // {
+    //   title: "Type",
+    //   dataIndex: "type",
+    //   key: "type",
+    // },
+    {
+      title: "Price",
+      dataIndex: "price",
+      key: "price",
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
+    },
+    {
+      title: "Category",
+      dataIndex: "categoryId",
+      key: "categoryId",
+    },
+    {
+      title: "Quantity",
+      dataIndex: "quantity",
+      key: "quantity",
+    },
+    {
+      title: "Image",
+      dataIndex: "photo",
+      key: "photo",
+      render: (photo: string) => (
+        <img
+          src={`http://localhost:7000/uploads/${photo}`}
+          alt="product"
+          style={{ width: "50px", height: "50px" }}
+        />
+      ),
+    },
+  ];
   return (
     <div>
       <div style={{ backgroundColor: "#F4F5FC" }}>
@@ -169,6 +128,7 @@ const ItemTable = () => {
               allowClear
               style={{ border: "2px solid transparent" }}
               prefix={<IoSearch />}
+              onChange={(e) => handleSearch(e.target.value)}
             />
           </div>
           <Button
@@ -181,6 +141,7 @@ const ItemTable = () => {
               justifyContent: "center",
               alignItems: "center",
             }}
+            onClick={handleClick}
           >
             Add New Item
           </Button>
@@ -198,7 +159,7 @@ const ItemTable = () => {
             ...rowSelection,
           }}
           columns={columns}
-          dataSource={d}
+          dataSource={data}
           rowClassName={() => "custom-row"}
         />
       </div>

@@ -19,5 +19,13 @@ const supplierSchema = new Schema<SupplierInfo>(
   { timestamps: true }
 );
 
+supplierSchema.pre<SupplierInfo>("save", async function (next) {
+  if (!this.sid) {
+    const count = await Supplier.countDocuments();
+    this.sid = `FPCSID-${(count + 1).toString().padStart(4, "0")}`;
+  }
+  next();
+});
+
 const Supplier = mongoose.model<SupplierInfo>("Supplier", supplierSchema);
 export default Supplier;

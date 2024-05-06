@@ -1,6 +1,10 @@
 import express from "express";
 import colors from "colors";
 import itemRoute from "./routes/itemRoutes"; 
+import supplierRoute from "./routes/supplierRoute";
+import unitRoute from "./routes/unitRoute";
+import categoryRoute from "./routes/categoryRoute";
+import stockRoute from "./routes/stockRoute"; 
 import connectDb from "./config/db";
 import dotenv from "dotenv";
 // import cors from  "cors";
@@ -24,6 +28,10 @@ connectDb();
 
 app.use("/items", itemRoute);
 app.use("/inventoryAssignment", itemRoute);
+app.use("/supplier", supplierRoute);
+app.use("/units", unitRoute);
+app.use("/category", categoryRoute);
+app.use("/stock", stockRoute);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

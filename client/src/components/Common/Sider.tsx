@@ -4,6 +4,7 @@ import {
   EditOutlined,
   FileTextOutlined,
   HistoryOutlined,
+  ShopOutlined
 } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
 import { NavLink } from "react-router-dom";
@@ -27,7 +28,35 @@ const Sider: React.FC = () => {
       }}
     >
       <Menu mode="inline" selectedKeys={[activeKey]}>
-        <Menu.SubMenu key="inventorySubMenu" title="Inventory">
+      <Menu.Item
+          key="dashboard"
+          icon={<UserOutlined />}
+          onClick={() => handleMenuClick("dashboard")}
+        >
+          <NavLink to="/">Dashboard</NavLink>
+        </Menu.Item>
+        <Menu.SubMenu key="supplierSubMenu" title="Supplier">
+          <Menu.Item key="supplierList" icon={<ShopOutlined />} onClick={() => handleMenuClick("supplierList")}>
+            <NavLink to="/supplier/list">List</NavLink>
+
+          </Menu.Item>
+
+        </Menu.SubMenu>
+        <Menu.SubMenu key="unitsSubMenu" title="Units">
+          <Menu.Item key="unitsList" icon={<ShopOutlined />} onClick={() => handleMenuClick("unitsList")}>
+            <NavLink to="/units/list">List</NavLink>
+
+          </Menu.Item>
+
+        </Menu.SubMenu>
+        <Menu.SubMenu key="catagorySubMenu" title="Catagory">
+          <Menu.Item key="catagoryList" icon={<ShopOutlined />} onClick={() => handleMenuClick("catagoryList")}>
+            <NavLink to="/catagory/list">List</NavLink>
+
+          </Menu.Item>
+
+        </Menu.SubMenu>
+        <Menu.SubMenu key="inventorySubMenu" title="Product">
           <Menu.Item
             key="inventoryRegistration"
             icon={<UserOutlined />}
@@ -46,13 +75,13 @@ const Sider: React.FC = () => {
           >
             <NavLink to="/inventory/view">View</NavLink>
           </Menu.Item>
-          <Menu.Item
-            key="inventoryEdit"
-            icon={<EditOutlined />}
-            onClick={() => handleMenuClick("inventoryEdit")}
-          >
-            <NavLink to="/inventory/edit">Edit</NavLink>
+        </Menu.SubMenu>
+        <Menu.SubMenu key="stockSubMenu" title="Stock">
+          <Menu.Item key="stockList" icon={<ShopOutlined />} onClick={() => handleMenuClick("stockList")}>
+            <NavLink to="/stock/list">items</NavLink>
+
           </Menu.Item>
+
         </Menu.SubMenu>
 
         <Menu.SubMenu key="dispatchSubMenu" title="Dispatch">

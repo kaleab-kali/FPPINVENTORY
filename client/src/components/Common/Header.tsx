@@ -21,7 +21,7 @@ const Header: React.FC = () => {
       <Row>
         <Col span={6} style={{ padding: "6px 2px" }}>
           <img
-            src="/fpp.jpg"
+            src={process.env.PUBLIC_URL + "/fpp.jpg"}
             alt="Company Logo"
             style={{ height: "50px", borderRadius: "20px" }}
           />

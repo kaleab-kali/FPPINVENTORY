@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {  Layout } from "antd";
 
 import Header from "../components/Common/Header";
@@ -14,22 +14,32 @@ import SupplierPage from "./SupplierPage/SupplierPage";
 import UnitsPage from "./Units/UnitsPage";
 import CatagoryPage from "./Catagory/CatagoryPage";
 import StockPage from "./Stock/StockPage";
+import ResourcePage from "./Resource/ResourcePage";
+import InactiveSupplierPage from "./SupplierPage/InactivSupplierPage";
 // import Stat from "./Stat";
 
 const { Content } = Layout;
 
 const Dashboard: React.FC = () => {
+  const [collapsed, setCollapsed] = useState(false);
+
+  const toggleCollapsed = () => {
+    setCollapsed(!collapsed);
+  };
   return (
     <Layout>
-      <Header />
+      <Sider collapsed={collapsed} />
+     
       {/* <Divider /> */}
       <Layout>
-        <Sider />
+      <Header collapsed={collapsed} toggleCollapsed={toggleCollapsed}/>
+        
         <Content>
           <Routes>
             <Route path="/" element={<Stat />}></Route>
             <Route path="/supplier" >
               <Route path="list" element={<SupplierPage />} />
+              <Route path="inactivelist" element={<InactiveSupplierPage />} />
             </Route>
             <Route path="/catagory" >
               <Route path="list" element={<CatagoryPage />} />
@@ -49,7 +59,8 @@ const Dashboard: React.FC = () => {
               <Route path="list" element={<StockPage />} />
             </Route>
 
-            <Route path="/dispatch">
+            <Route path="/resource">
+              <Route path="request" element={<ResourcePage />} />
               
             </Route>
           </Routes>

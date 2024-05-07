@@ -9,8 +9,10 @@ import {
   Col,
   Layout,
   Typography,
+  Radio,
   message,
   DatePicker,
+  Checkbox,
 } from "antd";
 import moment from "moment";
 import dayjs from "dayjs";
@@ -154,23 +156,50 @@ const InventoryRegistrationForm: React.FC = () => {
           </Col>
           <Col span={8}>
           <Form.Item
+              name="unit"
+              label="Unit"
+              rules={[{ required: true, message: "Please select Unit of measurment" }]}
+            >
+              <Select placeholder="Select Unit">
+                <Option value="consumable">KG</Option>
+                <Option value="returnable">PCS</Option>
+              </Select>
+            </Form.Item>
+         
+
+          </Col>
+          <Col span={8}>
+          <Form.Item
               name="purchasedate"
               label="Purchase Date"
             
             >
               <DatePicker style={{ width: "100%" }} format="DD/MM/YYYY" />
             </Form.Item>
-
+          
+          </Col>
+        </Row>
+        <Row gutter={16}>
+          <Col span={8}>
+          <Form.Item label="Returnable" name="returnable" valuePropName="checked">
+          <Checkbox>yes</Checkbox>
+        </Form.Item>
+          
           </Col>
           <Col span={8}>
-            <Form.Item
+          <Form.Item
               name="description"
               label="Description/Note"
               rules={[{ required: true, message: "Please enter description" }]}
             >
               <Input.TextArea placeholder="Enter description" />
             </Form.Item>
+          
           </Col>
+          <Col span={8}>
+          
+          </Col>
+
         </Row>
 
         <Form.Item>

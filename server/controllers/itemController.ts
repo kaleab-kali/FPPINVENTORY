@@ -13,20 +13,21 @@ const createItem = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-const getItemById = async (req: Request, res: Response): Promise<void> => {
+const getItemByProductId = async (req: Request, res: Response): Promise<void> => {
   try {
-    const item = await Item.findById(req.params.id);
+    const item = await Item.findOne({ productID: req.params.id });
     if (!item) {
       res.status(404).json({ error: "Item not found" });
       return;
     }
     console.log("Fetched Data:", item);
-    res.status(200).json(Item);
+    res.status(200).json(item);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 
 const getAllItems = async (
   req: Request,
@@ -78,4 +79,4 @@ const deleteItem = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export { createItem, updateItem, deleteItem, getAllItems, getItemById };
+export { createItem, updateItem, deleteItem, getAllItems, getItemByProductId };

@@ -6,6 +6,7 @@ export interface SupplierInfo extends Document {
   mobileNumber?: string;
   email?: string;
   address?: string;
+  status?: string;
 }
 
 const supplierSchema = new Schema<SupplierInfo>(
@@ -15,14 +16,19 @@ const supplierSchema = new Schema<SupplierInfo>(
     mobileNumber: { type: String },
     email: { type: String },
     address: { type: String },
+    status: { type: String },
   },
   { timestamps: true }
 );
 
 supplierSchema.pre<SupplierInfo>("save", async function (next) {
   if (!this.sid) {
-    const count = await Supplier.countDocuments();
-    this.sid = `FPCSID-${(count + 1).toString().padStart(4, "0")}`;
+    const lastSupplier = await Supplier.findOne({}, {}, { sort: { createdAt: -1 } });
+    let lastSidNumber = 0;
+    if (lastSupplier && lastSupplier.sid) {
+      lastSidNumber = parseInt(lastSupplier.sid.split("-")[1]);
+    }
+    this.sid = `FPCSID-${(lastSidNumber + 1).toString().padStart(4, "0")}`;
   }
   next();
 });

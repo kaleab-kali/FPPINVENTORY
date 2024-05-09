@@ -1,68 +1,57 @@
 import { Input, Table, Button, Space, Popconfirm } from "antd";
 import React, { useState } from "react";
+import {
+  useSuppliers,
+  useAllSuppliers,
+  useSupplierIds,
+} from "../../services/queries/supplierQueries";
+import { SupplierInfo } from "../../../../shared/types/Supplier";
 
-const data = [
-  {
-    key: "1",
-    sid: "FPCSID-0001",
-    name: "John Brown",
-    age: 32,
-    mnumber: "123456",
-    email: "jj@gmail.com",
-    address: "New York No. 1 Lake Park",
-  },
-  {
-    key: "2",
-    sid: "FPCSID-0002",
-    name: "Jim Green",
-    age: 42,
-    mnumber: "123456",
-    email: "dkj@gmail.com",
-    address: "London No. 1 Lake Park",
-  },
-  {
-    key: "3",
-    sid: "FPCSID-0003",
-    name: "Joe Black",
-    age: 32,
-    mnumber: "123456",
-    email: "sda@gmai.com",
-    address: "Sidney No. 1 Lake Park",
-  },
-  {
-    key: "4",
-    sid: "FPCSID-0004",
-    name: "Jim Red",
-    age: 32,
-    mnumber: "123456",
-    email: "sdfsd@gma.com",
-    address: "London No. 2 Lake Park",
-  },
-];
 
 const ListTable = () => {
-  const [dataSource, setDataSource] = useState(data);
+  
   const [searchValue, setSearchValue] = useState("");
 
+  const allSuppliersQuery = useAllSuppliers();
+  console.log("All Suppliers Query:", allSuppliersQuery.data);
+  
+  const Source = allSuppliersQuery.data
+    ? allSuppliersQuery.data.map(
+        (queryResult: SupplierInfo) =>{
+          return {
+            key: queryResult._id,
+            sid: queryResult.sid,
+            name: queryResult.name,
+            mnumber: queryResult.mobileNumber,
+            email: queryResult.email,
+            address: queryResult.address,
+          };
+        }
+          
+      )
+    : [];
+  
+  console.log("Source:", Source);
+
   const handleSearch = (value: string) => {
-    setSearchValue(value);
-    const filteredData = data.filter((entry) =>
-      entry.name.toLowerCase().includes(value.toLowerCase())
-    );
-    setDataSource(filteredData);
+    // setSearchValue(value);
+    // const filteredData = data.filter((entry) =>
+    //   entry.name.toLowerCase().includes(value.toLowerCase())
+    // );
+    // setDataSource(filteredData);
   };
 
   const handleDelete = (key: string) => {
-    const filteredDataSource = dataSource.filter(item => item.key !== key);
-    setDataSource(filteredDataSource);
+    // const filteredDataSource = dataSource.filter(item => item.key !== key);
+    // setDataSource(filteredDataSource);
   };
 
   const columns = [
     {
-        title: "SID",
-        dataIndex: "sid",
-        key: "sid",
-      },
+      title: "SID",
+      dataIndex: "sid",
+      key: "sid",
+    },
     {
       title: "Name",
       dataIndex: "name",
@@ -71,7 +60,7 @@ const ListTable = () => {
     {
       title: "Mobile Number",
       dataIndex: "mnumber",
-      key: "mnumber"
+      key: "mnumber",
     },
     {
       title: "Email",
@@ -79,16 +68,18 @@ const ListTable = () => {
       key: "email",
     },
     {
-        title: "Address",
-        dataIndex: "address",
-        key: "address",
-      },
+      title: "Address",
+      dataIndex: "address",
+      key: "address",
+    },
     {
       title: "Action",
       key: "action",
       render: (text: string, record: any) => (
         <Space size="middle">
-          <Button type="primary" onClick={() => handleEdit(record.key)}>Edit</Button>
+          <Button type="primary" onClick={() => handleEdit(record.key)}>
+            Edit
+          </Button>
           <Popconfirm
             title="Are you sure to delete this row?"
             onConfirm={() => handleDelete(record.key)}
@@ -109,12 +100,12 @@ const ListTable = () => {
   return (
     <>
       <Input
-        style={{ marginBottom: 10 , float: "right", width: 200}}
+        style={{ marginBottom: 10, float: "right", width: 200 }}
         placeholder="Search Name"
         value={searchValue}
         onChange={(e) => handleSearch(e.target.value)}
       />
-      <Table columns={columns} dataSource={dataSource} />
+      <Table columns={columns} dataSource={Source} />
     </>
   );
 };

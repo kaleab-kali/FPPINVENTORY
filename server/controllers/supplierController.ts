@@ -14,7 +14,9 @@ const createSupplier = async (req: Request, res: Response): Promise<void> => {
 };
 
 const getSupplierById = async (req: Request, res: Response): Promise<void> => {
+  console.log("Fetching Supplier");
   try {
+  
     const supplier = await Supplier.findById(req.params.id);
     if (!supplier) {
       res.status(404).json({ error: "Supplier not found" });

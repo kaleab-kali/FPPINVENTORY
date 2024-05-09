@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-import { Modal, Button, Form, Input, Row, Col } from "antd";
+import { Modal, Button, Form, Input, Row, Col, message } from "antd";
 import { PlusCircleOutlined } from "@ant-design/icons";
+import { useCreateSupplier } from "../../services/mutations/supplierMutation";
+import { SupplierInfo } from "../../../../shared/types/Supplier";
 
-const AddSupplier = () => {
+const AddSupplier: React.FC = () => {
+  const createSupplierMutuation = useCreateSupplier();
   const [visible, setVisible] = useState(false);
   const [form] = Form.useForm();
 
@@ -27,6 +30,40 @@ const AddSupplier = () => {
       });
   };
 
+  const onFinish = async () => {
+    // Log the complete form data
+    const values = form.getFieldsValue(true);
+    // handleFormData(values);
+    
+    try {
+      await form.validateFields();
+
+      const formData = new FormData();
+      formData.append("name", values.name);
+      formData.append("mnumber", values.mnumber);
+      formData.append("email", values.email);
+      formData.append("address", values.address);
+
+      const supplierInfo: SupplierInfo = {
+        sid: "",
+        name: formData.get("name") as string,
+        mobileNumber: formData.get("mnumber") as string,
+        email: formData.get("email") as string,
+        address: formData.get("address") as string,
+      };
+
+      // Call the mutation
+      createSupplierMutuation.mutate(supplierInfo);
+    } catch (error) {
+      console.error("Validation failed:", error);
+    }
+
+    // console.log("Complete Form Data:", formData);
+    message.success("Form submitted successfully!");
+  };
+
+  
+
   return (
     <>
       <Button
@@ -40,10 +77,10 @@ const AddSupplier = () => {
       <Modal
         title="Add Supplier"
         visible={visible}
-        onOk={handleOk}
         onCancel={handleCancel}
+        footer={null}
       >
-        <Form form={form} layout="vertical" name="addSupplierForm">
+        <Form form={form} layout="vertical" name="addSupplierForm" onFinish={onFinish}>
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
@@ -89,6 +126,11 @@ const AddSupplier = () => {
               </Form.Item>
             </Col>
           </Row>
+          <Form.Item>
+          <Button type="primary" htmlType="submit">
+            Add Supplier
+          </Button>
+        </Form.Item>
         </Form>
       </Modal>
     </>

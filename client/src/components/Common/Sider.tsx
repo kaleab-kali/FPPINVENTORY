@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { LiaShippingFastSolid } from "react-icons/lia";
-import { FaChartLine, FaRuler, FaWarehouse } from 'react-icons/fa';
+import { FaBoxOpen, FaChartLine, FaRuler, FaWarehouse } from 'react-icons/fa';
 import { TbCategory2 } from "react-icons/tb";
 import { RiProductHuntLine } from "react-icons/ri";
 import {
@@ -150,7 +150,7 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
           </Menu.Item>
         </Menu.SubMenu>
 
-        <Menu.SubMenu key="resourceSubMenu" title="Resource">
+        <Menu.SubMenu key="resourceSubMenu" title="Resource" icon={<FaBoxOpen />}>
           <Menu.Item key="request" onClick={() => handleMenuClick("request")}>
             <NavLink to="/resource/request">Request</NavLink>
           </Menu.Item>

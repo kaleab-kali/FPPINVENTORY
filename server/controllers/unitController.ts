@@ -15,13 +15,13 @@ const createUnit = async (req: Request, res: Response): Promise<void> => {
 
 const getUnitById = async (req: Request, res: Response): Promise<void> => {
   try {
-    const unit = await Unit.findById(req.params.id);
+    const unit = await Unit.findOne({unitID: req.params.id});
     if (!Unit) {
       res.status(404).json({ error: "Unit not found" });
       return;
     }
-    console.log("Fetched Data:", Unit);
-    res.status(200).json(Unit);
+    console.log("Fetched Data:", unit);
+    res.status(200).json(unit);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -44,8 +44,8 @@ const getAllUnits = async (
 const updateUnit = async (req: Request, res: Response): Promise<void> => {
   try {
     console.log("Updating Unit");
-    const unit = await Unit.findByIdAndUpdate(
-      req.params.id,
+    const unit = await Unit.findOneAndUpdate(
+      {unitID: req.params.id},
       { $set: req.body },
       { new: true }
     );
@@ -63,7 +63,7 @@ const updateUnit = async (req: Request, res: Response): Promise<void> => {
 
 const deleteUnit = async (req: Request, res: Response): Promise<void> => {
   try {
-    const deletedUnit = await Unit.findByIdAndDelete(req.params.id);
+    const deletedUnit = await Unit.findOneAndDelete({unitID: req.params.id});
     if (!deletedUnit) {
       res.status(404).json({ error: "Unit not found" });
       return;

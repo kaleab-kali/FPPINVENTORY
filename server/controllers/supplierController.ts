@@ -46,8 +46,8 @@ const getAllSuppliers = async (
 const updateSupplier = async (req: Request, res: Response): Promise<void> => {
   try {
     console.log("Updating Supplier");
-    const supplier = await Supplier.findByIdAndUpdate(
-      req.params.id,
+    const supplier = await Supplier.findOneAndUpdate(
+      {sid: req.params.id},
       { $set: req.body },
       { new: true }
     );
@@ -65,14 +65,18 @@ const updateSupplier = async (req: Request, res: Response): Promise<void> => {
 
 const deleteSupplier = async (req: Request, res: Response): Promise<void> => {
   try {
-    const deletedSupplier = await Supplier.findByIdAndDelete(req.params.id);
-    if (!deletedSupplier) {
+    const updatedSupplier = await Supplier.findOneAndUpdate(
+      {sid: req.params.id},
+      { status: "inactive" },
+      { new: true }
+    );
+    if (!updatedSupplier) {
       res.status(404).json({ error: "Supplier not found" });
       return;
     }
     res.status(200).json({
-      message: "Supplier deleted successfully",
-      deletedSupplier,
+      message: "Supplier status updated to 'inactive'",
+      updatedSupplier,
     });
   } catch (error) {
     console.error(error);

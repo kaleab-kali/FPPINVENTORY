@@ -16,7 +16,7 @@ const supplierSchema = new Schema<SupplierInfo>(
     mobileNumber: { type: String },
     email: { type: String },
     address: { type: String },
-    status: { type: String },
+    status: { type: String, default: "active" },
   },
   { timestamps: true }
 );

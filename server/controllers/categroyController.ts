@@ -15,13 +15,13 @@ const createCategory = async (req: Request, res: Response): Promise<void> => {
 
 const getCategoryById = async (req: Request, res: Response): Promise<void> => {
   try {
-    const category = await Category.findById(req.params.id);
+    const category = await Category.findOne({catID: req.params.id});
     if (!category) {
       res.status(404).json({ error: "Category not found" });
       return;
     }
-    console.log("Fetched Data:", Category);
-    res.status(200).json(Category);
+    console.log("Fetched Data:", category);
+    res.status(200).json(category);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -44,8 +44,8 @@ const getAllCategorys = async (
 const updateCategory = async (req: Request, res: Response): Promise<void> => {
   try {
     console.log("Updating Category");
-    const category = await Category.findByIdAndUpdate(
-      req.params.id,
+    const category = await Category.findOneAndUpdate(
+      {catID: req.params.id},
       { $set: req.body },
       { new: true }
     );
@@ -63,7 +63,7 @@ const updateCategory = async (req: Request, res: Response): Promise<void> => {
 
 const deleteCategory = async (req: Request, res: Response): Promise<void> => {
   try {
-    const deletedCategory = await Category.findByIdAndDelete(req.params.id);
+    const deletedCategory = await Category.findOneAndDelete({catID: req.params.id});
     if (!deletedCategory) {
       res.status(404).json({ error: "Category not found" });
       return;

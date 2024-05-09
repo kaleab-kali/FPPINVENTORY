@@ -13,6 +13,8 @@ export interface ItemInfo extends Document {
   unitPrice?: number;
   category?: string;
   returnable?: boolean;
+  discription?: string;
+  purchaseDate?: Date;
   unique_productIDs?: string[];
   productID?: string;
 }
@@ -30,6 +32,8 @@ const itemSchema = new Schema<ItemInfo>(
     unitPrice: { type: Number },
     category: { type: String },
     returnable: { type: Boolean, default: false },
+    discription: { type: String },
+    purchaseDate: { type: Date },
     unique_productIDs: [{ type: String }],
     productID: { type: String },
   },
@@ -38,19 +42,14 @@ const itemSchema = new Schema<ItemInfo>(
 
 itemSchema.pre<ItemInfo>("save", async function (next) {
   if (!this.productID) {
-    // Generate a new product ID
-    // const ItemModel = mongoose.model<ItemInfo>("Item");
-    // const lastProduct = await ItemModel.findOne({}, {}, { sort: { createdAt: -1 } });
-
-    // const lastProductId = lastProduct?.productID ? parseInt(lastProduct.productID.split("-")[1]) : 0;
-    const count = await Item.countDocuments();
-    const newProductId = `FPCPID-${(count + 1).toString().padStart(4, "0")}`;
-
+    const lastItem = await Item.findOne({}, {}, { sort: { createdAt: -1 } });
+    const lastProductId = lastItem && lastItem.productID ? parseInt(lastItem.productID.split("-")[1]) : 0;
+    const newProductId = `FPCPID-${(lastProductId + 1).toString().padStart(4, "0")}`;
     this.productID = newProductId;
   }
 
   if (!this.unique_productIDs || this.unique_productIDs.length !== this.quantity) {
-  this.unique_productIDs = Array.from({ length: this.quantity } as any, (_, index) => `${this.productID}-${index + 1}`);}
+    this.unique_productIDs = Array.from({ length: this.quantity } as any, (_, index) => `${this.productID}-${index + 1}`);}
 
   next();
 });

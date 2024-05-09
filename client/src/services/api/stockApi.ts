@@ -1,37 +1,50 @@
-import { SupplierInfo } from '../../../../shared/types/Supplier';
+import { StockInfo } from '../../../../shared/types/Stock';
 
 const BASE_URL = "http://localhost:8000";
 
-export const getSupplierIds = async () => {
-    console.log("getSupplierIds");
-    const response = await fetch(`${BASE_URL}/supplier`);
+export const getStockIds = async () => {
+    console.log("getStockIds");
+    const response = await fetch(`${BASE_URL}/stock`);
   
     if (!response.ok) {
-      throw new Error("Failed to fetch supplier IDs");
+      throw new Error("Failed to fetch Stock IDs");
     }
   
     const data = await response.json();
   
-    return data.map((supplier: SupplierInfo ) => supplier._id);
+    return data.map((stock: StockInfo ) => stock._id);
   };
   
-  export const getSupplier = async (id: string) => {
-    console.log("getSupplier", id);
-    const response = await fetch(`${BASE_URL}/supplier/${id}`);
+  export const getStock = async (id: string) => {
+    console.log("getStock", id);
+    const response = await fetch(`${BASE_URL}/stock/${id}`);
   
     if (!response.ok) {
-      throw new Error("Failed to fetch suppliers");
+      throw new Error("Failed to fetch Stocks");
     }
   
-    const data: SupplierInfo = await response.json();
-    console.log("Fetched Supplier:", data);
+    const data: StockInfo = await response.json();
+    console.log("Fetched Stock:", data);
   
     return data;
   };
+
+  export const getAllStocks = async () => {
+    const response = await fetch(`${BASE_URL}/stock`);
   
-  export const createSupplier = async (data: SupplierInfo) => {
+    if (!response.ok) {
+      throw new Error("Failed to fetch Stock IDs");
+    }
+  
+  const data: StockInfo[] = await response.json();
+  console.log(data); 
+    return data;
+  };
+  
+  
+  export const createStock = async (data: StockInfo) => {
     console.log("Data before mutation:", data);
-    await fetch(`${BASE_URL}/supplier`, {
+    await fetch(`${BASE_URL}/stock`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -40,8 +53,8 @@ export const getSupplierIds = async () => {
     });
   };
 
-  export const updateEmployee = async (data: SupplierInfo) => {
-    const response = await fetch(`${BASE_URL}/supplier/${data.sid}`, {
+  export const updateStock = async (data: StockInfo) => {
+    const response = await fetch(`${BASE_URL}/stock/${data._id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -50,20 +63,20 @@ export const getSupplierIds = async () => {
     });
   
     if (!response.ok) {
-      throw new Error("Failed to update supplier data");
+      throw new Error("Failed to update Stock data");
     }
   };
   
   
-  export const deleteEmployee = async (id: string) => {
-    const response = await fetch(`${BASE_URL}/supplier/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+//   export const deleteStock = async (id: string) => {
+//     const response = await fetch(`${BASE_URL}/Stock/${id}`, {
+//       method: "DELETE",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//     });
   
-    if (!response.ok) {
-      throw new Error("Failed to delete supplier");
-    }
-  };
+//     if (!response.ok) {
+//       throw new Error("Failed to delete Stock");
+//     }
+//   };

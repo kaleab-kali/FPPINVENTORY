@@ -90,40 +90,40 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
             <NavLink to="/units/list">List</NavLink>
           </Menu.Item>
         </Menu.SubMenu>
-        <Menu.SubMenu key="catagorySubMenu" title="Catagory" icon={<TbCategory2 />}>
+        <Menu.SubMenu key="categorySubMenu" title="Category" icon={<TbCategory2 />}>
           <Menu.Item
-            key="catagoryList"
+            key="categoryList"
             icon={<ShopOutlined />}
-            onClick={() => handleMenuClick("catagoryList")}
+            onClick={() => handleMenuClick("categoryList")}
           >
-            <NavLink to="/catagory/list">List</NavLink>
+            <NavLink to="/category/list">List</NavLink>
           </Menu.Item>
         </Menu.SubMenu>
-        <Menu.SubMenu key="inventorySubMenu" title="Product" icon={<RiProductHuntLine />}>
+        <Menu.SubMenu key="productSubMenu" title="Product" icon={<RiProductHuntLine />}>
           <Menu.Item
-            key="inventoryRegistration"
+            key="productRegistration"
             icon={<UserOutlined />}
-            onClick={() => handleMenuClick("inventoryRegistration")}
+            onClick={() => handleMenuClick("productRegistration")}
             // style={{
             //   color: activeKey === "employeeRegistration" ? "blue" : "",
             //   fontWeight: activeKey === "employeeRegistration" ? "bold" : "",
             // }}
           >
-            <NavLink to="/inventory/registration">Registration</NavLink>
+            <NavLink to="/product/registration">Registration</NavLink>
           </Menu.Item>
           <Menu.Item
-            key="inventoryView"
+            key="productView"
             icon={<FileTextOutlined />}
-            onClick={() => handleMenuClick("inventoryView")}
+            onClick={() => handleMenuClick("productView")}
           >
-            <NavLink to="/inventory/view">List</NavLink>
+            <NavLink to="/product/view">List</NavLink>
           </Menu.Item>
           <Menu.Item
-            key="inventoryInactive"
+            key="productInactive"
             icon={<FileTextOutlined />}
-            onClick={() => handleMenuClick("inventoryInactive")}
+            onClick={() => handleMenuClick("productInactive")}
           >
-            <NavLink to="/inventory/inactive">Inactive</NavLink>
+            <NavLink to="/product/inactive">Inactive</NavLink>
           </Menu.Item>
         </Menu.SubMenu>
         <Menu.SubMenu key="stockSubMenu" title="Stock Managment" icon={<FaWarehouse />}>

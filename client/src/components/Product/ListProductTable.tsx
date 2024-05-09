@@ -1,57 +1,45 @@
 import { Input, Table, Button, Space, Popconfirm } from "antd";
 import React, { useState } from "react";
-
-const data = [
-  {
-    key: "1",
-    pid: "FPCPID-0001",
-    name: "kolo",
-    suppliername: "HPC",
-    unit: 5,
-    catagory: "tech",
-  },
-  {
-    key: "2",
-    pid: "FPCPID-0002",
-    name: "computer",
-    suppliername: "HPC",
-    unit: 5,
-    catagory: "tech",
-  },
-  {
-    key: "3",
-    pid: "FPCPID-0003",
-    name: "cable",
-    suppliername: "HPC",
-    unit: 5,
-    catagory: "tech",
-  },
-  {
-    key: "4",
-    pid: "FPCPID-0004",
-    name: "laptop",
-    suppliername: "HPC",
-    unit: 5,
-   catagory: "tech",
-   
-  },
-];
+import { ProductInfo } from "../../../../shared/types/Product";
+import { useAllProducts } from "../../services/queries/productQueries";
 
 const ListTable = () => {
-  const [dataSource, setDataSource] = useState(data);
   const [searchValue, setSearchValue] = useState("");
+
+  const allProductsQuery = useAllProducts();
+
+  const Source = allProductsQuery.data
+    ? allProductsQuery.data.map(
+        (queryResult: ProductInfo) => {
+          return {
+            key: queryResult.productID,
+            pid: queryResult.productID,
+            name: queryResult.name,
+            suppliername: queryResult.supplier,
+            catagory: queryResult.category,
+            unit: queryResult.unit,
+            quantity: queryResult.quantity,
+            
+          };
+        }
+      )
+    : [];
+
+  console.log("Source:", Source);
+  const filteredData = Source.filter((entry) =>
+    entry.name?.toLowerCase().includes(searchValue.toLowerCase())
+  );
+
+
 
   const handleSearch = (value: string) => {
     setSearchValue(value);
-    const filteredData = data.filter((entry) =>
-      entry.name.toLowerCase().includes(value.toLowerCase())
-    );
-    setDataSource(filteredData);
+  
   };
 
   const handleDelete = (key: string) => {
-    const filteredDataSource = dataSource.filter(item => item.key !== key);
-    setDataSource(filteredDataSource);
+    
+    // setDataSource(filteredDataSource);
   };
 
   const columns = [
@@ -71,15 +59,21 @@ const ListTable = () => {
       key: "suppliername"
     },
     {
+      title: "Catagory",
+      dataIndex: "catagory",
+      key: "catagory",
+    },
+    {
       title: "Unit",
       dataIndex: "unit",
       key: "unit",
     },
     {
-        title: "Catagory",
-        dataIndex: "catagory",
-        key: "catagory",
-      },
+      title: "Quantity",
+      dataIndex: "quantity",
+      key: "quantity",
+    },
+    
     {
       title: "Action",
       key: "action",
@@ -111,7 +105,7 @@ const ListTable = () => {
         value={searchValue}
         onChange={(e) => handleSearch(e.target.value)}
       />
-      <Table columns={columns} dataSource={dataSource} />
+      <Table columns={columns} dataSource={filteredData} />
     </>
   );
 };

@@ -2,7 +2,7 @@ import express, { Router } from "express";
 import {
   createItem,
   getAllItems,
-  getItemById,
+  getItemByProductId,
   updateItem,
   deleteItem,
 } from "../controllers/itemController";
@@ -16,7 +16,7 @@ router.post("/", createItem);
 router.get("/", getAllItems);
 
 // Get a specific Item by ID
-router.get("/:id", getItemById);
+router.get("/:id", getItemByProductId);
 
 // Update an Item by ID
 router.put("/:id", updateItem);

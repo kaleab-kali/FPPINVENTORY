@@ -1,69 +1,80 @@
-import { SupplierInfo } from '../../../../shared/types/Supplier';
+import { UnitInfo } from "../../../../shared/types/Unit";
 
 const BASE_URL = "http://localhost:8000";
 
 export const getUnitIds = async () => {
-    console.log("getUnitIds");
-    const response = await fetch(`${BASE_URL}/units`);
-  
-    if (!response.ok) {
-      throw new Error("Failed to fetch units IDs");
-    }
-  
-    const data = await response.json();
-  
-    return data.map((supplier: SupplierInfo ) => supplier._id);
-  };
-  
-  export const getSupplier = async (id: string) => {
-    console.log("getSupplier", id);
-    const response = await fetch(`${BASE_URL}/supplier/${id}`);
-  
-    if (!response.ok) {
-      throw new Error("Failed to fetch suppliers");
-    }
-  
-    const data: SupplierInfo = await response.json();
-    console.log("Fetched Supplier:", data);
-  
-    return data;
-  };
-  
-  export const createSupplier = async (data: SupplierInfo) => {
-    console.log("Data before mutation:", data);
-    await fetch(`${BASE_URL}/supplier`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-  };
+  console.log("getUnitIds");
+  const response = await fetch(`${BASE_URL}/units`);
 
-  export const updateEmployee = async (data: SupplierInfo) => {
-    const response = await fetch(`${BASE_URL}/supplier/${data.sid}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-  
-    if (!response.ok) {
-      throw new Error("Failed to update supplier data");
-    }
-  };
-  
-  
-  export const deleteUnit = async (id: string) => {
-    const response = await fetch(`${BASE_URL}/unit/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-  
-    if (!response.ok) {
-      throw new Error("Failed to delete supplier");
-    }
-  };
+  if (!response.ok) {
+    throw new Error("Failed to fetch units IDs");
+  }
+
+  const data = await response.json();
+
+  return data.map((unit: UnitInfo) => unit.id);
+};
+
+export const getUnit = async (id: string) => {
+  console.log("getUnit", id);
+  const response = await fetch(`${BASE_URL}/units/${id}`);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch Units");
+  }
+
+  const data: UnitInfo = await response.json();
+  console.log("Fetched Unit:", data);
+
+  return data;
+};
+
+export const getAllUnits = async () => {
+  const response = await fetch(`${BASE_URL}/units`);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch unit IDs");
+  }
+
+  const data: UnitInfo[] = await response.json();
+  console.log(data);
+  return data;
+};
+
+export const createUnit = async (data: UnitInfo) => {
+  console.log("Data before mutation:", data);
+  await fetch(`${BASE_URL}/units`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+};
+
+export const updateUnit = async (data: UnitInfo) => {
+  const response = await fetch(`${BASE_URL}/unit/${data.id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to update unit data");
+  }
+};
+
+export const deleteUnit = async (id: string) => {
+  const response = await fetch(`${BASE_URL}/unit/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to delete unit");
+  }
+};

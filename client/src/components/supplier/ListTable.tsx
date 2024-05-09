@@ -34,11 +34,7 @@ const ListTable = () => {
   console.log("Source:", Source);
 
   const handleSearch = (value: string) => {
-    // setSearchValue(value);
-    // const filteredData = data.filter((entry) =>
-    //   entry.name.toLowerCase().includes(value.toLowerCase())
-    // );
-    // setDataSource(filteredData);
+    setSearchValue(value);
   };
 
   const handleDelete = (key: string) => {

@@ -1,5 +1,5 @@
-export interface CatagoryInfo {
-    _id?: string;
-    name?: string;
-    unitOfMeasurment: string;
+export interface CategoryInfo {
+    id?: string;
+    categoryName?: string;
+    unit: string;
 }

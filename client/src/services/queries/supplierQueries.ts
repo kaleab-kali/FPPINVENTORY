@@ -10,7 +10,7 @@ export function useSupplierIds() {
 }
 export function useAllSuppliers() {
     return useQuery({
-      queryKey: ["leaves"],
+      queryKey: ["supplier"],
       queryFn: getAllSuppliers,
     });
   }

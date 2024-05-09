@@ -41,13 +41,13 @@ const Dashboard: React.FC = () => {
               <Route path="list" element={<SupplierPage />} />
               <Route path="inactivelist" element={<InactiveSupplierPage />} />
             </Route>
-            <Route path="/catagory" >
+            <Route path="/category" >
               <Route path="list" element={<CatagoryPage />} />
             </Route>
             <Route path="/units" >
               <Route path="list" element={<UnitsPage />} />
             </Route>
-            <Route path="/inventory">
+            <Route path="/product">
               <Route
                 path="registration"
                 element={<InventoryRegistrationPage />}

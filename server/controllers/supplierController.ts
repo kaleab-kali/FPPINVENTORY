@@ -16,19 +16,19 @@ const createSupplier = async (req: Request, res: Response): Promise<void> => {
 const getSupplierById = async (req: Request, res: Response): Promise<void> => {
   console.log("Fetching Supplier");
   try {
-  
-    const supplier = await Supplier.findById(req.params.id);
+    const supplier = await Supplier.findOne({ sid: req.params.id });
     if (!supplier) {
       res.status(404).json({ error: "Supplier not found" });
       return;
     }
-    console.log("Fetched Data:", Supplier);
-    res.status(200).json(Supplier);
+    console.log("Fetched Data:", supplier);
+    res.status(200).json(supplier);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 
 const getAllSuppliers = async (
   req: Request,

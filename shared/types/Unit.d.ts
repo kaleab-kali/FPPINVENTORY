@@ -1,5 +1,5 @@
 export interface UnitInfo {
-    _id?: string;
-    name?: string;
+    id?: string;
+    unitName?: string;
     standard?: string;
 }

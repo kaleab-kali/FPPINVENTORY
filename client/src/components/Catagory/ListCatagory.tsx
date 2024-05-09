@@ -1,5 +1,7 @@
 import { Input, Table, Button, Space, Popconfirm } from "antd";
 import React, { useState } from "react";
+import { useAllCategorys } from "../../services/queries/categoryQueries";
+import { CategoryInfo } from "../../../../shared/types/Category";
 
 const data = [
   {
@@ -29,17 +31,35 @@ const ListCatagoryTable = () => {
   const [dataSource, setDataSource] = useState(data);
   const [searchValue, setSearchValue] = useState("");
 
+  const allCategorysQuery = useAllCategorys();
+  console.log("All Categorys Query:", allCategorysQuery.data);
+
+  const Source = allCategorysQuery.data
+    ? allCategorysQuery.data.map(
+        (queryResult: CategoryInfo) => {
+          return {
+            key: queryResult.id,
+            id: queryResult.id,
+            name: queryResult.categoryName,
+            unit: queryResult.unit,
+          };
+        }
+      )
+    : [];
+
+  console.log("Source:", Source);
+  const filteredData = Source.filter((entry) =>
+    entry.name?.toLowerCase().includes(searchValue.toLowerCase())
+  );
+
   const handleSearch = (value: string) => {
     setSearchValue(value);
-    const filteredData = data.filter((entry) =>
-      entry.name.toLowerCase().includes(value.toLowerCase())
-    );
-    setDataSource(filteredData);
+  
   };
 
   const handleDelete = (key: string) => {
-    const filteredDataSource = dataSource.filter(item => item.key !== key);
-    setDataSource(filteredDataSource);
+    // const filteredDataSource = dataSource.filter(item => item.key !== key);
+    // setDataSource(filteredDataSource);
   };
 
   const columns = [
@@ -53,6 +73,12 @@ const ListCatagoryTable = () => {
       dataIndex: "name",
       key: "name",
     },
+    {
+      title: "Unit of Measurment",
+      dataIndex: "unit",
+      key: "unit",
+    },
+
     
     {
       title: "Action",
@@ -85,7 +111,7 @@ const ListCatagoryTable = () => {
         value={searchValue}
         onChange={(e) => handleSearch(e.target.value)}
       />
-      <Table columns={columns} dataSource={dataSource} />
+      <Table columns={columns} dataSource={filteredData} />
     </>
   );
 };

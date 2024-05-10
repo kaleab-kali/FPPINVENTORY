@@ -160,7 +160,7 @@ const InventoryRegistrationForm: React.FC = () => {
                   placeholder="Select a supplier"
                   allowClear
                 >
-                  {supplierSource.map((supplier) => {
+                  {supplierSource.map((supplier: { sid: React.Key | null | undefined; name: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; }) => {
                     return (
                       <Select.Option key={supplier.sid} value={supplier.name}>
                         {supplier.name}
@@ -217,7 +217,7 @@ const InventoryRegistrationForm: React.FC = () => {
                   placeholder="Select a category"
                   allowClear
                 >
-                  {categorySource.map((category) => {
+                  {categorySource.map((category: { id: React.Key | null | undefined; category: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; }) => {
                     return (
                       <Select.Option key={category.id} value={category.category}>
                         {category.category}
@@ -239,7 +239,7 @@ const InventoryRegistrationForm: React.FC = () => {
                   placeholder="Select a unit"
                   allowClear
                 >
-                  {unitSource.map((unit) => {
+                  {unitSource.map((unit: { id: React.Key | null | undefined; name: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; }) => {
                     return (
                       <Select.Option key={unit.id} value={unit.name}>
                         {unit.name}

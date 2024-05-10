@@ -98,7 +98,7 @@ const AddCatagory = () => {
                   placeholder="Select a unit"
                   allowClear
                 >
-                  {unitSource.map((unit) => {
+                  {unitSource.map((unit: { id: React.Key | null | undefined; name: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; }) => {
                     return (
                       <Select.Option key={unit.id} value={unit.name}>
                         {unit.name}

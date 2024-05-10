@@ -48,7 +48,7 @@ const ListCatagoryTable = () => {
     : [];
 
   console.log("Source:", Source);
-  const filteredData = Source.filter((entry) =>
+  const filteredData = Source.filter((entry: { name: string; }) =>
     entry.name?.toLowerCase().includes(searchValue.toLowerCase())
   );
 

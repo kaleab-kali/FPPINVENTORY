@@ -28,7 +28,7 @@ const ListUnitTable = () => {
   console.log("Source:", Source);
 
   const filteredSource = searchValue
-    ? Source.filter((unit) =>
+    ? Source.filter((unit: { unit: string; }) =>
         unit.unit?.toLowerCase().includes(searchValue.toLowerCase())
       )
     : Source;

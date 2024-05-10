@@ -1,45 +1,48 @@
 import { Input, Table, Button, Space, Popconfirm } from "antd";
 import React, { useState } from "react";
-
-const data = [
-  {
-    key: "1",
-    id: "1",
-    unit: "KG",
-    
-  },
-  {
-    key: "2",
-    id: "2",
-    unit: "PCS",
-  },
-  {
-    key: "3",
-    id: "3",
-    unit: "liters",
-  },
-  {
-    key: "4",
-    id: "4",
-    unit: "batch",
-  },
-];
+import {
+  useAllUnits,
+} from "../../services/queries/unitQueries";
+import { UnitInfo } from "../../../../shared/types/Unit";
 
 const ListUnitTable = () => {
-  const [dataSource, setDataSource] = useState(data);
   const [searchValue, setSearchValue] = useState("");
+
+  const allUnitsQuery = useAllUnits();
+  console.log("All Suppliers Query:", allUnitsQuery.data);
+  
+  const Source = allUnitsQuery.data
+    ? allUnitsQuery.data.map(
+        (queryResult: UnitInfo, index: number) =>{
+          return {
+            key: queryResult.id,
+            id: queryResult.id,
+            unit: queryResult.unitName,
+
+          };
+        }
+          
+      )
+    : [];
+  
+  console.log("Source:", Source);
+
+  const filteredSource = searchValue
+    ? Source.filter((unit) =>
+        unit.unit?.toLowerCase().includes(searchValue.toLowerCase())
+      )
+    : Source;
+
+  // Reverse the filteredSource array to display the latest entry at the first row
+  // const reversedSource = [...filteredSource].reverse();
 
   const handleSearch = (value: string) => {
     setSearchValue(value);
-    const filteredData = data.filter((entry) =>
-      entry.unit.toLowerCase().includes(value.toLowerCase())
-    );
-    setDataSource(filteredData);
   };
 
   const handleDelete = (key: string) => {
-    const filteredDataSource = dataSource.filter(item => item.key !== key);
-    setDataSource(filteredDataSource);
+    // const filteredDataSource = dataSource.filter(item => item.key !== key);
+    // setDataSource(filteredDataSource);
   };
 
   const columns = [
@@ -85,7 +88,7 @@ const ListUnitTable = () => {
         value={searchValue}
         onChange={(e) => handleSearch(e.target.value)}
       />
-      <Table columns={columns} dataSource={dataSource} />
+      <Table columns={columns} dataSource={filteredSource} />
     </>
   );
 };

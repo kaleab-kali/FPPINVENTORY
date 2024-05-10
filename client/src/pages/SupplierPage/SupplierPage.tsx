@@ -1,11 +1,11 @@
 import React from "react";
 import Title from "antd/lib/typography/Title";
 import { Layout, theme } from "antd";
-import AddProduct from "../../components/Product/AddProduct";
-import ListProductTable from "../../components/Product/ListProductTable";
+import AddSupplier from "../../components/supplier/AddSupplier";
+import ListTable from "../../components/supplier/ListTable";
 const { Content } = Layout;
 
-const InventoryProfilePage = () => {
+const SupplierPage = () => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -14,9 +14,9 @@ const InventoryProfilePage = () => {
     <>
       <Title
         level={4}
-        style={{ padding: "10px 30px", marginBottom: "0", marginTop: 15 }}
+        style={{ padding: "10px 30px", marginBottom: "0", marginTop: 10 }}
       >
-        Product list
+        Lsit of Suppliers
       </Title>
       <Layout>
         <Content
@@ -27,17 +27,17 @@ const InventoryProfilePage = () => {
             background: colorBgContainer,
             borderRadius: borderRadiusLG,
           }}
-        > 
-        <AddProduct />
-        <Title level={5}> Product Data</Title>
-       <ListProductTable />
+        >
+            <AddSupplier />
+            <Title level={5}> Supplier Data</Title>
+            <ListTable />
 
 
+          
         </Content>
       </Layout>
-      {/* <EmployeeRegistrationForm /> */}
     </>
   );
 };
 
-export default InventoryProfilePage;
+export default SupplierPage;

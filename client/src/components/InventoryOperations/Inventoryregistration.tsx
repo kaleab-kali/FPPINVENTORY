@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
+import type { DatePickerProps } from "antd";
 import {
   Form,
   Input,
@@ -10,11 +10,13 @@ import {
   Layout,
   Typography,
   message,
-  Upload,
+  DatePicker,
 } from "antd";
-import { useCreateItem, useCreateUpload } from "../../services/mutations/inventorymutation";
-import { RcFile } from "antd/es/upload";
-import { UploadOutlined } from "@ant-design/icons";
+import moment from "moment";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+
+dayjs.extend(customParseFormat);
 
 const { Content } = Layout;
 const { Option } = Select;
@@ -26,174 +28,161 @@ const InventoryRegistrationForm: React.FC = () => {
   const uploadItemPhotoMutuation = useCreateUpload();
 
 
-  const onFinish = async (values: any) => {
-    const id = generateID(); 
-    const formData = { id, ...values }; 
-    console.log("Form data:", formData);
-    try {
-      // await form.validateFields();
-
-      // createItemMutuation.mutate(formData);
-      if (formData.photo?.length > 0) {
-        const formDat = new FormData();
-        formDat.append("photo", formData.photo[0]);
-        const result = await uploadItemPhotoMutuation.mutateAsync(formDat);
-
-        // Assuming the result object has the path to the uploaded photo
-        const { message, filePath, fileName } = result;
-        console.log("File uploaded successfully:", message);
-        console.log("File Path:", filePath);
-        console.log("File Name:", fileName);
-
-        // Update the employee's photo field with the path
-        // await handleFormData({ ...values, photo: fileName });
-
-        // Trigger the GraphQL mutation with the updated formData
-        createItemMutuation.mutate({
-          ...formData,
-          photo: fileName,
-        });
-      } else {
-        // Trigger the GraphQL mutation with the existing formData
-        createItemMutuation.mutate(formData);
-      }
-    } catch (error) {
-      console.error("Validation failed:", error);
-    }
-    message.success("Form submitted successfully!");
+  const onFinish = (values: any) => {
+    console.log("Form data:", values);
+  };
+  const handleDatePickerChange = (
+    date: moment.Moment | null,
+    dateString: string
+  ) => {
+    console.log(dateString);
+    console.log(date?.format("DD/MM/YYYY"));
+    form.setFieldsValue({ manufacturedate: date?.format("DD/MM/YYYY") }); // Set the moment object directly
   };
 
-  const onValuesChange = (changedValues: any) => {
+  const onValuesChange = (changedValues: any, allValues: any) => {
     console.log("Changed values:", changedValues);
     // console.log("All values:", allValues);
   };
-const handlePhotoChange = (info: { file: RcFile }) => {
-  const file = info.file;
-  onValuesChange({  file }); // Pass the file along with other form data
-
-  // Optionally, you can perform additional client-side actions related to the file
-};
-  // Function to generate ID in the format "FPCITEM-XXXXX"
-  const generateID = () => {
-    const randomNum = Math.floor(10000 + Math.random() * 90000); // Generate random number between 10000 and 99999
-    return `FPCITEM-${randomNum}`;
-  };
 
   return (
-    <Layout>
-      <Title
-        level={4}
-        style={{
-          padding: "10px 30px",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
+    <>
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={onFinish}
+        onValuesChange={onValuesChange}
       >
-        Inventory Registration Form
-      </Title>
+        <Row gutter={16}>
+          <Col span={8}>
+            <Form.Item
+              name="name"
+              label="Name"
+              rules={[{ required: true, message: "Please enter name" }]}
+            >
+              <Input placeholder="Enter name" />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item
+              name="model"
+              label="model"
+              rules={[{ required: true, message: "Please enter model" }]}
+            >
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item
+              name="brand"
+              label="Brand"
+              rules={[{ required: true, message: "Please enter quantity" }]}
+            >
+              <Input />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={16}>
+          <Col span={8}>
+            <Form.Item
+              name="supplier"
+              label="Supplier"
+              rules={[{ required: true, message: "please enter the supplier" }]}
+            >
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item
+              name="manufacturedate"
+              label="Manufacture Date"
+             
+            >
+              <DatePicker style={{ width: "100%" }} format="DD/MM/YYYY" />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item
+              name="expirationdate"
+              label="Expiration Date"
+            
+            >
+              <DatePicker style={{ width: "100%" }} format="DD/MM/YYYY" />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={16}>
+          <Col span={8}>
+          <Form.Item
+              name="quantity"
+              label="Quantity"
+              rules={[{ required: true, message: "Please enter quantity" }]}
+            >
+              <Input type="number" placeholder="Enter quantity" />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+          <Form.Item
+              name="wight"
+              label="Wight/Dimention(LxW)"
+            
+            >
+              <Input type="number" placeholder="Enter quantity" />
+            </Form.Item>
 
-      <Content
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Form
-          form={form}
-          style={{
-            background: "#fff",
-            padding: "30px",
-            borderRadius: "30px",
-            width: "50%",
-          }}
-          layout="vertical"
-          onFinish={onFinish}
-          onValuesChange={onValuesChange}
-        >
-          <Row gutter={[16, 16]}>
-            <Col span={12}>
-              <Form.Item
-                name="name"
-                label="Name"
-                rules={[{ required: true, message: "Please enter name" }]}
-              >
-                <Input placeholder="Enter name" />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                name="description"
-                label="Description"
-                rules={[
-                  { required: true, message: "Please enter description" },
-                ]}
-              >
-                <Input.TextArea placeholder="Enter description" />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                name="quantity"
-                label="Quantity"
-                rules={[{ required: true, message: "Please enter quantity" }]}
-              >
-                <Input type="number" placeholder="Enter quantity" />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                name="price"
-                label="Price"
-                rules={[{ required: true, message: "Please enter price" }]}
-              >
-                <Input type="number" placeholder="Enter price" />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                name="categoryId"
-                label="Category"
-                rules={[{ required: true, message: "Please select category" }]}
-              >
-                <Select placeholder="Select category">
-                  <Option value="consumable">Consumable</Option>
-                  <Option value="returnable">Returnable</Option>
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="Photo"
-                name="photo"
-                valuePropName="fileList"
-                getValueFromEvent={(e) => [e.file]}
-                rules={[
-                  { required: true, message: "Please upload your photo" },
-                ]}
-              >
-                <Upload
-                  beforeUpload={(file) => {
-                    handlePhotoChange({ file });
-                    return false; // Prevent default behavior (auto-upload)
-                  }}
-                  showUploadList={false}
-                  // action="http://localhost:8000/uploads" //Specify the server endpoint for file upload
-                >
-                  <Button icon={<UploadOutlined />}>Click to upload</Button>
-                </Upload>
-              </Form.Item>
-            </Col>
-          </Row>
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              Submit
-            </Button>
-          </Form.Item>
-        </Form>
-      </Content>
-    </Layout>
+          </Col>
+          <Col span={8}>
+          <Form.Item
+              name="price"
+              label="Unit Price"
+              rules={[{ required: true, message: "Please enter price" }]}
+            >
+              <Input type="number" placeholder="Enter price" />
+            </Form.Item>
+          </Col>
+
+        </Row>
+        <Row gutter={16}>
+          <Col span={8}>
+            <Form.Item
+              name="category"
+              label="Category"
+              rules={[{ required: true, message: "Please select category" }]}
+            >
+              <Select placeholder="Select category">
+                <Option value="consumable">Consumable</Option>
+                <Option value="returnable">Returnable</Option>
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+          <Form.Item
+              name="purchasedate"
+              label="Purchase Date"
+            
+            >
+              <DatePicker style={{ width: "100%" }} format="DD/MM/YYYY" />
+            </Form.Item>
+
+          </Col>
+          <Col span={8}>
+            <Form.Item
+              name="description"
+              label="Description/Note"
+              rules={[{ required: true, message: "Please enter description" }]}
+            >
+              <Input.TextArea placeholder="Enter description" />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Form.Item>
+          <Button type="primary" htmlType="submit">
+            Add Product
+          </Button>
+        </Form.Item>
+      </Form>
+    </>
   );
 };
 

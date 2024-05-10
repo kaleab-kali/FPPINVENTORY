@@ -46,8 +46,8 @@ const getAllItems = async (
 const updateItem = async (req: Request, res: Response): Promise<void> => {
   try {
     console.log("Updating Item");
-    const item = await Item.findByIdAndUpdate(
-      req.params.id,
+    const item = await Item.findOneAndUpdate(
+      { productID: req.params.id },
       { $set: req.body },
       { new: true }
     );
@@ -65,7 +65,7 @@ const updateItem = async (req: Request, res: Response): Promise<void> => {
 
 const deleteItem = async (req: Request, res: Response): Promise<void> => {
   try {
-    const deletedItem = await Item.findByIdAndDelete(req.params.id);
+    const deletedItem = await Item.findOneAndDelete({ productID: req.params.id });
     if (!deletedItem) {
       res.status(404).json({ error: "Item not found" });
       return;

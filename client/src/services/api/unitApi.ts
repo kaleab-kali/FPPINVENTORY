@@ -1,6 +1,6 @@
 import { UnitInfo } from "../../../../shared/types/Unit";
 
-const BASE_URL = "http://localhost:8000";
+const BASE_URL = "http://localhost:7000";
 
 export const getUnitIds = async () => {
   console.log("getUnitIds");

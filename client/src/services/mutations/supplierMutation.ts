@@ -1,6 +1,10 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { SupplierInfo } from '../../../../shared/types/Supplier';
-import { createSupplier } from "../api/supplierApi";
+import {
+  useMutation,
+  UseMutationOptions,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { SupplierInfo } from "../../../../shared/types/Supplier";
+import { createSupplier, updateSupplier } from "../api/supplierApi";
 
 export function useCreateSupplier() {
   console.log("useCreateSupplier");
@@ -27,30 +31,30 @@ export function useCreateSupplier() {
   });
 }
 
-
-// export function useUpdateEmployee() {
-//   const queryClient = useQueryClient();
-//   return useMutation({
-//     mutationFn: (data: EmployeeData) => {
-//       console.log("Data before mutation:", data);
-//       return updateEmployee(data);
-//     },
-//     onSuccess() {
-//       console.log("Successfully updated employee");
-//     },
-//     onSettled: async (_: any, error: any, variables: { _id: any; }) => {
-//       console.log("settled");
-//       if (error) {
-//         console.log(error);
-//       } else {
-//         await queryClient.invalidateQueries({ queryKey: ["employees"] });
-//         await queryClient.invalidateQueries({
-//           queryKey: ["employee", { id: variables._id }],
-//         });
-//       }
-//     },
-//   });
-// }
+export function useUpdateSupplier( options?: UseMutationOptions<void, Error, SupplierInfo, unknown>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: SupplierInfo) => {
+      console.log("Data before mutation:", data);
+      return updateSupplier(data);
+    },
+    onSuccess() {
+      console.log("Successfully updated employee");
+    },
+    // onSettled: async (_, error, variables: { _id: any }) => {
+    //   console.log("settled");
+    //   if (error) {
+    //     console.log(error);
+    //   } else {
+    //     await queryClient.invalidateQueries({ queryKey: ["supplier"] });
+    //     await queryClient.invalidateQueries({
+    //       queryKey: ["supplier", { id: variables._id }],
+    //     });
+    //   }
+    // },
+    // ...options,
+  });
+}
 
 // export function useDeleteEmployee() {
 //   const queryClient = useQueryClient();

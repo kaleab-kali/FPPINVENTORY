@@ -1,6 +1,6 @@
 import { StockInfo } from '../../../../shared/types/Stock';
 
-const BASE_URL = "http://localhost:8000";
+const BASE_URL = "http://localhost:7000";
 
 export const getStockIds = async () => {
     console.log("getStockIds");

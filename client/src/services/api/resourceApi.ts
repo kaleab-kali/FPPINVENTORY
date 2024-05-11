@@ -1,6 +1,6 @@
 import { SupplierInfo } from '../../../../shared/types/Supplier';
 
-const BASE_URL = "http://localhost:8000";
+const BASE_URL = "http://localhost:7000";
 
 export const getSupplierIds = async () => {
     console.log("getSupplierIds");

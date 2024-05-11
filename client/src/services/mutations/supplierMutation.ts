@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { SupplierInfo } from '../../../../shared/types/Supplier';
-import { createSupplier } from "../api/supplierApi";
+import { createSupplier, deleteSupplier, updateSupplier } from "../api/supplierApi";
 
 export function useCreateSupplier() {
   console.log("useCreateSupplier");
@@ -28,44 +28,44 @@ export function useCreateSupplier() {
 }
 
 
-// export function useUpdateEmployee() {
-//   const queryClient = useQueryClient();
-//   return useMutation({
-//     mutationFn: (data: EmployeeData) => {
-//       console.log("Data before mutation:", data);
-//       return updateEmployee(data);
-//     },
-//     onSuccess() {
-//       console.log("Successfully updated employee");
-//     },
-//     onSettled: async (_: any, error: any, variables: { _id: any; }) => {
-//       console.log("settled");
-//       if (error) {
-//         console.log(error);
-//       } else {
-//         await queryClient.invalidateQueries({ queryKey: ["employees"] });
-//         await queryClient.invalidateQueries({
-//           queryKey: ["employee", { id: variables._id }],
-//         });
-//       }
-//     },
-//   });
-// }
+export function useUpdateSupplier() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: SupplierInfo) => {
+      console.log("Data before mutation:", data);
+      return updateSupplier(data);
+    },
+    onSuccess() {
+      console.log("Successfully updated Supplier");
+    },
+    onSettled: async (_: any, error: any, variables: { _id: any }) => {
+      console.log("settled" , variables._id);
+      if (error) {
+        console.log(error);
+      } else {
+        await queryClient.invalidateQueries({ queryKey: ["supplier"] });
+        await queryClient.invalidateQueries({ queryKey: ["supplier", { id: variables._id }]});
+        // await queryClient.setQueryData(["supplier", { id: variables._id }]);
 
-// export function useDeleteEmployee() {
-//   const queryClient = useQueryClient();
+      }
+    },
+  });
+}
 
-//   return useMutation({
-//     mutationFn: (id: string) => deleteEmployee(id),
-//     onSuccess() {
-//       console.log("Successfully deleted employee");
-//     },
-//     onSettled: async (_: any, error: any) => {
-//       if (error) {
-//         console.log(error);
-//       } else {
-//         await queryClient.invalidateQueries({ queryKey: ["employees"] });
-//       }
-//     },
-//   });
-// }
+export function useDeleteSupplier() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => deleteSupplier(id),
+    onSuccess() {
+      console.log("Successfully deleted Supplier");
+    },
+    onSettled: async (_: any, error: any) => {
+      if (error) {
+        console.log(error);
+      } else {
+        await queryClient.invalidateQueries({ queryKey: ["supplier"] });
+      }
+    },
+  });
+}

@@ -31,7 +31,7 @@ const AddUnits = () => {
         formData.append("Standard", values.Standard);
  
        const unitInfo: UnitInfo = {
-         id: "",
+         unitID: "",
          unitName: formData.get("name") as string,
         standard: formData.get("Standard") as string,
        };

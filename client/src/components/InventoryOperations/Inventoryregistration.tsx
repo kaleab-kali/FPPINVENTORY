@@ -39,8 +39,8 @@ const InventoryRegistrationForm: React.FC = () => {
 
   const unitSource = getAllUnitsQuery.data ? getAllUnitsQuery.data.map((queryResult: UnitInfo) => { 
     return {
-      key: queryResult.id,
-      id: queryResult.id,
+      key: queryResult.unitID,
+      id: queryResult.unitID,
       name: queryResult.unitName,
       standard: queryResult.standard,
     };
@@ -48,8 +48,8 @@ const InventoryRegistrationForm: React.FC = () => {
 
   const categorySource = getAllCategorysQuery.data ? getAllCategorysQuery.data.map((queryResult: CategoryInfo) => {
     return {
-      key: queryResult.id,
-      id: queryResult.id,
+      key: queryResult.catID,
+      id: queryResult.catID,
       category: queryResult.categoryName,
     };
   }) : [];

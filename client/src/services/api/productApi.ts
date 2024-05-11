@@ -1,6 +1,6 @@
 import { ProductInfo } from '../../../../shared/types/Product';
 
-const BASE_URL = "http://localhost:8000";
+const BASE_URL = "http://localhost:7000";
 
 export const getProductIds = async () => {
     console.log("getProductIds");

@@ -16,8 +16,8 @@ const AddCatagory = () => {
   console.log("All Units Query:", getAllUnitsQuery.data);
   const unitSource = getAllUnitsQuery.data ? getAllUnitsQuery.data.map((queryResult: UnitInfo) => {
     return {
-      key: queryResult.id,
-      id: queryResult.id,
+      key: queryResult.unitID,
+      id: queryResult.unitID,
       name: queryResult.unitName,
       standard: queryResult.standard,
     };
@@ -45,8 +45,9 @@ const AddCatagory = () => {
       formData.append("name", values.name);
       formData.append("unit", values.unit); 
 
-      const categoryInfo: CategoryInfo = {
-        id: "",
+      const categoryInfo = {
+        
+        catID: "",
         categoryName: formData.get("name") as string,
         unit: formData.get("unit") as string,
       };

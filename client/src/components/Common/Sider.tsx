@@ -1,17 +1,26 @@
 import React, { useState } from "react";
+import { LiaShippingFastSolid } from "react-icons/lia";
+import { FaBoxOpen, FaChartLine, FaRuler, FaWarehouse } from 'react-icons/fa';
+import { TbCategory2 } from "react-icons/tb";
+import { RiProductHuntLine } from "react-icons/ri";
 import {
   UserOutlined,
   EditOutlined,
   FileTextOutlined,
   HistoryOutlined,
-  ShopOutlined
+  ShopOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu } from "antd";
+import { Layout, Menu, Tooltip } from "antd";
 import { NavLink } from "react-router-dom";
+import "../../styles/SiderLayout.css";
 
 const { Sider: AntdSider } = Layout;
 
-const Sider: React.FC = () => {
+interface SiderProps {
+  collapsed: boolean;
+}
+
+const Sider: React.FC<SiderProps> = ({ collapsed }) => {
   const [activeKey, setActiveKey] = useState("");
 
   const handleMenuClick = (key: string) => {
@@ -21,81 +30,141 @@ const Sider: React.FC = () => {
   return (
     <AntdSider
       style={{
-        backgroundColor: "white",
         minHeight: "100vh",
         height: "auto",
         paddingTop: "20px",
+        backgroundColor: "#001529",
+        zIndex: 1,
       }}
+      trigger={null}
+      collapsible
+      collapsed={collapsed}
+      onCollapse={(collapsed) => console.log(collapsed)}
     >
-      <Menu mode="inline" selectedKeys={[activeKey]}>
-      <Menu.Item
+      <div className="logo-image-class">
+        <img
+          src={process.env.PUBLIC_URL + "/fpp.jpg"}
+          alt="Company Logo"
+          style={{ height: "50px", borderRadius: "20px" }}
+        />
+      </div>
+      <Menu
+        theme="dark"
+        mode="inline"
+        selectedKeys={[activeKey]}
+        style={{ minHeight: "100vh" }}
+      >
+        <Menu.Item
           key="dashboard"
           icon={<UserOutlined />}
           onClick={() => handleMenuClick("dashboard")}
         >
           <NavLink to="/">Dashboard</NavLink>
         </Menu.Item>
-        <Menu.SubMenu key="supplierSubMenu" title="Supplier">
-          <Menu.Item key="supplierList" icon={<ShopOutlined />} onClick={() => handleMenuClick("supplierList")}>
-            <NavLink to="/supplier/list">List</NavLink>
-
-          </Menu.Item>
-
-        </Menu.SubMenu>
-        <Menu.SubMenu key="unitsSubMenu" title="Units">
-          <Menu.Item key="unitsList" icon={<ShopOutlined />} onClick={() => handleMenuClick("unitsList")}>
-            <NavLink to="/units/list">List</NavLink>
-
-          </Menu.Item>
-
-        </Menu.SubMenu>
-        <Menu.SubMenu key="catagorySubMenu" title="Catagory">
-          <Menu.Item key="catagoryList" icon={<ShopOutlined />} onClick={() => handleMenuClick("catagoryList")}>
-            <NavLink to="/catagory/list">List</NavLink>
-
-          </Menu.Item>
-
-        </Menu.SubMenu>
-        <Menu.SubMenu key="inventorySubMenu" title="Product">
+        <Menu.SubMenu
+          key="supplierSubMenu"
+          title="Supplier"
+          icon={<LiaShippingFastSolid size={20} />}
+        >
           <Menu.Item
-            key="inventoryRegistration"
+            key="supplierList"
+            icon={<ShopOutlined />}
+            onClick={() => handleMenuClick("supplierList")}
+          >
+            <NavLink to="/supplier/list">List</NavLink>
+          </Menu.Item>
+          <Menu.Item
+            key="supplierInactiveList"
+            icon={<ShopOutlined />}
+            onClick={() => handleMenuClick("supplierInactiveList")}
+          >
+            <NavLink to="/supplier/inactivelist">Inactive</NavLink>
+          </Menu.Item>
+        </Menu.SubMenu>
+        <Menu.SubMenu key="unitsSubMenu" title="Units" icon={<FaRuler /> }>
+          <Menu.Item
+            key="unitsList"
+            icon={<ShopOutlined />}
+            onClick={() => handleMenuClick("unitsList")}
+          >
+            <NavLink to="/units/list">List</NavLink>
+          </Menu.Item>
+        </Menu.SubMenu>
+        <Menu.SubMenu key="categorySubMenu" title="Category" icon={<TbCategory2 />}>
+          <Menu.Item
+            key="categoryList"
+            icon={<ShopOutlined />}
+            onClick={() => handleMenuClick("categoryList")}
+          >
+            <NavLink to="/category/list">List</NavLink>
+          </Menu.Item>
+        </Menu.SubMenu>
+        <Menu.SubMenu key="productSubMenu" title="Product" icon={<RiProductHuntLine />}>
+          <Menu.Item
+            key="productRegistration"
             icon={<UserOutlined />}
-            onClick={() => handleMenuClick("inventoryRegistration")}
+            onClick={() => handleMenuClick("productRegistration")}
             // style={{
             //   color: activeKey === "employeeRegistration" ? "blue" : "",
             //   fontWeight: activeKey === "employeeRegistration" ? "bold" : "",
             // }}
           >
-            <NavLink to="/inventory/registration">Registration</NavLink>
+            <NavLink to="/product/registration">Registration</NavLink>
           </Menu.Item>
           <Menu.Item
-            key="inventoryView"
+            key="productView"
             icon={<FileTextOutlined />}
-            onClick={() => handleMenuClick("inventoryView")}
+            onClick={() => handleMenuClick("productView")}
           >
-            <NavLink to="/inventory/view">View</NavLink>
+            <NavLink to="/product/view">List</NavLink>
+          </Menu.Item>
+          <Menu.Item
+            key="productInactive"
+            icon={<FileTextOutlined />}
+            onClick={() => handleMenuClick("productInactive")}
+          >
+            <NavLink to="/product/inactive">Inactive</NavLink>
           </Menu.Item>
         </Menu.SubMenu>
-        <Menu.SubMenu key="stockSubMenu" title="Stock">
-          <Menu.Item key="stockList" icon={<ShopOutlined />} onClick={() => handleMenuClick("stockList")}>
-            <NavLink to="/stock/list">items</NavLink>
-
+        <Menu.SubMenu key="stockSubMenu" title="Stock Managment" icon={<FaWarehouse />}>
+          <Menu.Item
+            key="stockList"
+            icon={<ShopOutlined />}
+            onClick={() => handleMenuClick("stockList")}
+          >
+            <NavLink to="/stock/list">Report</NavLink>
           </Menu.Item>
-
+          <Menu.Item
+            key="stockReturnableList"
+            icon={<ShopOutlined />}
+            onClick={() => handleMenuClick("stockReturnableList")}
+          >
+            <NavLink to="/stock/returnable">Returnable </NavLink>
+          </Menu.Item>
+          <Menu.Item
+            key="stockNonReturnableList"
+            icon={<ShopOutlined />}
+            onClick={() => handleMenuClick("stockNonReturnableList")}
+          >
+            <NavLink to="/stock/nonreturnable">Non Returnable </NavLink>
+          </Menu.Item>
         </Menu.SubMenu>
 
-        <Menu.SubMenu key="dispatchSubMenu" title="Dispatch">
+        <Menu.SubMenu key="resourceSubMenu" title="Resource" icon={<FaBoxOpen />}>
           <Menu.Item key="request" onClick={() => handleMenuClick("request")}>
-            <NavLink to="/dispatch/request">Request</NavLink>
+            <NavLink to="/resource/request">Request</NavLink>
+          </Menu.Item>
+          <Menu.Item key="transfer" onClick={() => handleMenuClick("transfer")}>
+            <NavLink to="/resource/transfer">Transfer</NavLink>
           </Menu.Item>
           <Menu.Item
             key="currentDispacth"
             onClick={() => handleMenuClick("currentDispatch")}
           >
-            <NavLink to="/dispatch/currentDispacth">Dispatched Items</NavLink>
+            <NavLink to="/resource/currentDispacth">Allocated Items</NavLink>
           </Menu.Item>
-          <Menu.Item key="dispatchHistory">
-            <NavLink to="/dispatch/history">History</NavLink>
+          <Menu.Item key="resourceHistory">
+            <NavLink to="/resource/history">History</NavLink>
           </Menu.Item>
         </Menu.SubMenu>
 

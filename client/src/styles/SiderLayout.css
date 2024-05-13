@@ -1,0 +1,11 @@
+.logo-image-class {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    /* background-color: #001529 */
+}
+
+.logo-image-class img{
+    object-fit: cover;
+}

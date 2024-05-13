@@ -1,16 +1,18 @@
 import React from "react";
 import { Modal, Form, Input, Row, Col, Button, message } from "antd";
 import { SupplierInfo } from "../../../../shared/types/Supplier";
-import { useCreateSupplier } from "../../services/mutations/supplierMutation";
+import { useCreateSupplier, useUpdateSupplier } from "../../services/mutations/supplierMutation";
 
 interface SupplierFormProps {
+  initialValues?: SupplierInfo;
   visible: boolean;
   onCancel: () => void;
 }
 
-const SupplierForm: React.FC<SupplierFormProps> = ({ visible, onCancel }) => {
+const SupplierForm: React.FC<SupplierFormProps> = ({initialValues, visible, onCancel }) => {
   const [form] = Form.useForm();
   const createSupplierMutation = useCreateSupplier();
+  const updateSupplierMutation = useUpdateSupplier();
 
   const onFinish = async (values: any) => {
     try {
@@ -22,6 +24,13 @@ const SupplierForm: React.FC<SupplierFormProps> = ({ visible, onCancel }) => {
       formData.append("email", values.email);
       formData.append("address", values.address);
 
+      const supplierEditInfo: SupplierInfo = {
+        name: formData.get("name") as string,
+        mobileNumber: formData.get("mnumber") as string,
+        email: formData.get("email") as string,
+        address: formData.get("address") as string,
+      }
+
       const supplierInfo: SupplierInfo = {
         sid: "",
         name: formData.get("name") as string,
@@ -30,7 +39,17 @@ const SupplierForm: React.FC<SupplierFormProps> = ({ visible, onCancel }) => {
         address: formData.get("address") as string,
       };
 
-      createSupplierMutation.mutate(supplierInfo);
+      if (initialValues) {
+        console.log("Updating supplier:", supplierEditInfo);
+        // If initialValues exist, it's an edit operation
+        updateSupplierMutation.mutate(supplierInfo);
+      } else {
+        // Otherwise, it's an add operation
+        createSupplierMutation.mutate(supplierInfo);
+        console.log("Creating supplier:", supplierInfo);
+      }
+
+      // createSupplierMutation.mutate(supplierInfo);
 
       message.success("Supplier added successfully!");
       form.resetFields();
@@ -42,12 +61,12 @@ const SupplierForm: React.FC<SupplierFormProps> = ({ visible, onCancel }) => {
 
   return (
     <Modal
-      title="Add Supplier"
+      title={initialValues ? "Edit Supplier" : "Add Supplier"}
       visible={visible}
       onCancel={onCancel}
       footer={null}
     >
-      <Form form={form} layout="vertical" onFinish={onFinish}>
+      <Form form={form} layout="vertical" onFinish={onFinish} initialValues={initialValues}>
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item
@@ -93,7 +112,7 @@ const SupplierForm: React.FC<SupplierFormProps> = ({ visible, onCancel }) => {
         </Row>
         <Form.Item>
           <Button type="primary" htmlType="submit">
-            Add Supplier
+          {initialValues ? "Update Supplier" : "Add Supplier"}
           </Button>
         </Form.Item>
       </Form>

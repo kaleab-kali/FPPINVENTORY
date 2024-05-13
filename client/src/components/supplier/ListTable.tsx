@@ -6,11 +6,14 @@ import {
   useSupplierIds,
 } from "../../services/queries/supplierQueries";
 import { SupplierInfo } from "../../../../shared/types/Supplier";
+import SupplierForm from "./SupplierForm";
 
 
 const ListTable = () => {
   
   const [searchValue, setSearchValue] = useState("");
+  const [editRecord, setEditRecord] = useState<any>(null);
+  const [editModalVisible, setEditModalVisible] = useState(false);
 
   const allSuppliersQuery = useAllSuppliers();
   console.log("All Suppliers Query:", allSuppliersQuery.data);
@@ -41,6 +44,16 @@ const ListTable = () => {
     // const filteredDataSource = dataSource.filter(item => item.key !== key);
     // setDataSource(filteredDataSource);
   };
+  const handleEdit = (record: any) => {
+    setEditRecord(record);
+    setEditModalVisible(true);
+  };
+
+  const handleEditCancel = () => {
+    setEditModalVisible(false);
+    setEditRecord(null); // Clear edit record after modal is closed
+  };
+
 
   const columns = [
     {
@@ -73,7 +86,7 @@ const ListTable = () => {
       key: "action",
       render: (text: string, record: any) => (
         <Space size="middle">
-          <Button type="primary" onClick={() => handleEdit(record.key)}>
+          <Button type="primary" onClick={() => handleEdit(record)}>
             Edit
           </Button>
           <Popconfirm
@@ -89,9 +102,6 @@ const ListTable = () => {
     },
   ];
 
-  const handleEdit = (key: string) => {
-    console.log("Edit clicked for row with key:", key);
-  };
 
   return (
     <>
@@ -102,6 +112,12 @@ const ListTable = () => {
         onChange={(e) => handleSearch(e.target.value)}
       />
       <Table columns={columns} dataSource={Source} />
+      <SupplierForm
+        initialValues={editRecord} // Pass edit record to pre-fill form if editing
+        visible={editModalVisible}
+        onCancel={handleEditCancel}
+      />
+
     </>
   );
 };

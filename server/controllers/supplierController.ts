@@ -45,7 +45,7 @@ const getAllSuppliers = async (
 
 const updateSupplier = async (req: Request, res: Response): Promise<void> => {
   try {
-    console.log("Updating Supplier");
+    console.log("Updating Supplier backend");
     const supplier = await Supplier.findOneAndUpdate(
       {sid: req.params.id},
       { $set: req.body },

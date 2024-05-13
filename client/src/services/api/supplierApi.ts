@@ -52,7 +52,8 @@ export const getSupplierIds = async () => {
     });
   };
 
-  export const updateEmployee = async (data: SupplierInfo) => {
+  export const updateSupplier = async (data: SupplierInfo) => {
+    console.log("Data before mutation on update api:", data);
     const response = await fetch(`${BASE_URL}/supplier/${data.sid}`, {
       method: "PUT",
       headers: {

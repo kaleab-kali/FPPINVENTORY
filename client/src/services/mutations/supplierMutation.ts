@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { SupplierInfo } from '../../../../shared/types/Supplier';
-import { createSupplier } from "../api/supplierApi";
+import { createSupplier, updateSupplier } from "../api/supplierApi";
 
 export function useCreateSupplier() {
   console.log("useCreateSupplier");
@@ -27,7 +27,25 @@ export function useCreateSupplier() {
   });
 }
 
+export function useUpdateSupplier() {
+  console.log("useUpdateSupplier");
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: SupplierInfo) => {
+      console.log("Data before mutation:", data);
+      return updateSupplier(data);
+    },
+    onSuccess(result, variables, context) {
+      console.log("Successfully updated supplier");
+      queryClient.invalidateQueries({ queryKey: ["supplier"] });
+      queryClient.invalidateQueries({ queryKey: ["suppliers", {id : variables.sid}] });
+      
+    }
+    
+   
+  });
 
+}
 // export function useUpdateEmployee() {
 //   const queryClient = useQueryClient();
 //   return useMutation({

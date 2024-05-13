@@ -12,7 +12,7 @@ export const getCategoryIds = async () => {
   
     const data = await response.json();
   
-    return data.map((category: CategoryInfo ) => category.id);
+    return data.map((category: CategoryInfo ) => category.catID);
   };
   
   export const getCategory = async (id: string) => {
@@ -53,7 +53,8 @@ export const getCategoryIds = async () => {
   };
 
   export const updateCategory = async (data: CategoryInfo) => {
-    const response = await fetch(`${BASE_URL}/category/${data.id}`, {
+    console.log("Data before update mutation:", data);
+    const response = await fetch(`${BASE_URL}/category/${data.catID}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -67,7 +68,7 @@ export const getCategoryIds = async () => {
   };
   
   
-  export const deleteEmployee = async (id: string) => {
+  export const deleteCategory = async (id: string) => {
     const response = await fetch(`${BASE_URL}/category/${id}`, {
       method: "DELETE",
       headers: {

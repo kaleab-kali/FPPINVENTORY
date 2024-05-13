@@ -9,7 +9,7 @@ import {
 import { UnitInfo } from "../../../../shared/types/Unit";
 import UnitForm from "./UnitForm";
 
-const ListUnitTable = () => {
+const ListUnitTable: React.FC = () => {
   const [searchValue, setSearchValue] = useState("");
   const [editRecord, setEditRecord] = useState<any>(null);
   const [editModalVisible, setEditModalVisible] = useState(false);
@@ -41,17 +41,12 @@ const ListUnitTable = () => {
       )
     : Source;
 
-  // Reverse the filteredSource array to display the latest entry at the first row
-  // const reversedSource = [...filteredSource].reverse();
-
   const handleSearch = (value: string) => {
     setSearchValue(value);
   };
 
   const handleDelete = (key: string) => {
     deleteUnitMutation.mutate(key);
-    // const filteredDataSource = dataSource.filter(item => item.key !== key);
-    // setDataSource(filteredDataSource);
   };
 
   const columns = [
@@ -99,7 +94,7 @@ const ListUnitTable = () => {
 
   const handleEditCancel = () => {
     setEditModalVisible(false);
-    setEditRecord(null); // Clear edit record after modal is closed
+    setEditRecord(null);
   };
 
   return (

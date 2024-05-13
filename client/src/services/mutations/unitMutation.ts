@@ -32,7 +32,7 @@ export function useUpdateUnit() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: UnitInfo) => {
-      console.log("Data before mutation:", data);
+      console.log("Data before use mutation:", data);
       return updateUnit(data);
     },
     onSuccess(result, variables, context) {

@@ -7,7 +7,7 @@ const AddProduct = () => {
   const navigate = useNavigate();
 
   const handleButtonClick = () => {
-    // Navigate to the desired route when the button is clicked
+    
     navigate("/product/registration");
   };
 

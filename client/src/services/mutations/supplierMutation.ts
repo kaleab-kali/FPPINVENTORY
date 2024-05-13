@@ -66,20 +66,3 @@ export function useDeleteSupplier () {
 
 }
 
-// export function useDeleteEmployee() {
-//   const queryClient = useQueryClient();
-
-//   return useMutation({
-//     mutationFn: (id: string) => deleteEmployee(id),
-//     onSuccess() {
-//       console.log("Successfully deleted employee");
-//     },
-//     onSettled: async (_: any, error: any) => {
-//       if (error) {
-//         console.log(error);
-//       } else {
-//         await queryClient.invalidateQueries({ queryKey: ["employees"] });
-//       }
-//     },
-//   });
-// }

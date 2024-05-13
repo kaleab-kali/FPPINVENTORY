@@ -2,76 +2,63 @@ import { Input, Table, Button, Space, Popconfirm } from "antd";
 import React, { useState } from "react";
 import { useAllCategorys } from "../../services/queries/categoryQueries";
 import { CategoryInfo } from "../../../../shared/types/Category";
+import { useDeleteCategory } from "../../services/mutations/categoryMutation";
+import CategoryForm from "./CategoryForm";
 
-const data = [
-  {
-    key: "1",
-    id: "1",
-    name: "Drinks",
-    
-  },
-  {
-    key: "2",
-    id: "2",
-    name: "Food",
-  },
-  {
-    key: "3",
-    id: "3",
-    name: "Tech",
-  },
-  {
-    key: "4",
-    id: "4",
-    name: "Stationary",
-  },
-];
-
-const ListCatagoryTable = () => {
-  const [dataSource, setDataSource] = useState(data);
+const ListCatagoryTable: React.FC = () => {
   const [searchValue, setSearchValue] = useState("");
+  const [editRecord, setEditRecord] = useState<any>(null);
+  const [editModalVisible, setEditModalVisible] = useState(false);
 
   const allCategorysQuery = useAllCategorys();
+  const deleteCategoryMutation = useDeleteCategory();
+
   console.log("All Categorys Query:", allCategorysQuery.data);
 
   const Source = allCategorysQuery.data
-    ? allCategorysQuery.data.map(
-        (queryResult: CategoryInfo) => {
-          return {
-            key: queryResult.id,
-            id: queryResult.id,
-            name: queryResult.categoryName,
-            unit: queryResult.unit,
-          };
-        }
-      )
+    ? allCategorysQuery.data.map((queryResult: CategoryInfo) => {
+        return {
+          key: queryResult.catID,
+          catID: queryResult.catID,
+          categoryName: queryResult.categoryName,
+          unit: queryResult.unit,
+        };
+      })
     : [];
 
   console.log("Source:", Source);
   const filteredData = Source.filter((entry) =>
-    entry.name?.toLowerCase().includes(searchValue.toLowerCase())
+    entry.categoryName?.toLowerCase().includes(searchValue.toLowerCase())
   );
 
   const handleSearch = (value: string) => {
     setSearchValue(value);
-  
   };
-
   const handleDelete = (key: string) => {
-    // const filteredDataSource = dataSource.filter(item => item.key !== key);
-    // setDataSource(filteredDataSource);
+    console.log("Delete Key:", key);
+    deleteCategoryMutation.mutate(key);
   };
 
+  const handleEdit = (record: any) => {
+    console.log("Edit Record:", record);
+    setEditRecord(record);
+    setEditModalVisible(true);
+  };
+
+  const handleEditCancel = () => {
+    setEditModalVisible(false);
+    setEditRecord(null);
+  };
   const columns = [
     {
-        title: "ID",
-        dataIndex: "id",
-        key: "id",
-      },
+      title: "ID",
+      dataIndex: "catID",
+      key: "catID",
+    },
     {
       title: "Catagory Name",
-      dataIndex: "name",
-      key: "name",
+      dataIndex: "categoryName",
+      key: "categoryName",
     },
     {
       title: "Unit of Measurment",
@@ -79,16 +66,17 @@ const ListCatagoryTable = () => {
       key: "unit",
     },
 
-    
     {
       title: "Action",
       key: "action",
       render: (text: string, record: any) => (
         <Space size="middle">
-          <Button type="primary" onClick={() => handleEdit(record.key)}>Edit</Button>
+          <Button type="primary" onClick={() => handleEdit(record)}>
+            Edit
+          </Button>
           <Popconfirm
             title="Are you sure to delete this row?"
-            onConfirm={() => handleDelete(record.key)}
+            onConfirm={() => handleDelete(record.id || "")}
             okText="Yes"
             cancelText="No"
           >
@@ -99,19 +87,20 @@ const ListCatagoryTable = () => {
     },
   ];
 
-  const handleEdit = (key: string) => {
-    console.log("Edit clicked for row with key:", key);
-  };
-
   return (
     <>
       <Input
-        style={{ marginBottom: 10 , float: "right", width: 200}}
+        style={{ marginBottom: 10, float: "right", width: 200 }}
         placeholder="Search Name"
         value={searchValue}
         onChange={(e) => handleSearch(e.target.value)}
       />
       <Table columns={columns} dataSource={filteredData} />
+      <CategoryForm
+        initialValues={editRecord}
+        visible={editModalVisible}
+        onCancel={handleEditCancel}
+      />
     </>
   );
 };

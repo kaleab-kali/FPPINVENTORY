@@ -1,5 +1,5 @@
 export interface CategoryInfo {
-    id?: string;
-    categoryName?: string;
-    unit: string;
+  catID?: string;
+  categoryName?: string;
+  unit?: string;
 }

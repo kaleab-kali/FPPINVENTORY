@@ -12,7 +12,7 @@ export const getUnitIds = async () => {
 
   const data = await response.json();
 
-  return data.map((unit: UnitInfo) => unit.id);
+  return data.map((unit: UnitInfo) => unit.unitID);
 };
 
 export const getUnit = async (id: string) => {
@@ -53,7 +53,8 @@ export const createUnit = async (data: UnitInfo) => {
 };
 
 export const updateUnit = async (data: UnitInfo) => {
-  const response = await fetch(`${BASE_URL}/unit/${data.id}`, {
+  console.log("Data before updateApi:", data);
+  const response = await fetch(`${BASE_URL}/units/${data.unitID}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -67,7 +68,7 @@ export const updateUnit = async (data: UnitInfo) => {
 };
 
 export const deleteUnit = async (id: string) => {
-  const response = await fetch(`${BASE_URL}/unit/${id}`, {
+  const response = await fetch(`${BASE_URL}/units/${id}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",

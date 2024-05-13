@@ -5,4 +5,5 @@ export interface SupplierInfo {
     mobileNumber?: string;
     email?: string;
     address?: string;
+    status?: string;
 }

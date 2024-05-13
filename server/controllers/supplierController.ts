@@ -64,6 +64,7 @@ const updateSupplier = async (req: Request, res: Response): Promise<void> => {
 };
 
 const deleteSupplier = async (req: Request, res: Response): Promise<void> => {
+  console.log("Deleting Supplier in backend");
   try {
     const updatedSupplier = await Supplier.findOneAndUpdate(
       {sid: req.params.id},

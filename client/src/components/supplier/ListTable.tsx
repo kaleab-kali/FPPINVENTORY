@@ -1,30 +1,36 @@
 import { Input, Table, Button, Space, Popconfirm, Modal, Tag } from "antd";
 import React, { useState } from "react";
-import { useAllSuppliers } from "../../services/queries/supplierQueries";
+import { useAllSuppliers} from "../../services/queries/supplierQueries";
 import { SupplierInfo } from "../../../../shared/types/Supplier";
+import { useDeleteSupplier } from "../../services/mutations/supplierMutation";
 import SupplierForm from "./SupplierForm";
-import { render } from "@testing-library/react";
 
-const ListTable: React.FC = () => {
+
+const ListTable = () => {
+  
   const [searchValue, setSearchValue] = useState("");
   const [editRecord, setEditRecord] = useState<any>(null);
   const [editModalVisible, setEditModalVisible] = useState(false);
 
   const allSuppliersQuery = useAllSuppliers();
+  const deleteSupplierMutation = useDeleteSupplier();
   console.log("All Suppliers Query:", allSuppliersQuery.data);
 
   const Source = allSuppliersQuery.data
-    ? allSuppliersQuery.data.map((queryResult: SupplierInfo) => {
+  ? allSuppliersQuery.data
+      .filter((queryResult: SupplierInfo) => queryResult.status === 'active') // Only include suppliers with status === 'active'
+      .map((queryResult: SupplierInfo) => {
         return {
           key: queryResult._id,
           sid: queryResult.sid,
           name: queryResult.name,
-          mnumber: queryResult.mobileNumber,
+          mobileNumber: queryResult.mobileNumber,
           email: queryResult.email,
           address: queryResult.address,
+          status: queryResult.status, // Add status field to the source
         };
       })
-    : [];
+  : [];
 
   console.log("Source:", Source);
 
@@ -33,18 +39,22 @@ const ListTable: React.FC = () => {
   };
 
   const handleDelete = (key: string) => {
+    console.log("Delete Key:", key);
+    deleteSupplierMutation.mutate(key);
     // const filteredDataSource = dataSource.filter(item => item.key !== key);
     // setDataSource(filteredDataSource);
   };
   const handleEdit = (record: any) => {
+    console.log("Edit Record:", record);
     setEditRecord(record);
     setEditModalVisible(true);
   };
 
   const handleEditCancel = () => {
     setEditModalVisible(false);
-    setEditRecord(null);
+    setEditRecord(null); // Clear edit record after modal is closed
   };
+
 
   const columns = [
     {
@@ -59,8 +69,8 @@ const ListTable: React.FC = () => {
     },
     {
       title: "Mobile Number",
-      dataIndex: "mnumber",
-      key: "mnumber",
+      dataIndex: "mobileNumber",
+      key: "mobileNumber",
     },
     {
       title: "Email",
@@ -73,26 +83,17 @@ const ListTable: React.FC = () => {
       key: "address",
     },
     {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render:()=>{
-        return (
-          <Tag color="green">Active</Tag>
-        )
-      }
-    },
-    {
       title: "Action",
       key: "action",
-      render: (text: string, record: any) => (
+      render: (text: string, record: SupplierInfo) => (
         <Space size="middle">
           <Button type="primary" onClick={() => handleEdit(record)}>
             Edit
           </Button>
+          {/* <Button type="dashed" onClick={() => handleDelete(record.sid || "")}>Delete</Button> */}
           <Popconfirm
             title="Are you sure to delete this row?"
-            onConfirm={() => handleDelete(record.key)}
+            onConfirm={() => handleDelete(record.sid || '')} // Ensure record.sid is always a string
             okText="Yes"
             cancelText="No"
           >
@@ -103,6 +104,7 @@ const ListTable: React.FC = () => {
     },
   ];
 
+
   return (
     <>
       <Input
@@ -112,12 +114,12 @@ const ListTable: React.FC = () => {
         onChange={(e) => handleSearch(e.target.value)}
       />
       <Table columns={columns} dataSource={Source} />
-
       <SupplierForm
-        initialValues={editRecord}
+        initialValues={editRecord} 
         visible={editModalVisible}
         onCancel={handleEditCancel}
       />
+
     </>
   );
 };

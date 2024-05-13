@@ -3,21 +3,29 @@ import React, { useState } from "react";
 import {
   useAllUnits,
 } from "../../services/queries/unitQueries";
+import {
+  useDeleteUnit,
+} from "../../services/mutations/unitMutation";
 import { UnitInfo } from "../../../../shared/types/Unit";
+import UnitForm from "./UnitForm";
 
 const ListUnitTable = () => {
   const [searchValue, setSearchValue] = useState("");
+  const [editRecord, setEditRecord] = useState<any>(null);
+  const [editModalVisible, setEditModalVisible] = useState(false);
 
   const allUnitsQuery = useAllUnits();
+  const deleteUnitMutation = useDeleteUnit();
   console.log("All Suppliers Query:", allUnitsQuery.data);
   
   const Source = allUnitsQuery.data
     ? allUnitsQuery.data.map(
         (queryResult: UnitInfo, index: number) =>{
           return {
-            key: queryResult.id,
-            id: queryResult.id,
-            unit: queryResult.unitName,
+            key: queryResult.unitID,
+            unitID: queryResult.unitID,
+            unitName: queryResult.unitName,
+            standard: queryResult.standard,
 
           };
         }
@@ -29,7 +37,7 @@ const ListUnitTable = () => {
 
   const filteredSource = searchValue
     ? Source.filter((unit) =>
-        unit.unit?.toLowerCase().includes(searchValue.toLowerCase())
+        unit.unitName?.toLowerCase().includes(searchValue.toLowerCase())
       )
     : Source;
 
@@ -41,6 +49,7 @@ const ListUnitTable = () => {
   };
 
   const handleDelete = (key: string) => {
+    deleteUnitMutation.mutate(key);
     // const filteredDataSource = dataSource.filter(item => item.key !== key);
     // setDataSource(filteredDataSource);
   };
@@ -48,13 +57,19 @@ const ListUnitTable = () => {
   const columns = [
     {
         title: "ID",
-        dataIndex: "id",
-        key: "id",
+        dataIndex: "unitID",
+        key: "unitID",
       },
     {
       title: "Unit Name",
-      dataIndex: "unit",
-      key: "unit",
+      dataIndex: "unitName",
+      key: "unitName",
+    },
+    {
+      title: "standard",
+      dataIndex: "standard",
+      key: "standard",  
+
     },
     
     {
@@ -62,10 +77,10 @@ const ListUnitTable = () => {
       key: "action",
       render: (text: string, record: any) => (
         <Space size="middle">
-          <Button type="primary" onClick={() => handleEdit(record.key)}>Edit</Button>
+          <Button type="primary" onClick={() => handleEdit(record)}>Edit</Button>
           <Popconfirm
             title="Are you sure to delete this row?"
-            onConfirm={() => handleDelete(record.key)}
+            onConfirm={() => handleDelete(record.unitID || "")}
             okText="Yes"
             cancelText="No"
           >
@@ -76,8 +91,15 @@ const ListUnitTable = () => {
     },
   ];
 
-  const handleEdit = (key: string) => {
-    console.log("Edit clicked for row with key:", key);
+  const handleEdit = (record: any) => {
+    console.log("Edit Record:", record);
+    setEditRecord(record);
+    setEditModalVisible(true);
+  };
+
+  const handleEditCancel = () => {
+    setEditModalVisible(false);
+    setEditRecord(null); // Clear edit record after modal is closed
   };
 
   return (
@@ -89,6 +111,11 @@ const ListUnitTable = () => {
         onChange={(e) => handleSearch(e.target.value)}
       />
       <Table columns={columns} dataSource={filteredSource} />
+      <UnitForm
+        initialValues={editRecord} 
+        visible={editModalVisible}
+        onCancel={handleEditCancel}
+      />
     </>
   );
 };

@@ -8,7 +8,7 @@ import stockRoute from "./routes/stockRoute";
 import connectDb from "./config/db";
 import dotenv from "dotenv";
 import cors from  "cors";
-
+import employeeRoute from "./routes/employeeRoute"
 declare module "colors" {
   interface String {
     cyan: String;
@@ -31,6 +31,8 @@ app.use("/supplier", supplierRoute);
 app.use("/units", unitRoute);
 app.use("/category", categoryRoute);
 app.use("/stock", stockRoute);
+app.use("/employee", employeeRoute);
+
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

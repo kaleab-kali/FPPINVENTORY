@@ -2,7 +2,7 @@ import { useQueries, useQuery } from "@tanstack/react-query";
 import { getAllProducts, getProductIds, getProduct} from "../api/productApi";
 
 export function useProductIds() {
-    console.log("useProductIds");
+    // console.log("useProductIds");
   return useQuery({
     queryKey: ["product"],
     queryFn: getProductIds,
@@ -15,7 +15,7 @@ export function useAllProducts() {
     });
   }
 export function useProducts(ids: (string | undefined)[] | undefined) {
-    console.log("useProducts", ids);
+    // console.log("useProducts", ids);
   return useQueries({
     queries: (ids ?? []).map((id) => {
       return {
@@ -26,7 +26,7 @@ export function useProducts(ids: (string | undefined)[] | undefined) {
   });
 }
 export function useFindProductById(id: string | undefined) {
-    console.log("useFindProductById");
+    // console.log("useFindProductById");
   return useQuery({
     queryKey: ["product", { id }],
     queryFn: () => getProduct(id!),

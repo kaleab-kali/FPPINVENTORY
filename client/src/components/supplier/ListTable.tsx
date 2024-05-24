@@ -1,72 +1,57 @@
-import { Input, Table, Button, Space, Popconfirm, Modal, Form } from "antd";
+import { Input, Table, Button, Space, Popconfirm, Modal, Tag } from "antd";
 import React, { useState } from "react";
-import {
-  useSuppliers,
-  useAllSuppliers,
-  useSupplierIds,
-} from "../../services/queries/supplierQueries";
+import { useAllSuppliers} from "../../services/queries/supplierQueries";
 import { SupplierInfo } from "../../../../shared/types/Supplier";
-import { useDeleteSupplier, useUpdateSupplier } from "../../services/mutations/supplierMutation";
+import { useDeleteSupplier } from "../../services/mutations/supplierMutation";
+import SupplierForm from "./SupplierForm";
+
+
 const ListTable = () => {
   const [searchValue, setSearchValue] = useState("");
-  const [selectedRow, setSelectedRow] = useState<SupplierInfo | null>(null);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [form] = Form.useForm(); 
+  const [editRecord, setEditRecord] = useState<any>(null);
+  const [editModalVisible, setEditModalVisible] = useState(false);
+
   const allSuppliersQuery = useAllSuppliers();
-  const updateSupplier = useUpdateSupplier();
-  const deleteSupplier = useDeleteSupplier()
+  const deleteSupplierMutation = useDeleteSupplier();
   console.log("All Suppliers Query:", allSuppliersQuery.data);
 
   const Source = allSuppliersQuery.data
-    ? allSuppliersQuery.data.map((queryResult: SupplierInfo) => {
+  ? allSuppliersQuery.data
+      .filter((queryResult: SupplierInfo) => queryResult.status === 'active') // Only include suppliers with status === 'active'
+      .map((queryResult: SupplierInfo) => {
         return {
-          _id: queryResult._id,
+          key: queryResult._id,
           sid: queryResult.sid,
           name: queryResult.name,
           mobileNumber: queryResult.mobileNumber,
           email: queryResult.email,
           address: queryResult.address,
+          status: queryResult.status, // Add status field to the source
         };
       })
-    : [];
-  const filteredData = Source.filter((entry: { name: string }) =>
-    entry.name?.toLowerCase().includes(searchValue.toLowerCase())
-  );    
+  : [];
+
+  console.log("Source:", Source);
+
   const handleSearch = (value: string) => {
     setSearchValue(value);
   };
 
   const handleDelete = (key: string) => {
-    console.log("delete", key);
-    deleteSupplier.mutate(key)
+    console.log("Delete Key:", key);
+    deleteSupplierMutation.mutate(key);
+    // const filteredDataSource = dataSource.filter(item => item.key !== key);
+    // setDataSource(filteredDataSource);
+  };
+  const handleEdit = (record: any) => {
+    console.log("Edit Record:", record);
+    setEditRecord(record);
+    setEditModalVisible(true);
   };
 
-  const handleEdit = (record: SupplierInfo) => {
-    setSelectedRow(record);
-    form.setFieldsValue({
-      name: record.name,
-      mobileNumber: record.mobileNumber,
-      email: record.email,
-      address: record.address,
-    });
-    console.log(record);
-    setIsModalVisible(true);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-
-  const onFinish = (values: any) => {
-    const updatedValues = {
-      ...values,
-      sid: selectedRow?.sid,
-      _id: selectedRow?._id
-    };
-    console.log("Received values of form: ", updatedValues);
-    // Implement form submission/update logic
-    updateSupplier.mutate(updatedValues);
-    setIsModalVisible(false);
+  const handleEditCancel = () => {
+    setEditModalVisible(false);
+    setEditRecord(null); // Clear edit record after modal is closed
   };
 
 
@@ -99,14 +84,15 @@ const ListTable = () => {
     {
       title: "Action",
       key: "action",
-      render: (text: string, record: any) => (
+      render: (text: string, record: SupplierInfo) => (
         <Space size="middle">
           <Button type="primary" onClick={() => handleEdit(record)}>
             Edit
           </Button>
+          {/* <Button type="dashed" onClick={() => handleDelete(record.sid || "")}>Delete</Button> */}
           <Popconfirm
             title="Are you sure to delete this row?"
-            onConfirm={() => handleDelete(record.sid)}
+            onConfirm={() => handleDelete(record.sid || '')} // Ensure record.sid is always a string
             okText="Yes"
             cancelText="No"
           >
@@ -117,6 +103,7 @@ const ListTable = () => {
     },
   ];
 
+
   return (
     <>
       <Input
@@ -125,44 +112,13 @@ const ListTable = () => {
         value={searchValue}
         onChange={(e) => handleSearch(e.target.value)}
       />
-      <Table columns={columns} dataSource={filteredData} />
-      <Modal
-        title="Edit Supplier"
-        open={isModalVisible}
-        onCancel={handleCancel}
-        footer={null}
-      >
-        <Form
-          form={form}
-          name="editSupplierForm"
-          initialValues={{
-            name: selectedRow?.name,
-            mobileNumber: selectedRow?.mobileNumber,
-            email: selectedRow?.email,
-            address: selectedRow?.address,
-          }}
-          onFinish={onFinish}
-        >
-          {/* Form fields */}
-          <Form.Item name="name" label="Name">
-            <Input />
-          </Form.Item>
-          <Form.Item name="mobileNumber" label="Mobile Number">
-            <Input />
-          </Form.Item>
-          <Form.Item name="email" label="Email">
-            <Input />
-          </Form.Item>
-          <Form.Item name="address" label="Address">
-            <Input />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              Save
-            </Button>
-          </Form.Item>
-        </Form>
-      </Modal>
+      <Table columns={columns} dataSource={Source} />
+      <SupplierForm
+        initialValues={editRecord} 
+        visible={editModalVisible}
+        onCancel={handleEditCancel}
+      />
+
     </>
   );
 };

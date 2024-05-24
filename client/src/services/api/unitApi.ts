@@ -53,6 +53,7 @@ export const createUnit = async (data: UnitInfo) => {
 };
 
 export const updateUnit = async (data: UnitInfo) => {
+  console.log("Data before updateApi:", data);
   const response = await fetch(`${BASE_URL}/units/${data.unitID}`, {
     method: "PUT",
     headers: {

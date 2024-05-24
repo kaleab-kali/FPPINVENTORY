@@ -53,6 +53,7 @@ export const getSupplierIds = async () => {
   };
 
   export const updateSupplier = async (data: SupplierInfo) => {
+    console.log("Data before mutation on update api:", data);
     const response = await fetch(`${BASE_URL}/supplier/${data.sid}`, {
       method: "PUT",
       headers: {
@@ -68,6 +69,7 @@ export const getSupplierIds = async () => {
   
   
   export const deleteSupplier = async (id: string) => {
+    console.log("deleteSupplier", id);
     const response = await fetch(`${BASE_URL}/supplier/${id}`, {
       method: "DELETE",
       headers: {

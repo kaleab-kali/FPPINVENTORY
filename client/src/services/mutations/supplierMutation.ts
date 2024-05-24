@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { SupplierInfo } from '../../../../shared/types/Supplier';
-import { createSupplier, deleteSupplier, updateSupplier } from "../api/supplierApi";
+import { createSupplier, updateSupplier , deleteSupplier} from "../api/supplierApi";
 
 export function useCreateSupplier() {
   console.log("useCreateSupplier");
@@ -27,38 +27,33 @@ export function useCreateSupplier() {
   });
 }
 
-
 export function useUpdateSupplier() {
+  console.log("useUpdateSupplier");
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: SupplierInfo) => {
       console.log("Data before mutation:", data);
       return updateSupplier(data);
     },
-    onSuccess() {
-      console.log("Successfully updated Supplier");
-    },
-    onSettled: async (_: any, error: any, variables: { _id: any }) => {
-      console.log("settled" , variables._id);
-      if (error) {
-        console.log(error);
-      } else {
-        await queryClient.invalidateQueries({ queryKey: ["supplier"] });
-        await queryClient.invalidateQueries({ queryKey: ["supplier", { id: variables._id }]});
-        // await queryClient.setQueryData(["supplier", { id: variables._id }]);
-
-      }
-    },
+    onSuccess(result, variables, context) {
+      console.log("Successfully updated supplier");
+      queryClient.invalidateQueries({ queryKey: ["supplier"] });
+      queryClient.invalidateQueries({ queryKey: ["suppliers", {id : variables.sid}] });
+      
+    }
+    
+   
   });
+
 }
 
-export function useDeleteSupplier() {
+export function useDeleteSupplier () {
+  console.log("useDeleteSupplier");
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: (id: string) => deleteSupplier(id),
     onSuccess() {
-      console.log("Successfully deleted Supplier");
+      console.log("Successfully deleted supplier");
     },
     onSettled: async (_: any, error: any) => {
       if (error) {
@@ -68,4 +63,6 @@ export function useDeleteSupplier() {
       }
     },
   });
+
 }
+

@@ -1,13 +1,46 @@
 import { Request, Response, NextFunction } from "express";
 import Item,{ItemInfo} from '../models/itemModel'
+import Stock from '../models/stockModel'
+
 const createItem = async (req: Request, res: Response): Promise<void> => {
   try {
+    // Create a new Item document using the request body
     const newItem = new Item(req.body);
     console.log("New Item:", newItem);
 
+    // Save the item to the database
     await newItem.save();
 
-    res.status(201).json({ message: "Item saved successfully", newItem });
+    // Extract necessary fields for the Stock document
+    const {
+      productID,
+      name,
+      category,
+      unit,
+      models,
+      brand,
+      supplier,
+      returnable
+    } = newItem;
+
+    // Create a new Stock document using the new Item information
+    const newStock = new Stock({
+      productId: productID,
+      productName: name,
+      category: category,
+      unit: unit,
+      models: models,
+      brand: brand,
+      supplier: supplier,
+      inQty: 0, // Initialize with 0 
+      outQty: 0, // Initialize with 0
+      stock: 0   // Initialize with 0 
+    });
+
+    // Save the stock to the database
+    await newStock.save();
+
+    res.status(201).json({ message: "Item and Stock saved successfully", newItem, newStock });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });

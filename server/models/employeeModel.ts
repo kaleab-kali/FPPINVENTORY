@@ -385,7 +385,7 @@ const employeeSchema = new Schema<EmployeeDocument>(
 );
 
 
-const db = connectSecondaryDB(process.env.MONGODB_URI_EMPLOYEE, {
+const db = connectSecondaryDB(process.env.MONGODB_URI_EMPLOYEE as string, {
   // (optional) connection options
 });
 employeeSchema.pre<EmployeeDocument>("save", async function (next) {

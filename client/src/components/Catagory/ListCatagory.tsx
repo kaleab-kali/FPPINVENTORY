@@ -1,4 +1,4 @@
-import { Input, Table, Button, Space, Popconfirm, Form, Row, Col, Select, Modal } from "antd";
+import { Input, Table, Button, Space, Popconfirm } from "antd";
 import React, { useState } from "react";
 import { useAllCategorys } from "../../services/queries/categoryQueries";
 import { CategoryInfo } from "../../../../shared/types/Category";
@@ -26,18 +26,6 @@ const ListCatagoryTable: React.FC = () => {
       })
     : [];
 
-  const handleEdit = (record: any) => {
-    setSelectedRow(record);
-    form.setFieldsValue({
-      categoryName: record.categoryName,
-      unitName: record.unitName,
-    });
-    console.log(record);
-    setIsModalVisible(true);
-  };
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };  
   console.log("Source:", Source);
   const filteredData = Source.filter((entry) =>
     entry.categoryName?.toLowerCase().includes(searchValue.toLowerCase())
@@ -74,7 +62,7 @@ const ListCatagoryTable: React.FC = () => {
     },
     {
       title: "Unit of Measurment",
-      dataIndex: "unitName",
+      dataIndex: "unit",
       key: "unit",
     },
 

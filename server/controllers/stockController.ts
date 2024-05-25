@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import Item, { ItemInfo } from "../models/itemModel";
+import Purchase, { PurchaseInfo } from "../models/purchaseModel";
 
 const getAllStocks = async (
   req: Request,
@@ -7,10 +7,10 @@ const getAllStocks = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const items = await Item.find();
+    const items = await Purchase.find();
 
     const transformedItems = items.map(item => ({
-      name: item.name,
+      name: item.productName,
       category: item.category,
       supplier: item.supplier,
       unit:item.unit,

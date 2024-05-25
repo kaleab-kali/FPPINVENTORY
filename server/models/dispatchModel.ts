@@ -11,7 +11,7 @@ export interface DispatchInfo extends Document {
   itemCategory: string;
   quantity: number;
   purpose: string;
-  remarks: string;
+  status: string;
 }
 
 const dispatchSchema = new Schema<DispatchInfo>(
@@ -26,7 +26,7 @@ const dispatchSchema = new Schema<DispatchInfo>(
     itemCategory: { type: String, required: true },
     quantity: { type: Number, required: true },
     purpose: { type: String, required: true },
-    remarks: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
+    status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
   },
   { timestamps: true }
 );

@@ -1,6 +1,7 @@
 import { CategoryInfo } from '../../../../shared/types/Category';
+import BASE_URL from '../sharedVariables';
 
-const BASE_URL = "http://localhost:7000";
+// const BASE_URL = "http://localhost:7000";
 
 export const getCategoryIds = async () => {
     console.log("getCategoryIds");

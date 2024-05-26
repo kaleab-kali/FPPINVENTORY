@@ -5,6 +5,7 @@ import supplierRoute from "./routes/supplierRoute";
 import unitRoute from "./routes/unitRoute";
 import categoryRoute from "./routes/categoryRoute";
 import stockRoute from "./routes/stockRoute"; 
+// import testRoute from "./routes/testRoute";
 import connectDb from "./config/db";
 import dotenv from "dotenv";
 import cors from  "cors";
@@ -32,6 +33,7 @@ app.use("/supplier", supplierRoute);
 app.use("/units", unitRoute);
 app.use("/category", categoryRoute);
 app.use("/stock", stockRoute);
+// app.use("/test", testRoute)
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

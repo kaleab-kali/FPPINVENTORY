@@ -1,11 +1,11 @@
 import React from "react";
-import Title from "antd/lib/typography/Title";
-import { Layout, theme } from "antd";
-import AddSupplier from "../../components/supplier/AddSupplier";
-import ListTable from "../../components/supplier/ListTable";
-const { Content } = Layout;
+import { Layout, theme, Typography } from "antd";
+import ApprovalPurhase from "../../components/Purchase/ApprovalPurhase";
 
-const SupplierPage = () => {
+const { Content } = Layout;
+const { Title } = Typography;
+
+const ApprovedPurchasePage = () => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -16,7 +16,7 @@ const SupplierPage = () => {
         level={4}
         style={{ padding: "10px 30px", marginBottom: "0", marginTop: 10 }}
       >
-        Lsit of Suppliers
+       Approval of ALL Purchases
       </Title>
       <Layout>
         <Content
@@ -28,14 +28,10 @@ const SupplierPage = () => {
             borderRadius: borderRadiusLG,
           }}
         >
-            <AddSupplier />
-            <Title level={5}> Supplier Data</Title>
-            <ListTable />
-          
+            <ApprovalPurhase />
         </Content>
       </Layout>
     </>
   );
 };
-
-export default SupplierPage;
+export default ApprovedPurchasePage;

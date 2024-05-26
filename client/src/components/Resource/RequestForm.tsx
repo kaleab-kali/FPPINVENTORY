@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
-import { Form, Input, DatePicker, Select, Checkbox, Row, Col, InputNumber, Button } from 'antd';
+import { Form, Input, DatePicker, Select, Row, Col, InputNumber, Button, Checkbox } from 'antd';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
+import moment from 'moment';
+import { DispatchInfo } from "../../../../shared/types/Resource";
 
 const { Option } = Select;
 const { TextArea } = Input;
+
+interface ResourceRequestFormProps {
+  onFinish: (values: DispatchInfo) => void;
+}
 
 const ResourceRequestForm: React.FC = () => {
   const [quantity, setQuantity] = useState(1);
@@ -11,9 +17,6 @@ const ResourceRequestForm: React.FC = () => {
 
   const [form] = Form.useForm();
 
-  const onFinish = (values: any) => {
-    console.log("Form data:", values);
-  };
   const handleDatePickerChange = (fieldName: string) => (
     date: moment.Moment | null,
     dateString: string
@@ -22,73 +25,72 @@ const ResourceRequestForm: React.FC = () => {
     console.log(date?.format("DD/MM/YYYY"));
     form.setFieldsValue({ [fieldName]: date?.format("DD/MM/YYYY") });
   };
-  
 
-  const onValuesChange = (changedValues: any, allValues: any) => {
-    console.log("Changed values:", changedValues);
-    console.log("All values:", allValues);
-  };
   const handleQuantityChange = (value: number | null) => {
     if (value !== null) {
       setQuantity(value);
     }
   };
-  const handleReturnChange = (value: boolean | null ) => {
-    if (value !== null) {
-      setReturnable(value);
+
+  const handleReturnChange = (e: CheckboxChangeEvent) => {
+    const isChecked = e.target.checked;
+    setReturnable(isChecked);
+    if (!isChecked) {
+      form.setFieldsValue({ expectedReturnDate: null });
     }
   };
+
+  const onFinish = (values: DispatchInfo) => {
+    console.log('Received values:', values);
+  }
+
+
+  
+
   return (
-    <Form form={form}
-    layout="vertical"
-    onFinish={onFinish}
-    onValuesChange={onValuesChange}>
+    <Form
+      form={form}
+      layout="vertical"
+      onFinish={onFinish}
+    >
       <Row gutter={16}>
         <Col span={8}>
-          <Form.Item label="Employee ID" name="employeeId" rules={[{ required: true, message: "Please enter id" }]}
->
+          <Form.Item label="Employee ID" name="employeeId" rules={[{ required: true, message: "Please enter id" }]}>
             <Input />
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label="Employee Name" name="employeeName">
+          <Form.Item label="Dispatch ID" name="dispatchId" rules={[{ required: true, message: "Please enter dispatch ID" }]}>
             <Input />
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label="Department" name="department">
-            <DatePicker  style={{ width: "100%" }} />
+          <Form.Item label="Employee Full Name" name="employeeFullName" rules={[{ required: true, message: "Please enter employee full name" }]}>
+            <Input />
           </Form.Item>
         </Col>
       </Row>
       <Row gutter={16}>
         <Col span={8}>
-        <Form.Item label="Issue Date" name="issuedate">
-            <DatePicker  style={{ width: "100%" }} />
+          <Form.Item label="Issue Date" name="issueDate">
+            <DatePicker style={{ width: "100%" }} />
           </Form.Item>
-
         </Col>
         <Col span={8}>
-        <Form.Item label="Returnable" name="returnable" valuePropName="checked" >
-            <Checkbox onChange={(e: CheckboxChangeEvent) => handleReturnChange(e.target.checked)}>yes</Checkbox>
+          <Form.Item label="Expected Return Date" name="expectedReturnDate">
+            <DatePicker style={{ width: "100%" }}  />
           </Form.Item>
-
         </Col>
         <Col span={8}>
-        <Form.Item label="Expected Return Date" name="expectedReturnDate">
-            <DatePicker style={{ width: "100%" }} disabled={!returnable} />
+          <Form.Item label="Quantity" name="quantity">
+            <InputNumber min={1} onChange={handleQuantityChange} style={{ width: "100%" }}  />
           </Form.Item>
         </Col>
-        
+    
       </Row>
       <Row gutter={16}>
         <Col span={8}>
-          <Form.Item label="Item ID" name="itemId">
-            <Input />
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item label="Item Name" name="itemName">
+          <Form.Item label="Product Name" name="productName">
             <Input />
           </Form.Item>
         </Col>
@@ -97,55 +99,22 @@ const ResourceRequestForm: React.FC = () => {
             <Select>
               <Option value="category1">Category 1</Option>
               <Option value="category2">Category 2</Option>
-              
             </Select>
           </Form.Item>
         </Col>
-      </Row>
-      <Row gutter={16}>
         <Col span={8}>
-          <Form.Item label="Quantity" name="quantity">
-          <InputNumber min={1} onChange={handleQuantityChange} style={{ width: "100%" }}  />
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-        
-            <Form.Item label="Item IDs" name="itemIds">
-              <TextArea placeholder="Enter item IDs, separated by commas or new lines" disabled={quantity <= 1}/>
-            </Form.Item>
-          
-        </Col>
-        <Col span={8}>
-        <Form.Item label="Purpose" name="purpose">
-            <Input />
-          </Form.Item>
-          
-        </Col>
-      </Row>
-      <Row gutter={16}>
-        <Col span={8}>
-          <Form.Item label="Authorized Date" name="authorizedDate">
-            <DatePicker style={{ width: "100%" }} />
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item label="Authorized By" name="authorizedBy">
+          <Form.Item label="Purpose" name="purpose">
             <Input />
           </Form.Item>
         </Col>
-         
-        <Col span={8}>
-          <Form.Item label="Remarks" name="remarks">
-            <Input.TextArea />
-          </Form.Item>
-        </Col>
+       
       </Row>
-
+     
       <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Request Product
-          </Button>
-        </Form.Item>
+        <Button type="primary" htmlType="submit">
+          Submit
+        </Button>
+      </Form.Item>
     </Form>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { LiaShippingFastSolid } from "react-icons/lia";
-import { FaBoxOpen, FaChartLine, FaRuler, FaWarehouse } from 'react-icons/fa';
+import { FaBoxOpen, FaChartLine, FaRuler, FaWarehouse } from "react-icons/fa";
 import { TbCategory2 } from "react-icons/tb";
 import { RiProductHuntLine } from "react-icons/ri";
 import {
@@ -81,7 +81,7 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
             <NavLink to="/supplier/inactivelist">Inactive</NavLink>
           </Menu.Item>
         </Menu.SubMenu>
-        <Menu.SubMenu key="unitsSubMenu" title="Units" icon={<FaRuler /> }>
+        <Menu.SubMenu key="unitsSubMenu" title="Units" icon={<FaRuler />}>
           <Menu.Item
             key="unitsList"
             icon={<ShopOutlined />}
@@ -90,7 +90,11 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
             <NavLink to="/units/list">List</NavLink>
           </Menu.Item>
         </Menu.SubMenu>
-        <Menu.SubMenu key="categorySubMenu" title="Category" icon={<TbCategory2 />}>
+        <Menu.SubMenu
+          key="categorySubMenu"
+          title="Category"
+          icon={<TbCategory2 />}
+        >
           <Menu.Item
             key="categoryList"
             icon={<ShopOutlined />}
@@ -99,7 +103,11 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
             <NavLink to="/category/list">List</NavLink>
           </Menu.Item>
         </Menu.SubMenu>
-        <Menu.SubMenu key="productSubMenu" title="Product" icon={<RiProductHuntLine />}>
+        <Menu.SubMenu
+          key="productSubMenu"
+          title="Product"
+          icon={<RiProductHuntLine />}
+        >
           <Menu.Item
             key="productRegistration"
             icon={<UserOutlined />}
@@ -126,7 +134,45 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
             <NavLink to="/product/inactive">Inactive</NavLink>
           </Menu.Item>
         </Menu.SubMenu>
-        <Menu.SubMenu key="stockSubMenu" title="Stock Managment" icon={<FaWarehouse />}>
+        <Menu.SubMenu
+          key="purchaseSubMenu"
+          title="Purchase"
+          icon={<RiProductHuntLine />}
+        >
+          <Menu.Item
+            key="purchaseRegistration"
+            icon={<UserOutlined />}
+            onClick={() => handleMenuClick("purchaseRegistration")}
+          >
+            <NavLink to="/purchase/addPurchase">Registration</NavLink>
+          </Menu.Item>
+          <Menu.Item
+            key="purchaseList"
+            icon={<UserOutlined />}
+            onClick={() => handleMenuClick("purchaseList")}
+          >
+            <NavLink to="/purchase/list">All Purchase</NavLink>
+          </Menu.Item>
+          <Menu.Item
+            key="purchaseApproved"
+            icon={<UserOutlined />}
+            onClick={() => handleMenuClick("purchaseApproved")}
+          >
+            <NavLink to="/purchase/approved">Approved</NavLink>
+          </Menu.Item>
+          <Menu.Item
+            key="purchaseReport"
+            icon={<UserOutlined />}
+            onClick={() => handleMenuClick("purchaseReport")}
+          >
+            <NavLink to="/purchase/report">Report</NavLink>
+          </Menu.Item>
+        </Menu.SubMenu>
+        <Menu.SubMenu
+          key="stockSubMenu"
+          title="Stock Managment"
+          icon={<FaWarehouse />}
+        >
           <Menu.Item
             key="stockList"
             icon={<ShopOutlined />}
@@ -150,7 +196,11 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
           </Menu.Item>
         </Menu.SubMenu>
 
-        <Menu.SubMenu key="resourceSubMenu" title="Resource" icon={<FaBoxOpen />}>
+        <Menu.SubMenu
+          key="resourceSubMenu"
+          title="Resource"
+          icon={<FaBoxOpen />}
+        >
           <Menu.Item key="request" onClick={() => handleMenuClick("request")}>
             <NavLink to="/resource/request">Request</NavLink>
           </Menu.Item>
@@ -161,7 +211,7 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
             key="currentDispacth"
             onClick={() => handleMenuClick("currentDispatch")}
           >
-            <NavLink to="/resource/currentDispacth">Allocated Items</NavLink>
+            <NavLink to="/resource/currentDispatch">Allocated Items</NavLink>
           </Menu.Item>
           <Menu.Item key="resourceHistory">
             <NavLink to="/resource/history">History</NavLink>

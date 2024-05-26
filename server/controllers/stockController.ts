@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import Item, { ItemInfo } from "../models/itemModel";
+import Stock from "../models/stockModel";
 
 const getAllStocks = async (
   req: Request,
@@ -7,21 +7,11 @@ const getAllStocks = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const items = await Item.find();
-
-    const transformedItems = items.map(item => ({
-      name: item.name,
-      category: item.category,
-      supplier: item.supplier,
-      unit:item.unit,
-      inQuantity: item.quantity,  
-      outQuantity: 0,  
-      stock: item.quantity  
-    }));
-
-    res.status(200).json(transformedItems);
-  } catch (err) {
-    next(err);
+    const stocks = await Stock.find().select('productId productName category unit models brand supplier inQty outQty stock');
+    res.status(200).json(stocks);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 

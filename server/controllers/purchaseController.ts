@@ -18,7 +18,7 @@ const createPurchase = async (req: Request, res: Response): Promise<void> => {
 // Update Purchase and related models if status is 'approved'
 const updatePurchase = async (req: Request, res: Response): Promise<void> => {
   try {
-    const purchase = await Purchase.findById(req.params.id);
+    const purchase = await Purchase.findOne({purchaseID : req.params.id});
     if (!purchase) {
       res.status(404).json({ error: "Purchase not found" });
       return;
@@ -53,7 +53,7 @@ const getAllPurchases = async (req: Request, res: Response): Promise<void> => {
 // Get purchase by ID
 const getPurchaseById = async (req: Request, res: Response): Promise<void> => {
   try {
-    const purchase = await Purchase.findById(req.params.id);
+    const purchase = await Purchase.findOne({purchaseID : req.params.id});
     if (!purchase) {
       res.status(404).json({ error: "Purchase not found" });
       return;
@@ -68,7 +68,7 @@ const getPurchaseById = async (req: Request, res: Response): Promise<void> => {
 // Delete purchase by ID
 const deletePurchase = async (req: Request, res: Response): Promise<void> => {
   try {
-    const deletedPurchase = await Purchase.findByIdAndDelete(req.params.id);
+    const deletedPurchase = await Purchase.findOneAndDelete({purchaseID : req.params.id});
     if (!deletedPurchase) {
       res.status(404).json({ error: "Purchase not found" });
       return;

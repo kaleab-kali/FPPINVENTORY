@@ -20,6 +20,7 @@ export interface PurchaseInfo extends Document {
   description?: string;
   purchaseDate?: Date;
   purchaseID?: string;
+  purchaseNumber?: string;
   status?: string;
 }
 
@@ -40,6 +41,7 @@ const purchaseSchema = new Schema<PurchaseInfo>(
     description: { type: String },
     purchaseDate: { type: Date },
     purchaseID: { type: String },
+    purchaseNumber: {type: String},
     status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' }
   },
   { timestamps: true }

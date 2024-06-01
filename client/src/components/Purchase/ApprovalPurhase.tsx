@@ -3,41 +3,41 @@ import { Table, Button, Tag } from 'antd';
 import { CheckCircleOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import type { TableProps } from 'antd/es/table';
+import { PurchaseInfo } from '../../../../shared/types/Purchase';
+import { useAllPurchases } from '../../services/queries/purchaseQueries';
+import { useUpdatePurchase } from '../../services/mutations/purchaseMutation';
+import { formatDate} from '../../utils/utilityfunction'
+import { useQueryClient } from "@tanstack/react-query";
 
-interface Purchase {
-  purchaseID: string;
-  purchaseDate: string;
-  productName: string;
-  category: string;
-  supplier: string;
-  quantity: number;
-  status: 'pending';
-}
 
-const data: Purchase[] = [
-  {
-    purchaseID: '1',
-    purchaseDate: '2023-05-01',
-    productName: 'Laptop',
-    category: 'Electronics',
-    supplier: 'Supplier A',
-    quantity: 100,
-    status: 'pending',
-  },
-  {
-    purchaseID: '2',
-    purchaseDate: '2023-05-02',
-    productName: 'Chair',
-    category: 'Furniture',
-    supplier: 'Supplier B',
-    quantity: 50,
-    status: 'pending',
-  },
-  // Add more data as needed
-];
 
 const ApprovalPurhase: React.FC = () => {
-  const columns: ColumnsType<Purchase> = [
+  const allPurchasesQuery = useAllPurchases();
+  const queryClient = useQueryClient();
+  console.log('All Purchases Query:', allPurchasesQuery.data);
+  const source = allPurchasesQuery.data ?
+   allPurchasesQuery.data
+   .filter((queryResult: PurchaseInfo) => queryResult.status === 'pending')
+   .map(
+    (queryResult: PurchaseInfo) => {
+     
+      return {
+        key: queryResult.purchaseID,
+        purchaseID: queryResult.purchaseID,
+        purchaseDate: queryResult.purchaseDate,
+        productName: queryResult.productName,
+        category: queryResult.category,
+        supplier: queryResult.supplier,
+        quantity: queryResult.quantity,
+        status: queryResult.status,
+
+      }
+    }
+  ): [];
+
+  const updatePurchaseMutation = useUpdatePurchase();
+
+  const columns: ColumnsType<PurchaseInfo> = [
     {
       title: 'Purchase ID',
       dataIndex: 'purchaseID',
@@ -47,6 +47,7 @@ const ApprovalPurhase: React.FC = () => {
       title: 'Purchase Date',
       dataIndex: 'purchaseDate',
       key: 'purchaseDate',
+      render: (text: string) => formatDate(text),
     },
     {
       title: 'Product Name',
@@ -80,7 +81,7 @@ const ApprovalPurhase: React.FC = () => {
       title: 'Action',
       key: 'action',
       render: (_, record) => (
-        <Button type="primary" icon={<CheckCircleOutlined />} onClick={() => handleApprove(record.purchaseID)}>
+        <Button type="primary" icon={<CheckCircleOutlined />} onClick={() => handleApprove(record.purchaseID || "")}>
           Approve
         </Button>
       ),
@@ -89,12 +90,13 @@ const ApprovalPurhase: React.FC = () => {
 
   const handleApprove = (purchaseID: string) => {
     console.log(`Approve purchase with ID: ${purchaseID}`);
-    // Implement your approval logic here
+    updatePurchaseMutation.mutate({ purchaseID, status: 'approved' });
+   
   };
 
-  const tableProps: TableProps<Purchase> = {
+  const tableProps: TableProps<PurchaseInfo> = {
     columns,
-    dataSource: data,
+    dataSource: source,
     rowKey: 'purchaseID',
   };
 

@@ -18,7 +18,7 @@ const ListTable = () => {
 
   const Source = allSuppliersQuery.data
   ? allSuppliersQuery.data
-      .filter((queryResult: SupplierInfo) => queryResult.status === 'inactive') // Only include suppliers with status === 'active'
+      .filter((queryResult: SupplierInfo) => queryResult.status === 'inactive') 
       .map((queryResult: SupplierInfo) => {
         return {
           key: queryResult._id,
@@ -27,7 +27,7 @@ const ListTable = () => {
           mobileNumber: queryResult.mobileNumber,
           email: queryResult.email,
           address: queryResult.address,
-          status: queryResult.status, // Add status field to the source
+          status: queryResult.status, 
         };
       })
   : [];

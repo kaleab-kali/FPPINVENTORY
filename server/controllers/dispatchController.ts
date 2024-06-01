@@ -83,6 +83,46 @@ const createDispatch = async (req: Request, res: Response): Promise<void> => {
   };
 
   // Return Item Controller
+// const returnItem = async (req: Request, res: Response): Promise<void> => {
+//   try {
+//     const { uniqueId, employeeId } = req.body;
+
+//     // Find the unique item that is being returned
+//     const uniqueItem = await UniqueItem.findOne({ uniqueId, employeeId, status: 'dispatched' });
+//     if (!uniqueItem) {
+//       res.status(400).json({ error: "Item not found or employee mismatch" });
+//       return;
+//     }
+
+//     // Find the corresponding stock item
+//     const stockItem = await Stock.findOne({ productId: uniqueItem.productId });
+//     if (!stockItem) {
+//       res.status(400).json({ error: "Stock item not found" });
+//       return;
+//     }
+
+//     // Update the unique item's status and return date
+//     uniqueItem.status = 'in_stock';
+//     uniqueItem.returnDate = new Date();
+//     await uniqueItem.save();
+
+//     // Update the stock item's quantity and outQty
+//     if (stockItem.stock !== undefined) {
+//       stockItem.stock += 1;  // Increase stock by 1
+//     }
+
+//     if (stockItem.outQty !== undefined) {
+//       stockItem.outQty -= 1; // Decrease outQty by 1
+//     }
+
+//     await stockItem.save();
+
+//     res.status(200).json({ message: "Item returned successfully", uniqueItem, stockItem });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// };
 const returnItem = async (req: Request, res: Response): Promise<void> => {
   try {
     const { uniqueId, employeeId } = req.body;
@@ -94,30 +134,64 @@ const returnItem = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    // Find the corresponding stock item
-    const stockItem = await Stock.findOne({ productId: uniqueItem.productId });
-    if (!stockItem) {
-      res.status(400).json({ error: "Stock item not found" });
+    // Set approval status to pending
+    uniqueItem.approvalStatus = 'pending';
+    await uniqueItem.save();
+
+    res.status(200).json({ message: "Return request submitted, awaiting approval", uniqueItem });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const approveReturn = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { uniqueId, approve } = req.body;
+
+    // Find the unique item that is being approved/rejected
+    const uniqueItem = await UniqueItem.findOne({ uniqueId, approvalStatus: 'pending' });
+    if (!uniqueItem) {
+      res.status(400).json({ error: "Pending return request not found" });
       return;
     }
 
-    // Update the unique item's status and return date
-    uniqueItem.status = 'in_stock';
-    uniqueItem.returnDate = new Date();
-    await uniqueItem.save();
+    if (approve) {
+      // If approved, update the unique item's status and return date
+      uniqueItem.status = 'in_stock';
+      uniqueItem.returnDate = new Date();
+      uniqueItem.approvalStatus = 'approved';
+      uniqueItem.condition = req.body.condition;
+      await uniqueItem.save();
 
-    // Update the stock item's quantity and outQty
-    if (stockItem.stock !== undefined) {
-      stockItem.stock += 1;  // Increase stock by 1
+      // Find the corresponding stock item
+      const stockItem = await Stock.findOne({ productId: uniqueItem.productId });
+      if (!stockItem) {
+        res.status(400).json({ error: "Stock item not found" });
+        return;
+      }
+
+      // Update the stock item's quantity and outQty
+      if (stockItem.stock !== undefined) {
+        stockItem.stock += 1; // Increase stock by 1
+      }
+
+      if (stockItem.outQty !== undefined) {
+        stockItem.outQty -= 1; // Decrease outQty by 1
+      }
+
+      await stockItem.save();
+
+      res.status(200).json({ message: "Item return approved and processed", uniqueItem, stockItem });
+    } else {
+      // If rejected, update the unique item's status and condition
+      uniqueItem.status = 'rejected';
+      uniqueItem.approvalStatus = 'rejected';
+      uniqueItem.condition = req.body.condition;
+      await uniqueItem.save();
+
+      res.status(200).json({ message: "Item return rejected", uniqueItem });
     }
-
-    if (stockItem.outQty !== undefined) {
-      stockItem.outQty -= 1; // Decrease outQty by 1
-    }
-
-    await stockItem.save();
-
-    res.status(200).json({ message: "Item returned successfully", uniqueItem, stockItem });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -135,4 +209,4 @@ const getAllDispatches = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export { createDispatch, approveDispatch, returnItem, getAllDispatches };
+export { createDispatch, approveDispatch, returnItem, getAllDispatches, approveReturn };

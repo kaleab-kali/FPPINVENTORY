@@ -26,20 +26,20 @@ const ListCatagoryTable: React.FC = () => {
       })
     : [];
 
-  const handleEdit = (record: any) => {
-    setSelectedRow(record);
-    form.setFieldsValue({
-      categoryName: record.categoryName,
-      unitName: record.unitName,
-    });
-    console.log(record);
-    setIsModalVisible(true);
-  };
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };  
+  // const handleEdit = (record: any) => {
+  //   setSelectedRow(record);
+  //   form.setFieldsValue({
+  //     categoryName: record.categoryName,
+  //     unitName: record.unitName,
+  //   });
+  //   console.log(record);
+  //   setIsModalVisible(true);
+  // };
+  // const handleCancel = () => {
+  //   setIsModalVisible(false);
+  // };  
   console.log("Source:", Source);
-  const filteredData = Source.filter((entry) =>
+  const filteredData = Source.filter((entry: { categoryName: string; }) =>
     entry.categoryName?.toLowerCase().includes(searchValue.toLowerCase())
   );
 
@@ -74,7 +74,7 @@ const ListCatagoryTable: React.FC = () => {
     },
     {
       title: "Unit of Measurment",
-      dataIndex: "unitName",
+      dataIndex: "unit",
       key: "unit",
     },
 
@@ -88,7 +88,7 @@ const ListCatagoryTable: React.FC = () => {
           </Button>
           <Popconfirm
             title="Are you sure to delete this row?"
-            onConfirm={() => handleDelete(record.id || "")}
+            onConfirm={() => handleDelete(record.catID || "")}
             okText="Yes"
             cancelText="No"
           >

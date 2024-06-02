@@ -1,6 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { CategoryInfo } from '../../../../shared/types/Category';
-import { createCategory, updateCategory, deleteCategory } from "../api/categoryApi";
+import { CategoryInfo } from "../../../../shared/types/Category";
+import {
+  createCategory,
+  updateCategory,
+  deleteCategory,
+} from "../api/categoryApi";
+import { message } from "antd";
 
 export function useCreateCategory() {
   console.log("useCreateCategory");
@@ -10,11 +15,13 @@ export function useCreateCategory() {
     onMutate: () => {
       console.log("Mutating");
     },
-    onError: () => {
+    onError: (error: any) => {
       console.log("error");
+      message.error(error.message || "Failed to create category");
     },
     onSuccess: () => {
       console.log("success");
+      message.success("Category created successfully");
     },
     onSettled: async (_: any, error: any) => {
       console.log("settled");
@@ -27,34 +34,41 @@ export function useCreateCategory() {
   });
 }
 
-
 export function useUpdateCategory() {
-  console.log("useUpdateSupplier");
+  console.log("useUpdateCategory");
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: CategoryInfo) => {
       console.log("Data before mutation:", data);
       return updateCategory(data);
     },
-    onSuccess(result, variables, context) {
+    onError: (error: any) => {
+      console.log("error");
+      message.error(error.message || "Failed to update category");
+    },
+    onSuccess: (result: any, variables: { catID: any }, context: any) => {
       console.log("Successfully updated Category");
+      message.success("Category updated successfully");
       queryClient.invalidateQueries({ queryKey: ["category"] });
-      queryClient.invalidateQueries({ queryKey: ["category", {id : variables.catID}] });
-      
-    }
-    
-   
+      queryClient.invalidateQueries({
+        queryKey: ["category", { id: variables.catID }],
+      });
+    },
   });
-
 }
 
-export function useDeleteCategory () {
+export function useDeleteCategory() {
   console.log("useDeleteCategory");
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => deleteCategory(id),
-    onSuccess() {
+    onError: (error: any) => {
+      console.log("error");
+      message.error(error.message || "Failed to delete category");
+    },
+    onSuccess: () => {
       console.log("Successfully deleted Category");
+      message.success("Category deleted successfully");
     },
     onSettled: async (_: any, error: any) => {
       if (error) {
@@ -64,5 +78,4 @@ export function useDeleteCategory () {
       }
     },
   });
-
 }

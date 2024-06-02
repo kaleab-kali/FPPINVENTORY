@@ -91,7 +91,7 @@ const loginINVStaff = async (req: Request, res: Response): Promise<void> => {
       // Generate JWT token
       const token = jwt.sign({ id: invStaff._id , email, role: invStaff.role}, process.env.JWT_SECRET as string, { expiresIn: '1h' });
   
-      res.status(200).json({ message: 'Login successful', token });
+      res.status(200).json({ message: 'Login successful', token, role: invStaff.role });
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Internal Server Error' });

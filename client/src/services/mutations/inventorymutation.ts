@@ -1,6 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createItem, createUpload, deleteItem, updateItem } from "../api/inventoryitemapi";
+import {
+  createItem,
+  createUpload,
+  deleteItem,
+  updateItem,
+} from "../api/inventoryitemapi";
 import { ItemInfo } from "../../../../shared/types/itemTypes";
+import { message } from "antd";
 
 export function useCreateItem() {
   const queryClient = useQueryClient();
@@ -9,16 +15,18 @@ export function useCreateItem() {
     onMutate: () => {
       console.log("Mutating");
     },
-    onError: () => {
-      console.log("error");
+    onError: (error: any) => {
+      console.error("Error creating item:", error);
+      message.error(error.message || "Failed to create item");
     },
     onSuccess: () => {
-      console.log("success");
+      console.log("Success");
+      message.success("Item created successfully");
     },
     onSettled: async (_: any, error: any) => {
-      console.log("settled");
+      console.log("Settled");
       if (error) {
-        console.log(error);
+        console.error("Error on settle:", error);
       } else {
         await queryClient.invalidateQueries({ queryKey: ["Items"] });
       }
@@ -33,28 +41,26 @@ export function useCreateUpload() {
     onMutate: () => {
       console.log("Mutating");
     },
-    onError: () => {
-      console.log("error");
+    onError: (error: any) => {
+      console.error("Error uploading file:", error);
+      message.error(error.message || "Failed to upload file");
     },
-    onSuccess: (data: { filePath: any; fileName: any; }) => {
+    onSuccess: (data: { filePath: any; fileName: any }) => {
       console.log("Success");
-      // Access the data.filePath and data.fileName here
+      message.success("File uploaded successfully");
       console.log("File uploaded successfully:", data.filePath);
       console.log("File Name:", data.fileName);
-
-      // Further processing if needed
     },
     onSettled: async (_: any, error: any) => {
-      console.log("settled");
+      console.log("Settled");
       if (error) {
-        console.log(error);
+        console.error("Error on settle:", error);
       } else {
         await queryClient.invalidateQueries({ queryKey: ["uploads"] });
       }
     },
   });
 }
-
 
 export function useUpdateItem() {
   const queryClient = useQueryClient();
@@ -63,13 +69,18 @@ export function useUpdateItem() {
       console.log("Data before mutation:", data);
       return updateItem(data);
     },
-    onSuccess() {
-      console.log("Successfully updated Item");
+    onError: (error: any) => {
+      console.error("Error updating item:", error);
+      message.error(error.message || "Failed to update item");
     },
-    onSettled: async (_: any, error: any, variables: { employeeId: any; }) => {
-      console.log("settled");
+    onSuccess: () => {
+      console.log("Successfully updated Item");
+      message.success("Item updated successfully");
+    },
+    onSettled: async (_: any, error: any, variables: { employeeId: any }) => {
+      console.log("Settled");
       if (error) {
-        console.log(error);
+        console.error("Error on settle:", error);
       } else {
         await queryClient.invalidateQueries({ queryKey: ["Items"] });
         await queryClient.invalidateQueries({
@@ -82,15 +93,20 @@ export function useUpdateItem() {
 
 export function useDeleteItem() {
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: (id: string) => deleteItem(id),
-    onSuccess() {
+    onError: (error: any) => {
+      console.error("Error deleting item:", error);
+      message.error(error.message || "Failed to delete item");
+    },
+    onSuccess: () => {
       console.log("Successfully deleted item");
+      message.success("Item deleted successfully");
     },
     onSettled: async (_: any, error: any) => {
+      console.log("Settled");
       if (error) {
-        console.log(error);
+        console.error("Error on settle:", error);
       } else {
         await queryClient.invalidateQueries({ queryKey: ["Items"] });
       }

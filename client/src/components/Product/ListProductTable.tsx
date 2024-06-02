@@ -108,7 +108,7 @@ const ListTable: React.FC = () => {
     
     console.log("Source:", Source);
 
-    const productToEdit = Source.find((product) => product.productID === record.productID);
+    const productToEdit = Source.find((product:any) => product.productID === record.productID);
     console.log("Product to edit:", productToEdit);
     
     navigate("/product/registration", { state: { product: productToEdit } });

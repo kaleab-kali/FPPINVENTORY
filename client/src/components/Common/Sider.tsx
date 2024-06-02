@@ -59,7 +59,7 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
           icon={<UserOutlined />}
           onClick={() => handleMenuClick("dashboard")}
         >
-          <NavLink to="/">Dashboard</NavLink>
+          <NavLink to="/dashboard">Dashboard</NavLink>
         </Menu.Item>
         <Menu.SubMenu
           key="supplierSubMenu"

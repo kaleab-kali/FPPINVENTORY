@@ -7,6 +7,8 @@ export interface UniqueItemInfo extends Document {
   employeeId?: string;
   dispatchDate?: Date;
   returnDate?: Date;
+  approvalStatus?: string;
+  condition?: string;
 }
 
 const uniqueItemSchema = new Schema<UniqueItemInfo>(
@@ -16,7 +18,9 @@ const uniqueItemSchema = new Schema<UniqueItemInfo>(
     status: { type: String, enum: ['in_stock', 'dispatched', 'returned'], default: 'in_stock' },
     employeeId: { type: String, default: null },
     dispatchDate: { type: Date, default: null },
-    returnDate: { type: Date, default: null }
+    returnDate: { type: Date, default: null },
+    approvalStatus: { type: String },
+    condition: {type: String},
   },
   { timestamps: true }
 );

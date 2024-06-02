@@ -1,7 +1,9 @@
 import mongoose, { Document, Schema } from "mongoose";
+import bcrypt from "bcryptjs";
 import connectSecondaryDB from "../config/db2";
 import dotenv from "dotenv";
 dotenv.config();
+
 
 interface Education {
   graduationYear: string;
@@ -92,46 +94,18 @@ interface LeaveInfo {
   leaveType?: string;
   reason?: string;
   status?: string;
-  leaveBalance?: {
-    year: string;
-    leaveTypes: {
-      annual: {
-        credit: number;
-        used: number;
-        available: number;
-      };
-      health: {
-        credit: number;
-        used: number;
-        available: number;
-      };
-      study: {
-        credit: number;
-        used: number;
-        available: number;
-      };
-      maternity: {
-        credit: number;
-        used: number;
-        available: number;
-      };
-      family: {
-        credit: number;
-        used: number;
-        available: number;
-      };
-      paternity: {
-        credit: number;
-        used: number;
-        available: number;
-      };
-      unpaid: {
-        used: number;
-      };
-    };
-    name?: string;
-    email?: string;
-  };
+  leaveFlag?: boolean;
+}
+interface LeaveBalance {
+  leaveType: string;
+  credit: number;
+  used: number;
+  available: number;
+}
+
+interface YearlyLeaveBalances {
+  year: number;
+  balances: LeaveBalance[];
 }
 
 interface AppraisalHistory {
@@ -164,9 +138,20 @@ interface Evaluation {
 interface IAttendance {
   employeeId: string;
   date: Date;
-  status: "late" | "on time" | "absent";
+  status: "late" | "on time" | "absent" | "permission";
   recordedTime: Date;
   checkOutTime?: Date;
+  evidence?: string; 
+  reviewStatus?:string;
+}
+
+interface Complaint {
+  employeeId?: string;
+  category?: string;
+  complaint?: string;
+  description?: string;
+  complaintId?: string;
+  status?: string;
 }
 export interface EmployeeDocument extends Document {
   title: string;
@@ -193,12 +178,18 @@ export interface EmployeeDocument extends Document {
   spouseInfo?: SpouseInfo;
   divorcedInfo?: DivorcedInfo;
   leaveInfo?: LeaveInfo;
+  leaveBalances: YearlyLeaveBalances[];
   appraisalHistory: AppraisalHistory[];
   evaluations: Evaluation[];
   employmentDate?: Date;
   rankChanges: RankChange[];
   waitingPeriodUntil?: Date;
   attendanceRecords: IAttendance[];
+  complaints?: Complaint[];
+  lastSalaryRaise?: Date;
+  lastUpdated?: Date;
+  password?: string;
+  passwordChanged?: Boolean;
 }
 
 const rankChangeSchema = new Schema<RankChange>({
@@ -299,53 +290,29 @@ const employeeSchema = new Schema<EmployeeDocument>(
       divorceDate: { type: Date },
     },
     leaveInfo: {
+      leaveFlag: { type: Boolean, default: false },
       employeeId: { type: String },
       from: { type: Date },
       to: { type: Date },
       leaveType: { type: String },
       reason: { type: String },
       status: { type: String },
-      leaveBalance: {
-        year: String,
-        leaveTypes: {
-          annual: {
-            credit: { type: Number, default: 14 },
-            used: { type: Number, default: 0 },
-            available: { type: Number, default: 14 },
-          },
-          health: {
-            credit: { type: Number, default: 0 },
-            used: { type: Number, default: 0 },
-            available: { type: Number, default: 0 },
-          },
-          study: {
-            credit: { type: Number, default: 0 },
-            used: { type: Number, default: 0 },
-            available: { type: Number, default: 0 },
-          },
-          maternity: {
-            credit: { type: Number, default: 0 },
-            used: { type: Number, default: 0 },
-            available: { type: Number, default: 0 },
-          },
-          family: {
-            credit: { type: Number, default: 0 },
-            used: { type: Number, default: 0 },
-            available: { type: Number, default: 0 },
-          },
-          paternity: {
-            credit: { type: Number, default: 0 },
-            used: { type: Number, default: 0 },
-            available: { type: Number, default: 0 },
-          },
-          unpaid: {
-            used: { type: Number, default: 0 },
-          },
-        },
-        name: String,
-        email: String,
-      },
     },
+    lastUpdated: { type: Date, default: null },
+
+    leaveBalances: [
+      {
+        year: { type: Number },
+        balances: [
+          {
+            leaveType: { type: String },
+            credit: { type: Number, default: 0 },
+            used: { type: Number, default: 0 },
+            available: { type: Number, default: 0 },
+          },
+        ],
+      },
+    ],
     appraisalHistory: [
       {
         employeeId: { type: String },
@@ -368,18 +335,38 @@ const employeeSchema = new Schema<EmployeeDocument>(
     rankChanges: [rankChangeSchema],
     waitingPeriodUntil: { type: Date },
     evaluations: [evaluationSchema],
+    lastSalaryRaise: { type: Date },
     attendanceRecords: [
       {
         date: { type: Date, required: true },
         status: {
           type: String,
-          enum: ["late", "on time", "absent"],
+          enum: ["late", "on time", "absent", "permission"],
           required: true,
         },
-        recordedTime: { type: Date, required: true },
+        recordedTime: { type: Date },
         checkOutTime: { type: Date },
+        evidence: { type: String },
+        reviewStatus: { type: String },
       },
     ],
+    complaints: [
+      {
+        employeeId: { type: String },
+        category: { type: String },
+        complaint: { type: String },
+        description: { type: String },
+        complaintId: { type: String },
+        status: { type: String },
+      },
+    ],
+    password: {
+      type: String,
+      required: true,
+      //minlength: 12,
+      //validate: [validatePassword, "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character."],
+    },
+    passwordChanged: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
@@ -388,10 +375,19 @@ const employeeSchema = new Schema<EmployeeDocument>(
 const db = connectSecondaryDB(process.env.MONGODB_URI_EMPLOYEE as string, {
   // (optional) connection options
 });
+
 employeeSchema.pre<EmployeeDocument>("save", async function (next) {
   if (!this.empId) {
-    const count = await Employee.countDocuments();
-    this.empId = `FPC-${(count + 1).toString().padStart(4, "0")}`;
+    const lastEmployee = await Employee.findOne(
+      {},
+      {},
+      { sort: { createdAt: -1 } }
+    );
+    let lastempIdNumber = 0;
+    if (lastEmployee && lastEmployee.empId) {
+      lastempIdNumber = parseInt(lastEmployee.empId.split("-")[1]);
+    }
+    this.empId = `FPC-${(lastempIdNumber + 1).toString().padStart(4, "0")}`;
   }
   next();
 });

@@ -20,6 +20,7 @@ export interface PurchaseInfo extends Document {
   description?: string;
   purchaseDate?: Date;
   purchaseID?: string;
+  purchaseNumber?: string;
   status?: string;
 }
 
@@ -39,22 +40,23 @@ const purchaseSchema = new Schema<PurchaseInfo>(
     category: { type: String },
     description: { type: String },
     purchaseDate: { type: Date },
-    purchaseID: { type: String },
+    purchaseID: { type: String, unique: true },
+    purchaseNumber: {type: String},
     status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' }
   },
   { timestamps: true }
 );
 
-purchaseSchema.pre<PurchaseInfo>("save", async function (next) {
-  if (!this.purchaseID) {
-    const lastItem = await Purchase.findOne({}, {}, { sort: { createdAt: -1 } });
-    const lastPurchaseId = lastItem && lastItem.purchaseID ? parseInt(lastItem.purchaseID.split("-")[1]) : 0;
-    const newPurchaseId = `FPCPUR-${(lastPurchaseId + 1).toString().padStart(4, "0")}`;
-    this.purchaseID = newPurchaseId;
-  }
+// purchaseSchema.pre<PurchaseInfo>("save", async function (next) {
+//   if (!this.purchaseID) {
+//     const lastItem = await Purchase.findOne({}, {}, { sort: { createdAt: -1 } });
+//     const lastPurchaseId = lastItem && lastItem.purchaseID ? parseInt(lastItem.purchaseID.split("-")[1]) : 0;
+//     const newPurchaseId = `FPCPUR-${(lastPurchaseId + 1).toString().padStart(4, "0")}`;
+//     this.purchaseID = newPurchaseId;
+//   }
 
-  next();
-});
+//   next();
+// });
 
 purchaseSchema.post<PurchaseInfo>("save", async function (doc, next) {
   // Perform updates only if the purchase status is 'approved'

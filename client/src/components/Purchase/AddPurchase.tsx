@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Form, Input, Button, DatePicker, InputNumber, Row, Col, Typography, Table, Popconfirm } from 'antd';
 import { PurchaseInfo } from "../../../../shared/types/Purchase";
+import { useCreatePurchase } from '../../services/mutations/purchaseMutation';
 
 const { Title } = Typography;
 
@@ -14,6 +15,8 @@ interface PurchaseTableData extends PurchaseInfo {
 const AddPurchase: React.FC = () => {
   const [form] = Form.useForm();
   const [purchases, setPurchases] = useState<PurchaseTableData[]>([]);
+
+  const createProductMutation = useCreatePurchase();
 
   const onFinish = (values: PurchaseInfo) => {
     const newPurchase: PurchaseTableData = {
@@ -43,8 +46,10 @@ const AddPurchase: React.FC = () => {
 
   const handlePurchase = () => {
     console.log('Purchases:', purchases);
-    const dataToSend = purchases.map(({ key, ...rest }) => rest);
+    const dataToSend = purchases.map(({ key, ...rest }) => rest) as PurchaseInfo[];
+    
     console.log('Purchasing data:', dataToSend);
+    createProductMutation.mutate(dataToSend);
     
   };
 

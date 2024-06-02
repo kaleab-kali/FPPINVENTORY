@@ -41,16 +41,16 @@ export const getPurchaseIds = async () => {
   };
   
   
-//   export const createProduct = async (data: ProductInfo) => {
-//     console.log("Data before mutation:", data);
-//     // await fetch(`${BASE_URL}/items`, {
-//     //   method: "POST",
-//     //   headers: {
-//     //     "Content-Type": "application/json",
-//     //   },
-//     //   body: JSON.stringify(data),
-//     // });
-//   };
+  export const createPurchase = async (data: PurchaseInfo[]) => {
+    console.log("Data before mutation:", data);
+    // await fetch(`${BASE_URL}/purchase`, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(data),
+    // });
+  };
 
   export const updatePurchase = async (data: PurchaseInfo) => {
     const response = await fetch(`${BASE_URL}/purchase/${data.purchaseID}`, {
@@ -62,20 +62,20 @@ export const getPurchaseIds = async () => {
     });
   
     if (!response.ok) {
-      throw new Error("Failed to update Product data");
+      throw new Error("Failed to update Purchase data");
     }
   };
   
   
-//   export const deleteProduct = async (id: string) => {
-//     const response = await fetch(`${BASE_URL}/product/${id}`, {
-//       method: "DELETE",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//     });
+  export const deletePurchase = async (id: string) => {
+    const response = await fetch(`${BASE_URL}/purchase/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   
-//     if (!response.ok) {
-//       throw new Error("Failed to delete Product");
-//     }
-//   };
+    if (!response.ok) {
+      throw new Error("Failed to delete Purchase");
+    }
+  };

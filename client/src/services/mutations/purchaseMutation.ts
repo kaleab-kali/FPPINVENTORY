@@ -1,6 +1,32 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { PurchaseInfo } from '../../../../shared/types/Purchase';
-import { updatePurchase } from "../api/purchaseApi";
+import { updatePurchase, createPurchase } from "../api/purchaseApi";
+
+
+export function useCreatePurchase() {
+  // console.log("useCreateProduct");
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: PurchaseInfo[]) => createPurchase(data),
+    onMutate: () => {
+      console.log("Mutating");
+    },
+    onError: () => {
+      console.log("error");
+    },
+    onSuccess: () => {
+      console.log("success");
+    },
+    onSettled: async (_: any, error: any) => {
+      console.log("settled");
+      if (error) {
+        console.log(error);
+      } else {
+        await queryClient.invalidateQueries({ queryKey: ["purchase"] });
+      }
+    },
+  });
+}
 
 
 export function useUpdatePurchase() {

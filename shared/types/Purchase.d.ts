@@ -15,5 +15,6 @@ export interface PurchaseInfo {
     description?: string;
     purchaseDate?: Date;
     purchaseID?: string;
+    purchaseNumber?: string;
     status?: string;
   }

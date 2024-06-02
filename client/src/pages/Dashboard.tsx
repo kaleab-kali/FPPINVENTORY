@@ -40,7 +40,7 @@ const Dashboard: React.FC = () => {
         
         <Content>
           <Routes>
-            <Route path="/dashboard" element={<Stat />}></Route>
+            <Route path="/" element={<Stat />}></Route>
             <Route path="/supplier" >
               <Route path="list" element={<SupplierPage />} />
               <Route path="inactivelist" element={<InactiveSupplierPage />} />

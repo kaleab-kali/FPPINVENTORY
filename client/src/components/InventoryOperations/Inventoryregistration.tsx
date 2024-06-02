@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import {
   Form,
   Input,
@@ -10,11 +11,12 @@ import {
   Typography,
   DatePicker,
   Checkbox,
+  message,
 } from "antd";
 import moment from "moment";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import { useCreateProduct } from "../../services/mutations/productMutation";
+import { useCreateProduct,useUpdateProduct } from "../../services/mutations/productMutation";
 import { ProductInfo } from "../../../../shared/types/Product";
 import { useAllUnits } from "../../services/queries/unitQueries";
 import { useAllCategorys } from "../../services/queries/categoryQueries";
@@ -29,13 +31,43 @@ dayjs.extend(customParseFormat);
 const { Option } = Select;
 const { Title } = Typography;
 
-const InventoryRegistrationForm: React.FC = () => {
-  const [form] = Form.useForm();
+interface InventoryRegistrationFormProps {
+  initialValues?: any;
+}
+const InventoryRegistrationForm: React.FC<InventoryRegistrationFormProps> = ({ initialValues }) => {
+  initialValues ? console.log("Initial Values:", initialValues) : console.log("Initial Values: No initial values");
 
+  const [form] = Form.useForm();
+  const navigate = useNavigate();
   const createProductMutation = useCreateProduct();
+  const updateProductMutation = useUpdateProduct();
   const getAllUnitsQuery = useAllUnits();
   const getAllCategorysQuery = useAllCategorys();
   const getAllSuppliersQuery = useAllSuppliers();
+
+  useEffect(() => {
+    if (initialValues) {
+      form.setFieldsValue({
+        name: initialValues.name,
+        model: initialValues.model,
+        brand: initialValues.brand,
+        supplier: initialValues.suppliername,
+        manufacturedate: moment(initialValues.manufactureDate),
+        expirationdate: moment(initialValues.expirationDate),
+        quantity: initialValues.quantity,
+        wight: initialValues.wight,
+        price: initialValues.price,
+        category: initialValues.catagory,
+        unit: initialValues.unit,
+        purchasedate: moment(initialValues.purchaseDate),
+        returnable: Boolean(initialValues.returnable),
+        description: initialValues.discription,
+      });
+      console.log("Initial Values after edit dispaly:", initialValues);
+    } else {
+      form.resetFields();
+
+    }} , [initialValues, form]);
 
   const unitSource = getAllUnitsQuery.data ? getAllUnitsQuery.data.map((queryResult: UnitInfo) => { 
     return {
@@ -55,7 +87,7 @@ const InventoryRegistrationForm: React.FC = () => {
   }) : [];
 
   const supplierSource = getAllSuppliersQuery.data ? getAllSuppliersQuery.data.map((queryResult: SupplierInfo) => {
-    console.log("Query result supplier:", queryResult);
+    // console.log("Query result supplier:", queryResult);
     return {
       key: queryResult.sid,
       sid: queryResult.sid,
@@ -65,7 +97,7 @@ const InventoryRegistrationForm: React.FC = () => {
       address: queryResult.address,
     };
   }) : [];
-  console.log("Supplier Source:", supplierSource);
+  
 
   const onFinish = (values: any) => {
     // console.log("Form data:", values);
@@ -89,6 +121,7 @@ const InventoryRegistrationForm: React.FC = () => {
     const returnable = returnableValue === "true" ? true : false;
 
     const productInfo: ProductInfo = {
+      productID: initialValues?.productID || "",
       name: formData.get("name") as string,
       models: formData.get("model") as string,
       brand: formData.get("brand") as string,
@@ -104,12 +137,22 @@ const InventoryRegistrationForm: React.FC = () => {
       discription: formData.get("description") as string,
     };
     // console.log("Product info:", productInfo);
-    createProductMutation.mutate(productInfo);
+    if(initialValues){
+      console.log("Update product mutation:", productInfo);
+      updateProductMutation.isPending ? message.loading("Updating product...") :
+      updateProductMutation.mutate(productInfo);
+      message.success("Product updated successfully");
+      navigate("/product/view");
+
+    }else{
+      createProductMutation.mutate(productInfo);
+    }
+    
   };
 
   const onValuesChange = (changedValues: any, allValues: any) => {
     // console.log("Changed values:", changedValues);
-    console.log("All values:", allValues);
+    // console.log("All values:", allValues);
   };
 
   return (
@@ -119,6 +162,7 @@ const InventoryRegistrationForm: React.FC = () => {
         layout="vertical"
         onFinish={onFinish}
         onValuesChange={onValuesChange}
+        initialValues={initialValues}
       >
         <Row gutter={16}>
           <Col span={8}>
@@ -279,7 +323,7 @@ const InventoryRegistrationForm: React.FC = () => {
 
         <Form.Item>
           <Button type="primary" htmlType="submit">
-            Add Product
+            {initialValues ? "Update Product" : "Add Product"}
           </Button>
         </Form.Item>
       </Form>

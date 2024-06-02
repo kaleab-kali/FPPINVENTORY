@@ -31,8 +31,6 @@ const SupplierPage = () => {
             <AddSupplier />
             <Title level={5}> Supplier Data</Title>
             <ListTable />
-
-
           
         </Content>
       </Layout>

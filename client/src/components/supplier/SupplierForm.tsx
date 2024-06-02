@@ -1,16 +1,34 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Form, Input, Row, Col, Button, message } from "antd";
 import { SupplierInfo } from "../../../../shared/types/Supplier";
-import { useCreateSupplier } from "../../services/mutations/supplierMutation";
+import { useCreateSupplier, useUpdateSupplier } from "../../services/mutations/supplierMutation";
 
 interface SupplierFormProps {
+  initialValues?: SupplierInfo;
   visible: boolean;
   onCancel: () => void;
 }
 
-const SupplierForm: React.FC<SupplierFormProps> = ({ visible, onCancel }) => {
+const SupplierForm: React.FC<SupplierFormProps> = ({initialValues, visible, onCancel }) => {
   const [form] = Form.useForm();
+
+  useEffect(() => {
+    if (initialValues) {
+      form.setFieldsValue({
+        name: initialValues.name,
+        mobilenumber: initialValues.mobileNumber,
+        email: initialValues.email,
+        address: initialValues.address,
+      });
+      console.log("Initial Values after edit dispaly:", initialValues);
+    } else {
+      form.resetFields();
+    }
+  }, [initialValues, form]);
+  
+  
   const createSupplierMutation = useCreateSupplier();
+  const updateSupplierMutation = useUpdateSupplier();
 
   const onFinish = async (values: any) => {
     try {
@@ -18,23 +36,28 @@ const SupplierForm: React.FC<SupplierFormProps> = ({ visible, onCancel }) => {
 
       const formData = new FormData();
       formData.append("name", values.name);
-      formData.append("mnumber", values.mnumber);
+      formData.append("mobilenumber", values.mnumber);
       formData.append("email", values.email);
       formData.append("address", values.address);
 
       const supplierInfo: SupplierInfo = {
-        sid: "",
+        sid: initialValues?.sid || "", 
         name: formData.get("name") as string,
-        mobileNumber: formData.get("mnumber") as string,
+        mobileNumber: formData.get("mobilenumber") as string,
         email: formData.get("email") as string,
         address: formData.get("address") as string,
       };
 
-      createSupplierMutation.mutate(supplierInfo);
-
-      message.success("Supplier added successfully!");
+      if (initialValues) {
+        updateSupplierMutation.mutate(supplierInfo);
+        message.success("Supplier updated successfully!");
+      } else {
+        createSupplierMutation.mutate(supplierInfo);
+        console.log("Creating supplier:", supplierInfo);
+        message.success("Supplier added successfully!");
+      }
       form.resetFields();
-      onCancel(); // Close the modal after submission
+      onCancel(); 
     } catch (error) {
       console.error("Validation failed:", error);
     }
@@ -42,12 +65,12 @@ const SupplierForm: React.FC<SupplierFormProps> = ({ visible, onCancel }) => {
 
   return (
     <Modal
-      title="Add Supplier"
+      title={initialValues ? "Edit Supplier" : "Add Supplier"}
       visible={visible}
       onCancel={onCancel}
       footer={null}
     >
-      <Form form={form} layout="vertical" onFinish={onFinish}>
+      <Form form={form} layout="vertical" onFinish={onFinish} initialValues={initialValues}>
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item
@@ -60,7 +83,7 @@ const SupplierForm: React.FC<SupplierFormProps> = ({ visible, onCancel }) => {
           </Col>
           <Col span={12}>
             <Form.Item
-              name="mnumber"
+              name="mobilenumber"
               label="Mobile Number"
               rules={[
                 { required: true, message: "Please enter the mobile number" },
@@ -85,7 +108,9 @@ const SupplierForm: React.FC<SupplierFormProps> = ({ visible, onCancel }) => {
             <Form.Item
               name="address"
               label="Address"
-              rules={[{ required: true, message: "Please enter the address" }]}
+              rules={[
+                { required: true, message: "Please enter the address" },
+              ]}
             >
               <Input />
             </Form.Item>
@@ -93,7 +118,7 @@ const SupplierForm: React.FC<SupplierFormProps> = ({ visible, onCancel }) => {
         </Row>
         <Form.Item>
           <Button type="primary" htmlType="submit">
-            Add Supplier
+          {initialValues ? "Update Supplier" : "Add Supplier"}
           </Button>
         </Form.Item>
       </Form>
@@ -102,3 +127,4 @@ const SupplierForm: React.FC<SupplierFormProps> = ({ visible, onCancel }) => {
 };
 
 export default SupplierForm;
+

@@ -1,9 +1,10 @@
 import { ProductInfo } from '../../../../shared/types/Product';
+import BASE_URL from '../sharedVariables';
 
-const BASE_URL = "http://localhost:7000";
+// const BASE_URL = "http://localhost:7000";
 
 export const getProductIds = async () => {
-    console.log("getProductIds");
+    // console.log("getProductIds");
     const response = await fetch(`${BASE_URL}/items`);
   
     if (!response.ok) {
@@ -37,7 +38,7 @@ export const getProductIds = async () => {
     }
   
   const data: ProductInfo[] = await response.json();
-  console.log(data); 
+  // console.log(data); 
     return data;
   };
   

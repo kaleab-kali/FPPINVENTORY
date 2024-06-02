@@ -1,6 +1,7 @@
 import { CategoryInfo } from '../../../../shared/types/Category';
+import BASE_URL from '../sharedVariables';
 
-const BASE_URL = "http://localhost:7000";
+// const BASE_URL = "http://localhost:7000";
 
 export const getCategoryIds = async () => {
     console.log("getCategoryIds");
@@ -53,6 +54,7 @@ export const getCategoryIds = async () => {
   };
 
   export const updateCategory = async (data: CategoryInfo) => {
+    console.log("Data before update mutation:", data);
     const response = await fetch(`${BASE_URL}/category/${data.catID}`, {
       method: "PUT",
       headers: {

@@ -16,6 +16,10 @@ import CatagoryPage from "./Catagory/CatagoryPage";
 import StockPage from "./Stock/StockPage";
 import ResourcePage from "./Resource/ResourcePage";
 import InactiveSupplierPage from "./SupplierPage/InactivSupplierPage";
+import AddPurchasePage from "./Purchase/AddPurchasePage";
+import AllPurchasePage from "./Purchase/AllPurchasePage";
+import ApprovedPurchasePage from "./Purchase/ApprovedPurchasePage";
+import ResourceAllocationPage from "./Resource/ResourceAllocationPage";
 // import Stat from "./Stat";
 
 const { Content } = Layout;
@@ -55,12 +59,23 @@ const Dashboard: React.FC = () => {
 
               <Route path="view" element={<InventoryProfilePage />} />
             </Route>
+            <Route path="/purchase">
+              <Route
+                path="addPurchase"
+                element={<AddPurchasePage />}
+              />
+
+              <Route path="list" element={<AllPurchasePage />} />
+              <Route path="approved" element={<ApprovedPurchasePage />} />
+              <Route path="report" element={<ApprovedPurchasePage />} />
+            </Route>
             <Route path="/stock" >
               <Route path="list" element={<StockPage />} />
             </Route>
 
             <Route path="/resource">
               <Route path="request" element={<ResourcePage />} />
+              <Route path="currentDispatch" element={<ResourceAllocationPage />} />
               
             </Route>
           </Routes>

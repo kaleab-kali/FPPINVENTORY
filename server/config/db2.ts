@@ -1,7 +1,7 @@
 import mongoose, { Connection } from "mongoose";
 
 const connectSecondaryDB = (
-  uri: any,
+  uri: string,
   options: mongoose.ConnectOptions = {}
 ): Connection => {
   // Connect to MongoDB

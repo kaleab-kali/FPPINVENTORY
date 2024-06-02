@@ -1,21 +1,45 @@
 import { Request, Response, NextFunction } from "express";
 import Employee from "../models/employeeModel";
-
-const createEmployee = async (req: Request, res: Response): Promise<void> => {
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+const loginController = async (req: Request, res: Response): Promise<void> => {
   try {
-    const newEmployee = new Employee(req.body);
+    const { email, password } = req.body;
+    
+    // Check if employee exists
+    const employee = await Employee.findOne({ email: email });
+    if (!employee) {
+      res.status(404).json({ message: "Employee not found" });
+      return;
+    }
 
-    await newEmployee.save();
+    // Check if the password matches
+    if (employee.password && typeof employee.password === 'string') {
+      const isMatch = await bcrypt.compare(password, employee.password);
+      if (!isMatch) {
+        res.status(401).json({ message: "Invalid credentials" });
+        return;
+      }
+    } else {
+      res.status(500).json({ error: "Invalid employee password" });
+      return;
+    }
 
-    res
-      .status(201)
-      .json({ message: "Employee saved successfully", newEmployee });
+    // Check if the password is the OTP and hasn't been changed
+    if (!employee.passwordChanged) {
+      res.status(403).json({ message: "Password change required" });
+      return;
+    }
+
+    // Generate JWT token
+    const token = jwt.sign({ empId: employee.empId }, process.env.JWT_SECRET as string, { expiresIn: "1h" });
+
+    res.status(200).json({ message: "Login successful", token });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
 const getEmployeeById = async (req: Request, res: Response): Promise<void> => {
   try {
     const employee = await Employee.findById(req.params.id);
@@ -65,100 +89,9 @@ const updateEmployee = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-const deleteEmployee = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const deletedEmployee = await Employee.findByIdAndDelete(req.params.id);
-    if (!deletedEmployee) {
-      res.status(404).json({ error: "Employee not found" });
-      return;
-    }
-    res.status(200).json({
-      message: "Employee deleted successfully",
-      deletedEmployee,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
-const createEvaluation = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const {
-      employeeId,
-      workQuality,
-      productivity,
-      communication,
-      collaboration,
-      punctuality,
-      evaluationYear,
-    } = req.body;
-
-    // Calculate the total score
-    const total =
-      (workQuality +
-        productivity +
-        communication +
-        collaboration +
-        punctuality) *
-      0.25;
-
-    // Update the employee document with the new evaluation
-    const employee = await Employee.findOne({ empId: employeeId });
-    if (!employee) {
-      res.status(404).json({ error: "Employee not found" });
-      return;
-    }
-
-    // Add the evaluation to the evaluations array
-    const evaluation = {
-      employeeId,
-      workQuality,
-      productivity,
-      communication,
-      collaboration,
-      punctuality,
-      evaluationYear,
-      total,
-    };
-    employee.evaluations.push(evaluation);
-
-    await employee.save();
-
-    res
-      .status(201)
-      .json({ message: "Evaluation added successfully", evaluation });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
-const getEvaluationByEmployeeId = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  try {
-    const { employeeId } = req.params;
-    const employee = await Employee.findOne({ empId: employeeId });
-    if (!employee) {
-      res.status(404).json({ error: "Employee not found" });
-      return;
-    }
-    const evaluations = employee.evaluations;
-    res.status(200).json({ evaluations });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
 export {
-  createEmployee,
   updateEmployee,
-  deleteEmployee,
   getAllEmployees,
   getEmployeeById,
-  createEvaluation,
-  getEvaluationByEmployeeId,
+  loginController,
 };

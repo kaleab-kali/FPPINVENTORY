@@ -1,6 +1,7 @@
 import { UnitInfo } from "../../../../shared/types/Unit";
+import BASE_URL from '../sharedVariables';
 
-const BASE_URL = "http://localhost:7000";
+// const BASE_URL = "http://localhost:7000";
 
 export const getUnitIds = async () => {
   console.log("getUnitIds");
@@ -53,6 +54,7 @@ export const createUnit = async (data: UnitInfo) => {
 };
 
 export const updateUnit = async (data: UnitInfo) => {
+  console.log("Data before updateApi:", data);
   const response = await fetch(`${BASE_URL}/units/${data.unitID}`, {
     method: "PUT",
     headers: {

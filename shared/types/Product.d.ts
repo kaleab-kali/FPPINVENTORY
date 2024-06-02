@@ -13,8 +13,9 @@ export interface ProductInfo {
   returnable?: boolean;
   discription?: string;
   purchaseDate?: Date;
-//   unique_productIDs?: string[];
+  unique_productIDs?: string[];
   productID?: string;
+//   unique_productIDs?: string[];
 
 //   image?: string;
 //   status?: string;

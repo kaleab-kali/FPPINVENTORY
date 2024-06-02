@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CategoryInfo } from '../../../../shared/types/Category';
-import { createCategory, deleteCategory, updateCategory } from "../api/categoryApi";
+import { createCategory, updateCategory, deleteCategory } from "../api/categoryApi";
 
 export function useCreateCategory() {
   console.log("useCreateCategory");
@@ -26,38 +26,35 @@ export function useCreateCategory() {
     },
   });
 }
+
+
 export function useUpdateCategory() {
+  console.log("useUpdateSupplier");
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: CategoryInfo) => {
       console.log("Data before mutation:", data);
       return updateCategory(data);
     },
-    onSuccess() {
-      console.log("Successfully updated category");
-    },
-    onSettled: async (_: any, error: any, variables: { _id: any }) => {
-      console.log("settled", variables._id);
-      if (error) {
-        console.log(error);
-      } else {
-        await queryClient.invalidateQueries({ queryKey: ["category"] });
-        await queryClient.invalidateQueries({
-          queryKey: ["category", { id: variables._id }],
-        });
-        // await queryClient.setQueryData(["supplier", { id: variables._id }]);
-      }
-    },
+    onSuccess(result, variables, context) {
+      console.log("Successfully updated Category");
+      queryClient.invalidateQueries({ queryKey: ["category"] });
+      queryClient.invalidateQueries({ queryKey: ["category", {id : variables.catID}] });
+      
+    }
+    
+   
   });
+
 }
 
-export function useDeleteCategory() {
+export function useDeleteCategory () {
+  console.log("useDeleteCategory");
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: (id: string) => deleteCategory(id),
     onSuccess() {
-      console.log("Successfully deleted category");
+      console.log("Successfully deleted Category");
     },
     onSettled: async (_: any, error: any) => {
       if (error) {
@@ -67,4 +64,5 @@ export function useDeleteCategory() {
       }
     },
   });
+
 }

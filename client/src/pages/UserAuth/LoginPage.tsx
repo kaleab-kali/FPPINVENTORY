@@ -1,27 +1,44 @@
-// src/pages/LoginPage.tsx
-import { Layout, Typography, theme, Form, Input, Button, message } from "antd";
+import {
+  Layout,
+  Typography,
+  theme,
+  Form,
+  Input,
+  Button,
+  message,
+  Select,
+} from "antd";
 import React, { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { loginUser } from "../../services/api/authApi";
+import { loginEmployee, loginInvStaff } from "../../services/api/authApi";
 import { useNavigate } from "react-router-dom";
 
 const { Header, Content, Footer } = Layout;
 const { Title } = Typography;
+const { Option } = Select;
 
 const LoginPage = () => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const { login } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [loginType, setLoginType] = useState<"employee" | "invstaff">(
+    "employee"
+  );
 
   const onFinish = async (values: { email: string; password: string }) => {
     setLoading(true);
     try {
-      const data = await loginUser(values.email, values.password);
-      login(data.token, data.role);
-      navigate("/");
+      let data;
+      if (loginType === "employee") {
+        data = await loginEmployee(values.email, values.password);
+      } else {
+        data = await loginInvStaff(values.email, values.password);
+      }
+      login(data.token, data.role, loginType);
+      navigate("/")
       message.success("Login successful!");
     } catch (error) {
       message.error("Login failed. Please check your credentials.");
@@ -70,10 +87,20 @@ const LoginPage = () => {
           }}
         >
           <Title level={4}>Login</Title>
+          <Select
+            defaultValue="employee"
+            style={{ width: 120, marginBottom: 20 }}
+            onChange={(value: "employee" | "invstaff") => setLoginType(value)}
+          >
+            <Option value="employee">Employee</Option>
+            <Option value="invstaff">InvStaff</Option>
+          </Select>
           <Form name="login" onFinish={onFinish} style={{ maxWidth: 300 }}>
             <Form.Item
               name="email"
-              rules={[{ required: true, message: "Please input your email!" }]}
+              rules={[
+                { required: true, message: "Please input your email!" },
+              ]}
             >
               <Input placeholder="Email" />
             </Form.Item>

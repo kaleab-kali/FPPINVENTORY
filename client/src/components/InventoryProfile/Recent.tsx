@@ -8,7 +8,7 @@ import { HiDotsVertical } from "react-icons/hi";
 const { Meta } = Card;
 const Recent = () => {
   return (
-    <div style={{ backgroundColor: "white" }}>
+    <div style={{ backgroundColor: "white", width:"100%" }}>
       <Card>
         <Flex
           gap="large"

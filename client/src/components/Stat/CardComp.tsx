@@ -47,7 +47,7 @@ const CardComp: React.FC = () => {
   };
 
   return (
-    <div>
+    <div style={{marginTop:"30px", marginLeft:"30px", marginRight:"30px"}}>
       <Row gutter={16}>
         <Col span={6}>
           <Card

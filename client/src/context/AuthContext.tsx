@@ -1,27 +1,35 @@
-// src/context/AuthContext.tsx
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
+interface User {
+  role: string;
+  token: string;
+  type: "employee" | "invstaff";
+}
+
 interface AuthContextType {
-  user: { token: string; role: string } | null;
-  login: (token: string, role: string) => void;
+  user: User | null;
+  login: (token: string, role: string, type: "employee" | "invstaff") => void;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<{ token: string; role: string } | null>(
-    null
-  );
+  const [user, setUser] = useState<User | null>(null);
 
-  const login = (token: string, role: string) => {
-    setUser({ token, role });
-    localStorage.setItem("user", JSON.stringify({ token, role }));
+  const login = (
+    token: string,
+    role: string,
+    type: "employee" | "invstaff"
+  ) => {
+    setUser({ token, role, type });
+    localStorage.setItem("user", JSON.stringify({ token, role,type }));
+
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("user");
+        localStorage.removeItem("user");
   };
 
   return (

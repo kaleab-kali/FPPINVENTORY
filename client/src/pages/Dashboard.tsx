@@ -26,29 +26,39 @@ const { Content } = Layout;
 
 const Dashboard: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
+const userString = localStorage.getItem("user");
 
+if (!userString) {
+  throw new Error("User not found in local storage");
+}
+
+const user = JSON.parse(userString);
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
   };
   return (
     <Layout>
       <Sider collapsed={collapsed} />
-     
+
       {/* <Divider /> */}
       <Layout>
-      <Header collapsed={collapsed} toggleCollapsed={toggleCollapsed}/>
-        
+        <Header
+          collapsed={collapsed}
+          toggleCollapsed={toggleCollapsed}
+          username={user.role}
+        />
+
         <Content>
           <Routes>
             <Route path="/" element={<Stat />}></Route>
-            <Route path="/supplier" >
+            <Route path="/supplier">
               <Route path="list" element={<SupplierPage />} />
               <Route path="inactivelist" element={<InactiveSupplierPage />} />
             </Route>
-            <Route path="/category" >
+            <Route path="/category">
               <Route path="list" element={<CatagoryPage />} />
             </Route>
-            <Route path="/units" >
+            <Route path="/units">
               <Route path="list" element={<UnitsPage />} />
             </Route>
             <Route path="/product">
@@ -60,23 +70,22 @@ const Dashboard: React.FC = () => {
               <Route path="view" element={<InventoryProfilePage />} />
             </Route>
             <Route path="/purchase">
-              <Route
-                path="addPurchase"
-                element={<AddPurchasePage />}
-              />
+              <Route path="addPurchase" element={<AddPurchasePage />} />
 
               <Route path="list" element={<AllPurchasePage />} />
               <Route path="approved" element={<ApprovedPurchasePage />} />
               <Route path="report" element={<ApprovedPurchasePage />} />
             </Route>
-            <Route path="/stock" >
+            <Route path="/stock">
               <Route path="list" element={<StockPage />} />
             </Route>
 
             <Route path="/resource">
               <Route path="request" element={<ResourcePage />} />
-              <Route path="currentDispatch" element={<ResourceAllocationPage />} />
-              
+              <Route
+                path="currentDispatch"
+                element={<ResourceAllocationPage />}
+              />
             </Route>
           </Routes>
         </Content>

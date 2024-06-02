@@ -1,7 +1,7 @@
 // src/pages/Login.tsx
 import React, { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { loginUser } from "../../services/api/authApi";
+// import { loginUser } from "../../services/api/authApi";
 
 const Login = () => {
   const { login } = useAuth();
@@ -11,8 +11,8 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const data = await loginUser(username, password);
-      login(data.token, data.role);
+    //   const data = await loginUser(username, password);
+    //   login(data.token, data.role);
     } catch (error) {
       console.error("Login failed:", error);
     }

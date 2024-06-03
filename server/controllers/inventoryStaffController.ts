@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 
 const createINVStaff = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { email, firstName, lastName, password, role } = req.body;
+    const { email, firstName, lastName, password, role, phoneNumber, employmentDate } = req.body;
 
     // Check if Invetory Staff with the same email already exists
     const existingINVStaff = await INVStaff.findOne({ email });
@@ -17,6 +17,9 @@ const createINVStaff = async (req: Request, res: Response): Promise<void> => {
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Get the photo path from the uploaded file
+    const photo = req.file?.path;
+
     // Create the new Invetory Staff
     const newINVStaff = new INVStaff({
       email,
@@ -24,6 +27,9 @@ const createINVStaff = async (req: Request, res: Response): Promise<void> => {
       lastName,
       password: hashedPassword,
       role,
+      phoneNumber, 
+      employmentDate, 
+      photo, 
     });
 
     // Save the new Invetory Staff
@@ -130,4 +136,26 @@ const loginINVStaff = async (req: Request, res: Response): Promise<void> => {
     }
   };
 
-export { createINVStaff, createAdmin, loginINVStaff, changePassword };
+  // Get All Inventory Staff
+  const getAllINVStaff = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const invStaff = await INVStaff.find({ role: { $ne: 'admin' } });
+      res.status(200).json(invStaff);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
+  
+  // Get Personnel
+  const getPersonnel = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const personnel = await INVStaff.find({ role: 'personnel' });
+      res.status(200).json(personnel);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
+
+export { createINVStaff, createAdmin, loginINVStaff, changePassword, getAllINVStaff, getPersonnel };

@@ -15,6 +15,9 @@ interface IinvStaff extends Document {
   lastName: string;
   password: string;
   role: Roles;
+  phoneNumber: string;
+  employmentDate: Date;
+  photo: string;
 }
 
 // Define schema for Invetory Staff
@@ -24,6 +27,9 @@ const inventoryStaffSchema: Schema = new Schema({
   lastName: { type: String, required: true },
   password: { type: String, required: true },
   role: { type: String, required: true, enum: Object.values(Roles) },
+  phoneNumber: { type: String, required: true },
+  employmentDate: { type: String, required: true },
+  photo: { type: String },
 });
 
 // Create and export Invetory Staff model

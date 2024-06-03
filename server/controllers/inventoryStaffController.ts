@@ -158,4 +158,41 @@ const loginINVStaff = async (req: Request, res: Response): Promise<void> => {
     }
   };
 
-export { createINVStaff, createAdmin, loginINVStaff, changePassword, getAllINVStaff, getPersonnel };
+  const updateINVStaff = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { id } = req.params;
+      const { email, firstName, lastName, role, phoneNumber, employmentDate, photo } = req.body;
+  
+      // Find the inventory staff by ID
+      const invStaff = await INVStaff.findById(id);
+      if (!invStaff) {
+        res.status(404).json({ message: 'Inventory Staff not found' });
+        return;
+      }
+  
+      // Update the fields excluding the password
+      invStaff.email = email || invStaff.email;
+      invStaff.firstName = firstName || invStaff.firstName;
+      invStaff.lastName = lastName || invStaff.lastName;
+      invStaff.role = role || invStaff.role;
+      invStaff.phoneNumber = phoneNumber || invStaff.phoneNumber;
+      invStaff.employmentDate = employmentDate || invStaff.employmentDate;
+  
+      // Update the photo 
+      if (req.file?.path) {
+        invStaff.photo = req.file.path;
+      } else {
+        invStaff.photo = photo || invStaff.photo;
+      }
+  
+      // Save the updated inventory staff
+      await invStaff.save();
+  
+      res.status(200).json({ message: 'Inventory Staff updated successfully', invStaff });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
+
+export { createINVStaff, createAdmin, loginINVStaff, changePassword, getAllINVStaff, getPersonnel, updateINVStaff };

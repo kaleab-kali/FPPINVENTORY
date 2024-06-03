@@ -36,7 +36,7 @@ const ListTable: React.FC = () => {
     : [];
 
   console.log("Source:", Source);
-  const filteredData = Source.filter((entry: { name: string; }) =>
+  const filteredData = Source.filter((entry) =>
     entry.name?.toLowerCase().includes(searchValue.toLowerCase())
   );
 

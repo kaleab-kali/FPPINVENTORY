@@ -20,7 +20,11 @@ const Stat = () => {
   return (
     <>
       <CardComp />
-      <Flex vertical={false} justify="space-around" style={{marginLeft:"20px", marginRight:"30px"}}>
+      <Flex
+        vertical={false}
+        justify="space-around"
+        style={{ marginLeft: "20px", marginRight: "30px" }}
+      >
         <Flex vertical>
           <h1 style={{ marginLeft: "20px" }}>Employee Structure</h1>
           <Flex vertical={false} align="center" justify="space-around">

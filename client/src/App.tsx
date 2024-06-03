@@ -12,8 +12,8 @@ function App() {
     <AuthProvider>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-        <Route element={<ProtectedRoute roles={["invmanager","stockmanager","personnel","admin"]} />}>
-          <Route path="/*" element={<Dashboard />} />
+        <Route path="/*" element={<ProtectedRoute roles={["invmanager","stockmanager","personnel","admin","employee"]}><Dashboard /></ProtectedRoute>}>
+          {/* <Route path="/*" element={<Dashboard />} /> */}
           {/* <Route path="/categories" element={<CategoryList />} /> */}
         </Route>
         <Route path="/not-authorized" element={<div>Not Authorized</div>} />

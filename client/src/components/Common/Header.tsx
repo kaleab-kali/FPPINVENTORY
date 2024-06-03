@@ -9,6 +9,7 @@ import {
 } from "@ant-design/icons";
 import Link from "antd/es/typography/Link";
 import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const { Header: AntdHeader } = Layout;
 const { SubMenu } = Menu;
@@ -24,6 +25,7 @@ const Header: React.FC<HeaderProps> = ({
   toggleCollapsed,
   username,
 }) => {
+  const navigate = useNavigate()
   const { logout } = useAuth();
   const handleSearch = (value: string) => {
     console.log(value);
@@ -40,6 +42,10 @@ const Header: React.FC<HeaderProps> = ({
       <Menu.Item key="0" onClick={handleLogout}>
         <LogoutOutlined />
         Logout
+      </Menu.Item>
+      <Menu.Item key="1" onClick={()=>navigate("/profile")}>
+        <LogoutOutlined />
+        Profile
       </Menu.Item>
     </Menu>
   );

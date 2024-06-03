@@ -3,7 +3,7 @@ import {  Layout } from "antd";
 
 import Header from "../components/Common/Header";
 import Sider from "../components/Common/Sider";
-import {  Route, Routes } from "react-router-dom";
+import {  Outlet, Route, Routes } from "react-router-dom";
 
 
 import InventoryProfilePage from "./InventoryProfile/InventoryProfilePage";
@@ -20,6 +20,11 @@ import AddPurchasePage from "./Purchase/AddPurchasePage";
 import AllPurchasePage from "./Purchase/AllPurchasePage";
 import ApprovedPurchasePage from "./Purchase/ApprovedPurchasePage";
 import ResourceAllocationPage from "./Resource/ResourceAllocationPage";
+import Profile from "./Profile/Profile";
+import StockStaff from "./Staff/StockStaff";
+import InventoryStaff from "./Staff/InventoryStaff";
+import Personnel from "./Staff/Personnel";
+import ProtectedRoute from "../components/ProtectedRoute/ProtectedRoute";
 // import Stat from "./Stat";
 
 const { Content } = Layout;
@@ -51,6 +56,43 @@ const user = JSON.parse(userString);
         <Content>
           <Routes>
             <Route path="/" element={<Stat />}></Route>
+            <Route path="/profile" element={<Profile />} />
+            <Route
+              path="/staff"
+              element={
+                <ProtectedRoute roles={["invmanager", "admin"]}>
+                  <Outlet />
+                </ProtectedRoute>
+              }
+            >
+              {/* Invmanager and admin can see personnelStaff */}
+              <Route
+                path="personnelStaff"
+                element={
+                  <ProtectedRoute roles={["invmanager", "admin"]}>
+                    <Personnel />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Only admin can see stockStaff and inventoryStaff */}
+              <Route
+                path="stockStaff"
+                element={
+                  <ProtectedRoute roles={["admin"]}>
+                    <StockStaff />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="inventoryStaff"
+                element={
+                  <ProtectedRoute roles={["admin"]}>
+                    <InventoryStaff />
+                  </ProtectedRoute>
+                }
+              />
+            </Route>
             <Route path="/supplier">
               <Route path="list" element={<SupplierPage />} />
               <Route path="inactivelist" element={<InactiveSupplierPage />} />

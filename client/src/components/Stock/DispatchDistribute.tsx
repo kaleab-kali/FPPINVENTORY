@@ -5,11 +5,12 @@ import type { ColumnsType } from 'antd/es/table';
 import type { TableProps } from 'antd/es/table';
 import { DispatchInfo } from '../../../../shared/types/Dispatch';
 import { useAllDispatchs } from '../../services/queries/dispatchQueries';
-import { useDisrtibuteDispatch } from '../../services/mutations/dispatchMutation';
+import { useDistributeDispatch } from '../../services/mutations/dispatchMutation';
+import { useAuth } from '../../context/AuthContext';
 
 const DispatchDistribute = () => {
     const allDispatchesQuery = useAllDispatchs();
- 
+    const {user}=useAuth()
     console.log('All dispacth Query:', allDispatchesQuery.data);
     const source = allDispatchesQuery.data ?
      allDispatchesQuery.data
@@ -32,7 +33,7 @@ const DispatchDistribute = () => {
       }
     ): [];
   
-    const updateDistributeDispatchMutation = useDisrtibuteDispatch();
+    const updateDistributeDispatchMutation = useDistributeDispatch();
   
     const columns: ColumnsType<DispatchInfo> = [
       {
@@ -79,16 +80,32 @@ const DispatchDistribute = () => {
           <Tag color='green'>Approved</Tag>
         ),
       },
-      {
-        title: 'Action',
-        key: 'action',
+      // {
+      //   title: 'Action',
+      //   key: 'action',
+      //   render: (_, record) => (
+      //     <Button type="primary" icon={<CheckCircleOutlined />} onClick={() => handleApprove(record.dispatchId || "")}>
+      //       Dispatch
+      //     </Button>
+      //   ),
+      // },
+    ];
+    if (user?.role === "stockmanager") {
+    // if (user?.role === "invmanager") {
+      columns.push({
+        title: "Action",
+        key: "action",
         render: (_, record) => (
-          <Button type="primary" icon={<CheckCircleOutlined />} onClick={() => handleApprove(record.dispatchId || "")}>
+          <Button
+            type="primary"
+            icon={<CheckCircleOutlined />}
+            onClick={() => handleApprove(record.dispatchId || "")}
+          >
             Dispatch
           </Button>
         ),
-      },
-    ];
+      });
+    }
   
     const handleApprove = (dispatchId: string) => {
       console.log(`Approve purchase with ID: ${dispatchId}`);

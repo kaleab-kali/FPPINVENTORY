@@ -20,17 +20,14 @@ import AddPurchasePage from "./Purchase/AddPurchasePage";
 import AllPurchasePage from "./Purchase/AllPurchasePage";
 import ApprovedPurchasePage from "./Purchase/ApprovedPurchasePage";
 import ResourceAllocationPage from "./Resource/ResourceAllocationPage";
-<<<<<<< HEAD
 import ReturnablePage from "./Stock/ReturnablePage";
 import DispatchApprovalPage from "./Resource/DispatchApprovalPage";
 import DispatchDistributePage from "./Stock/DispatchDistributePage";
-=======
 import Profile from "./Profile/Profile";
 import StockStaff from "./Staff/AllStaff";
 // import InventoryStaff from "./Staff/InventoryStaff";
 // import Personnel from "./Staff/Personnel";
 import ProtectedRoute from "../components/ProtectedRoute/ProtectedRoute";
->>>>>>> origin/mesekir-branch
 // import Stat from "./Stat";
 
 const { Content } = Layout;
@@ -61,7 +58,17 @@ const user = JSON.parse(userString);
 
         <Content>
           <Routes>
-            <Route path="/" element={<Stat />}></Route>
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute
+                  roles={["invmanager", "stockmanager", "admin", "personnel"]}
+                >
+                  <Stat />
+                </ProtectedRoute>
+              }
+            />
+            {/* <Route path="/" element={<Stat />}></Route> */}
             <Route path="/profile" element={<Profile />} />
             <Route
               path="/staff"
@@ -108,14 +115,54 @@ const user = JSON.parse(userString);
               /> */}
             </Route>
             <Route path="/supplier">
-              <Route path="list" element={<SupplierPage />} />
-              <Route path="inactivelist" element={<InactiveSupplierPage />} />
+              <Route
+                path="list"
+                element={
+                  <ProtectedRoute
+                    roles={["invmanager", "stockmanager", "admin", "personnel"]}
+                  >
+                    <SupplierPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="inactivelist"
+                element={
+                  <ProtectedRoute
+                    roles={["invmanager", "stockmanager", "admin", "personnel"]}
+                  >
+                    <InactiveSupplierPage />
+                  </ProtectedRoute>
+                }
+              />
+              {/* <Route path="list" element={<SupplierPage />} />
+              <Route path="inactivelist" element={<InactiveSupplierPage />} /> */}
             </Route>
             <Route path="/category">
-              <Route path="list" element={<CatagoryPage />} />
+              <Route
+                path="list"
+                element={
+                  <ProtectedRoute
+                    roles={["invmanager", "stockmanager", "admin", "personnel"]}
+                  >
+                    <CatagoryPage />
+                  </ProtectedRoute>
+                }
+              />
+              {/* <Route path="list" element={<CatagoryPage />} /> */}
             </Route>
             <Route path="/units">
-              <Route path="list" element={<UnitsPage />} />
+              <Route
+                path="list"
+                element={
+                  <ProtectedRoute
+                    roles={["invmanager", "stockmanager", "admin", "personnel"]}
+                  >
+                    <UnitsPage />
+                  </ProtectedRoute>
+                }
+              />
+              {/* <Route path="list" element={<UnitsPage />} /> */}
             </Route>
             <Route path="/product">
               {/* <Route
@@ -137,44 +184,107 @@ const user = JSON.parse(userString);
               <Route
                 path="addPurchase"
                 element={
-                  <ProtectedRoute roles={["invmanager"]}>
+                  <ProtectedRoute roles={["personnel"]}>
                     <AddPurchasePage />
                   </ProtectedRoute>
                 }
               />
               {/* <Route path="addPurchase" element={<AddPurchasePage />} /> */}
-
-              <Route path="list" element={<AllPurchasePage />} />
-              <Route path="approved" element={<ApprovedPurchasePage />} />
-              <Route path="report" element={<ApprovedPurchasePage />} />
+              <Route
+                path="list"
+                element={
+                  <ProtectedRoute
+                    roles={["invmanager", "stockmanager", "admin", "personnel"]}
+                  >
+                    <AllPurchasePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="approved"
+                element={
+                  <ProtectedRoute
+                    roles={["invmanager", "stockmanager", "admin", "personnel"]}
+                  >
+                    <ApprovedPurchasePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="report"
+                element={
+                  <ProtectedRoute
+                    roles={["invmanager", "stockmanager", "admin", "personnel"]}
+                  >
+                    <ApprovedPurchasePage />
+                  </ProtectedRoute>
+                }
+              />
+              {/* <Route path="list" element={<AllPurchasePage />} /> */}
+              {/* <Route path="approved" element={<ApprovedPurchasePage />} />
+              <Route path="report" element={<ApprovedPurchasePage />} /> */}
             </Route>
             <Route path="/stock">
               <Route path="list" element={<StockPage />} />
-              <Route path="return" element={<ReturnablePage />} />
-              <Route path="dispatch" element={<DispatchDistributePage />} />
+              <Route
+                path="return"
+                element={
+                  <ProtectedRoute roles={["employee"]}>
+                    <ReturnablePage />
+                  </ProtectedRoute>
+                }
+              />
+              {/* <Route path="return" element={<ReturnablePage />} /> */}
+              <Route
+                path="dispatch"
+                element={
+                  <ProtectedRoute
+                    roles={["invmanager", "stockmanager", "admin", "personnel"]}
+                  >
+                    <DispatchDistributePage />
+                  </ProtectedRoute>
+                }
+              />
+              {/* <Route path="dispatch" element={<DispatchDistributePage />} /> */}
             </Route>
 
             <Route path="/resource">
-<<<<<<< HEAD
-              <Route path="request" element={<ResourcePage />} />
-              <Route path="approval" element={<DispatchApprovalPage />} />
-              <Route path="currentDispatch" element={<ResourceAllocationPage />} />
-              
-=======
               <Route
                 path="request"
                 element={
-                  <ProtectedRoute roles={["invmanager","employee"]}>
+                  <ProtectedRoute roles={["employee"]}>
                     <ResourcePage />
                   </ProtectedRoute>
                 }
               />
-              {/* <Route path="request" element={<ResourcePage />} /> */}
               <Route
                 path="currentDispatch"
-                element={<ResourceAllocationPage />}
+                element={
+                  <ProtectedRoute
+                    roles={["invmanager", "stockmanager", "admin", "personnel"]}
+                  >
+                    <ResourceAllocationPage />
+                  </ProtectedRoute>
+                }
               />
->>>>>>> origin/mesekir-branch
+              {/* <Route
+                path="currentDispatch"
+                element={<ResourceAllocationPage />}
+              /> */}
+              <Route
+                path="approval"
+                element={
+                  <ProtectedRoute
+                    roles={["invmanager", "admin", "stockmanager", "personnel"]}
+                  >
+                    <DispatchApprovalPage />
+                  </ProtectedRoute>
+                }
+              />
+              {/* <Route path="approval" element={<DispatchApprovalPage />} /> */}
+              {/* <Route path="request" element={<ResourcePage />} /> */}
+              {/* <Route path="request" element={<ResourcePage />} /> */}
+              {/* <Route path="currentDispatch" element={<ResourceAllocationPage />} /> */}
             </Route>
           </Routes>
         </Content>

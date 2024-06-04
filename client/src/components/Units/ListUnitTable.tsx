@@ -72,7 +72,7 @@ const ListUnitTable: React.FC = () => {
     },
   ];
 
-  if (user?.role === "invmanger") {
+  if (user?.role === "invmanager") {
     columns.push({
       title: "Action",
       key: "action",

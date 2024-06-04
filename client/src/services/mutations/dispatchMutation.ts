@@ -1,22 +1,27 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { DispatchInfo } from '../../../../shared/types/Dispatch';
-import { createDispatch, updateDispatch, updateDistributeDispatch, returnDispatch } from "../api/dispatchApi";
-import exp from "constants";
-
+import { DispatchInfo } from "../../../../shared/types/Dispatch";
+import {
+  createDispatch,
+  updateDispatch,
+  updateDistributeDispatch,
+  returnDispatch,
+} from "../api/dispatchApi";
+import { message } from "antd";
 
 export function useCreateDispatch() {
-  // console.log("useCreateDispatch");
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: DispatchInfo) => createDispatch(data),
     onMutate: () => {
       console.log("Mutating");
     },
-    onError: () => {
+    onError: (error: any) => {
       console.log("error");
+      message.error(error.message || "Failed to create dispatch");
     },
     onSuccess: () => {
       console.log("success");
+      message.success("Dispatch created successfully");
     },
     onSettled: async (_: any, error: any) => {
       console.log("settled");
@@ -30,63 +35,67 @@ export function useCreateDispatch() {
 }
 
 export function useUpdateDispatch() {
-    console.log("useUpdateDispatchapproval");
-    const queryClient = useQueryClient();
-    return useMutation({
-      mutationFn: (data: DispatchInfo) => {
-        console.log("Data before mutation:", data);
-        return updateDispatch(data);
-      },
-      onSuccess(result, variables, context) {
-        console.log("Successfully updated Dispatch");
-        queryClient.invalidateQueries({ queryKey: ["dispatch"] });
-        queryClient.invalidateQueries({ queryKey: ["dispatch", {id : variables.dispatchId}] });
-        
-      }
-      
-     
-    });
-  
-  }
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: DispatchInfo) => {
+      console.log("Data before mutation:", data);
+      return updateDispatch(data);
+    },
+    onError: (error: any) => {
+      console.log("error");
+      message.error(error.message || "Failed to update dispatch");
+    },
+    onSuccess: (result: any, variables: { dispatchId: any }) => {
+      console.log("Successfully updated Dispatch");
+      message.success("Dispatch updated successfully");
+      queryClient.invalidateQueries({ queryKey: ["dispatch"] });
+      queryClient.invalidateQueries({
+        queryKey: ["dispatch", { id: variables.dispatchId }],
+      });
+    },
+  });
+}
 
-  export function useDisrtibuteDispatch() {
-    console.log("useUpdateDistributedDispatchapproval");
-    const queryClient = useQueryClient();
-    return useMutation({
-      mutationFn: (data: DispatchInfo) => {
-        console.log("Data before mutation:", data);
-        return updateDistributeDispatch(data);
-      },
-      onSuccess(result, variables, context) {
-        console.log("Successfully updated Dispatch Disribute");
-        queryClient.invalidateQueries({ queryKey: ["dispatch"] });
-        queryClient.invalidateQueries({ queryKey: ["dispatch", {id : variables.dispatchId}] });
-        
-      }
-      
-     
-    });
-  
-  }
+export function useDistributeDispatch() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: DispatchInfo) => {
+      console.log("Data before mutation:", data);
+      return updateDistributeDispatch(data);
+    },
+    onError: (error: any) => {
+      console.log("error");
+      message.error(error.message || "Failed to distribute dispatch");
+    },
+    onSuccess: (result: any, variables: { dispatchId: any }) => {
+      console.log("Successfully distributed Dispatch");
+      message.success("Dispatch distributed successfully");
+      queryClient.invalidateQueries({ queryKey: ["dispatch"] });
+      queryClient.invalidateQueries({
+        queryKey: ["dispatch", { id: variables.dispatchId }],
+      });
+    },
+  });
+}
 
-  export function useReturnDispatch() {
-    console.log("useUpdateDispatchapproval");
-    const queryClient = useQueryClient();
-    return useMutation({
-      mutationFn: (data: DispatchInfo) => {
-        console.log("Data before mutation:", data);
-        return returnDispatch(data);
-      },
-      onSuccess(result, variables, context) {
-        console.log("Successfully updated Dispatch");
-        queryClient.invalidateQueries({ queryKey: ["dispatch"] });
-        queryClient.invalidateQueries({ queryKey: ["dispatch", {id : variables.dispatchId}] });
-        
-      }
-      
-     
-    });
-  }
-
-
-
+export function useReturnDispatch() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: DispatchInfo) => {
+      console.log("Data before mutation:", data);
+      return returnDispatch(data);
+    },
+    onError: (error: any) => {
+      console.log("error");
+      message.error(error.message || "Failed to return dispatch");
+    },
+    onSuccess: (result: any, variables: { dispatchId: any }) => {
+      console.log("Successfully returned Dispatch");
+      message.success("Dispatch returned successfully");
+      queryClient.invalidateQueries({ queryKey: ["dispatch"] });
+      queryClient.invalidateQueries({
+        queryKey: ["dispatch", { id: variables.dispatchId }],
+      });
+    },
+  });
+}

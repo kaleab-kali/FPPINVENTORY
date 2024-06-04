@@ -1,103 +1,93 @@
-import { DispatchInfo } from '../../../../shared/types/Dispatch';
-import BASE_URL from '../sharedVariables'
+import { DispatchInfo } from "../../../../shared/types/Dispatch";
+import { fetchWithAuth, handleError, BASE_URL } from "../shared/sharedApi";
 
 export const getDispatchIds = async () => {
-    // console.log("getDispatchIds");
-    const response = await fetch(`${BASE_URL}/dispatch`);
-  
-    if (!response.ok) {
-      throw new Error("Failed to fetch Dispatch IDs");
-    }
-  
-    const data = await response.json();
-  
-    return data.map((dispatch: DispatchInfo ) => dispatch.dispatchId);
-  };
-  
-  export const getDispatch = async (id: string) => {
-    console.log("getDispatch", id);
-    const response = await fetch(`${BASE_URL}/dispatch/${id}`);
-  
-    if (!response.ok) {
-      throw new Error("Failed to fetch Dispatchs");
-    }
-  
-    const data: DispatchInfo = await response.json();
-    console.log("Fetched Dispatches:", data);
-  
-    return data;
-  };
+  try {
+    const data = await fetchWithAuth(`${BASE_URL}/dispatch`);
+    return data.map((dispatch: DispatchInfo) => dispatch.dispatchId);
+  } catch (error) {
+    handleError(error);
+  }
+};
 
-  export const getAllDispatches = async () => {
-    const response = await fetch(`${BASE_URL}/dispatch`);
-    
-  
-    if (!response.ok) {
-      throw new Error("Failed to fetch Purchase IDs");
-    }
-  
-  const data: DispatchInfo[] = await response.json();
-  console.warn("repsnse", data);
-    console.log("respnse log", data)
-  // console.log(data); 
+export const getDispatch = async (id: string) => {
+  try {
+    const data: DispatchInfo = await fetchWithAuth(
+      `${BASE_URL}/dispatch/${id}`
+    );
+    console.log("Fetched Dispatch:", data);
     return data;
-  };
-//   ===========================
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const getAllDispatches = async () => {
+  try {
+    const data: DispatchInfo[] = await fetchWithAuth(`${BASE_URL}/dispatch`);
+    console.log("Fetched Dispatches:", data);
+    return data;
+  } catch (error) {
+    handleError(error);
+  }
+};
 
 export const createDispatch = async (data: DispatchInfo) => {
+  try {
     console.log("Data before mutation:", data);
-    await fetch(`${BASE_URL}/dispatch`, {
+    await fetchWithAuth(`${BASE_URL}/dispatch`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
     });
-  };
-
-
-
-  export const updateDispatch = async (data: DispatchInfo) => {
-    console.log("Data before mutation update api:", data);
-    const response = await fetch(`${BASE_URL}/dispatch/approve`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-  
-    if (!response.ok) {
-      throw new Error("Failed to update Dispatch data");
-    }
-  };
-
-  export const updateDistributeDispatch = async (data: DispatchInfo) => {
-    console.log("Data before mutation update disribute api:", data);
-    const response = await fetch(`${BASE_URL}/dispatch/dispatch-item`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-  
-    if (!response.ok) {
-      throw new Error("Failed to update Dispatch data");
-    }
-  };
-
-  export const returnDispatch = async (data: DispatchInfo) => {
-    console.log("Data before mutation return api:", data);
-    const response = await fetch(`${BASE_URL}/dispatch/return`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-  
-    if (!response.ok) {
-      throw new Error("Failed to update Dispatch data");
-    }
+  } catch (error) {
+    handleError(error);
   }
+};
+
+export const updateDispatch = async (data: DispatchInfo) => {
+  try {
+    console.log("Data before mutation update api:", data);
+    await fetchWithAuth(`${BASE_URL}/dispatch/approve`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const updateDistributeDispatch = async (data: DispatchInfo) => {
+  try {
+    console.log("Data before mutation update distribute api:", data);
+    await fetchWithAuth(`${BASE_URL}/dispatch/dispatch-item`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const returnDispatch = async (data: DispatchInfo) => {
+  try {
+    console.log("Data before mutation return api:", data);
+    await fetchWithAuth(`${BASE_URL}/dispatch/return`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+  } catch (error) {
+    handleError(error);
+  }
+};

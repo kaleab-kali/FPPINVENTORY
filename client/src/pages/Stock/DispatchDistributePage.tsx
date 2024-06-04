@@ -17,7 +17,7 @@ const DispatchDistributePage = () => {
             level={4}
             style={{ padding: "10px 30px", marginBottom: "0", marginTop: 10 }}
           >
-            Lsit of Suppliers
+            Lsit of Stock
           </Title>
           <Layout>
             <Content
@@ -29,7 +29,7 @@ const DispatchDistributePage = () => {
                 borderRadius: borderRadiusLG,
               }}
             >
-              <Title level={5}> Disparch Data</Title>
+              <Title level={5}> Dispatch Data</Title>
               <DispatchDistribute />
              
             </Content>

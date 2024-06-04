@@ -21,9 +21,9 @@ import AllPurchasePage from "./Purchase/AllPurchasePage";
 import ApprovedPurchasePage from "./Purchase/ApprovedPurchasePage";
 import ResourceAllocationPage from "./Resource/ResourceAllocationPage";
 import Profile from "./Profile/Profile";
-import StockStaff from "./Staff/StockStaff";
-import InventoryStaff from "./Staff/InventoryStaff";
-import Personnel from "./Staff/Personnel";
+import StockStaff from "./Staff/AllStaff";
+// import InventoryStaff from "./Staff/InventoryStaff";
+// import Personnel from "./Staff/Personnel";
 import ProtectedRoute from "../components/ProtectedRoute/ProtectedRoute";
 // import Stat from "./Stat";
 
@@ -67,16 +67,24 @@ const user = JSON.parse(userString);
             >
               {/* Invmanager and admin can see personnelStaff */}
               <Route
+                path="allStaff"
+                element={
+                  <ProtectedRoute roles={["invmanager", "admin"]}>
+                    <StockStaff />
+                  </ProtectedRoute>
+                }
+              />
+              {/* <Route
                 path="personnelStaff"
                 element={
                   <ProtectedRoute roles={["invmanager", "admin"]}>
                     <Personnel />
                   </ProtectedRoute>
                 }
-              />
+              /> */}
 
               {/* Only admin can see stockStaff and inventoryStaff */}
-              <Route
+              {/* <Route
                 path="stockStaff"
                 element={
                   <ProtectedRoute roles={["admin"]}>
@@ -91,7 +99,7 @@ const user = JSON.parse(userString);
                     <InventoryStaff />
                   </ProtectedRoute>
                 }
-              />
+              /> */}
             </Route>
             <Route path="/supplier">
               <Route path="list" element={<SupplierPage />} />
@@ -104,15 +112,31 @@ const user = JSON.parse(userString);
               <Route path="list" element={<UnitsPage />} />
             </Route>
             <Route path="/product">
-              <Route
+              {/* <Route
                 path="registration"
                 element={<InventoryRegistrationPage />}
+              /> */}
+              <Route
+                path="registration"
+                element={
+                  <ProtectedRoute roles={["invmanager"]}>
+                    <InventoryRegistrationPage />
+                  </ProtectedRoute>
+                }
               />
 
               <Route path="view" element={<InventoryProfilePage />} />
             </Route>
             <Route path="/purchase">
-              <Route path="addPurchase" element={<AddPurchasePage />} />
+              <Route
+                path="addPurchase"
+                element={
+                  <ProtectedRoute roles={["invmanager"]}>
+                    <AddPurchasePage />
+                  </ProtectedRoute>
+                }
+              />
+              {/* <Route path="addPurchase" element={<AddPurchasePage />} /> */}
 
               <Route path="list" element={<AllPurchasePage />} />
               <Route path="approved" element={<ApprovedPurchasePage />} />
@@ -123,7 +147,15 @@ const user = JSON.parse(userString);
             </Route>
 
             <Route path="/resource">
-              <Route path="request" element={<ResourcePage />} />
+              <Route
+                path="request"
+                element={
+                  <ProtectedRoute roles={["invmanager","employee"]}>
+                    <ResourcePage />
+                  </ProtectedRoute>
+                }
+              />
+              {/* <Route path="request" element={<ResourcePage />} /> */}
               <Route
                 path="currentDispatch"
                 element={<ResourceAllocationPage />}

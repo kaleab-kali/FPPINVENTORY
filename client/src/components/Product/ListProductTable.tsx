@@ -4,11 +4,13 @@ import { ProductInfo } from "../../../../shared/types/Product";
 import { useAllProducts } from "../../services/queries/productQueries";
 import { useNavigate } from 'react-router-dom';
 import exp from "constants";
+import { useAuth } from "../../context/AuthContext";
+import { ColumnsType } from "antd/es/table";
 
 const ListTable: React.FC = () => {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState("");
-
+  const {user} = useAuth()
   const allProductsQuery = useAllProducts();
 
   const Source = allProductsQuery.data
@@ -36,7 +38,7 @@ const ListTable: React.FC = () => {
     : [];
 
   console.log("Source:", Source);
-  const filteredData = Source.filter((entry) =>
+  const filteredData = Source.filter((entry: { name: string; }) =>
     entry.name?.toLowerCase().includes(searchValue.toLowerCase())
   );
 
@@ -52,7 +54,7 @@ const ListTable: React.FC = () => {
     // setDataSource(filteredDataSource);
   };
 
-  const columns = [
+  const columns:ColumnsType = [
     {
         title: "PID",
         dataIndex: "productID",
@@ -84,12 +86,33 @@ const ListTable: React.FC = () => {
       key: "quantity",
     },
     
-    {
+    // {
+    //   title: "Action",
+    //   key: "action",
+    //   render: (text: string, record: any) => (
+    //     <Space size="middle">
+    //       <Button type="primary" onClick={() => handleEdit(record)}>Edit</Button>
+    //       <Popconfirm
+    //         title="Are you sure to delete this row?"
+    //         onConfirm={() => handleDelete(record.key)}
+    //         okText="Yes"
+    //         cancelText="No"
+    //       >
+    //         <Button type="dashed">Delete</Button>
+    //       </Popconfirm>
+    //     </Space>
+    //   ),
+    // },
+  ];
+  if (user?.role === "invmanager") {
+    columns.push({
       title: "Action",
       key: "action",
       render: (text: string, record: any) => (
         <Space size="middle">
-          <Button type="primary" onClick={() => handleEdit(record)}>Edit</Button>
+          <Button type="primary" onClick={() => handleEdit(record)}>
+            Edit
+          </Button>
           <Popconfirm
             title="Are you sure to delete this row?"
             onConfirm={() => handleDelete(record.key)}
@@ -100,8 +123,8 @@ const ListTable: React.FC = () => {
           </Popconfirm>
         </Space>
       ),
-    },
-  ];
+    });
+  }
 
   const handleEdit = (record: ProductInfo) => {
     console.log("Edit clicked for row with key:", record);

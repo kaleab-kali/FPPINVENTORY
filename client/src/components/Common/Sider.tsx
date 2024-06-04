@@ -71,12 +71,21 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
         >
           <NavLink to="/">Dashboard</NavLink>
         </Menu.Item>
-        <Menu.SubMenu
-          key="staff"
-          title="Staff"
-          icon={<LuWarehouse size={20} />}
-        >
-          {user?.role === "admin" && (
+        {(user?.role === "admin" || user?.role === "invmanager") && (
+          <Menu.SubMenu
+            key="staff"
+            title="Staff"
+            icon={<LuWarehouse size={20} />}
+          >
+            <Menu.Item
+              key="allStaffList"
+              icon={<UngroupOutlined />}
+              onClick={() => handleMenuClick("allStaffList")}
+            >
+              <NavLink to="/staff/allStaff">All Staff</NavLink>
+            </Menu.Item>
+
+            {/* {user?.role === "admin" && (
             <Menu.Item
               key="stockStaffList"
               icon={<UngroupOutlined />}
@@ -102,8 +111,9 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
             >
               <NavLink to="/staff/personnelStaff">Personnel Staff</NavLink>
             </Menu.Item>
-          )}
-        </Menu.SubMenu>
+          )} */}
+          </Menu.SubMenu>
+        )}
         <Menu.SubMenu
           key="supplierSubMenu"
           title="Supplier"
@@ -151,7 +161,16 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
           title="Product"
           icon={<RiProductHuntLine />}
         >
-          <Menu.Item
+          {(user?.role === "invmanager" || user?.role === "personnel") && (
+            <Menu.Item
+              key="productRegistration"
+              icon={<UserOutlined />}
+              onClick={() => handleMenuClick("productRegistration")}
+            >
+              <NavLink to="/product/registration">Registration</NavLink>
+            </Menu.Item>
+          )}
+          {/* <Menu.Item
             key="productRegistration"
             icon={<UserOutlined />}
             onClick={() => handleMenuClick("productRegistration")}
@@ -161,7 +180,7 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
             // }}
           >
             <NavLink to="/product/registration">Registration</NavLink>
-          </Menu.Item>
+          </Menu.Item> */}
           <Menu.Item
             key="productView"
             icon={<FileTextOutlined />}
@@ -182,13 +201,22 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
           title="Purchase"
           icon={<RiProductHuntLine />}
         >
-          <Menu.Item
+          {user?.role === "invmanager" && (
+            <Menu.Item
+              key="purchaseRegistration"
+              icon={<UserOutlined />}
+              onClick={() => handleMenuClick("purchaseRegistration")}
+            >
+              <NavLink to="/purchase/addPurchase">Registration</NavLink>
+            </Menu.Item>
+          )}
+          {/* <Menu.Item
             key="purchaseRegistration"
             icon={<UserOutlined />}
             onClick={() => handleMenuClick("purchaseRegistration")}
           >
             <NavLink to="/purchase/addPurchase">Registration</NavLink>
-          </Menu.Item>
+          </Menu.Item> */}
           <Menu.Item
             key="purchaseList"
             icon={<UserOutlined />}
@@ -244,9 +272,18 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
           title="Resource"
           icon={<FaBoxOpen />}
         >
-          <Menu.Item key="request" onClick={() => handleMenuClick("request")}>
+          {(user?.role === "invmanager" || user?.role === "employee") && (
+            <Menu.Item
+              key="request"
+              icon={<UserOutlined />}
+              onClick={() => handleMenuClick("request")}
+            >
+              <NavLink to="/resource/request">Request</NavLink>
+            </Menu.Item>
+          )}
+          {/* <Menu.Item key="request" onClick={() => handleMenuClick("request")}>
             <NavLink to="/resource/request">Request</NavLink>
-          </Menu.Item>
+          </Menu.Item> */}
           <Menu.Item key="transfer" onClick={() => handleMenuClick("transfer")}>
             <NavLink to="/resource/transfer">Transfer</NavLink>
           </Menu.Item>

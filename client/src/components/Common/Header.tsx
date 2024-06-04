@@ -6,6 +6,10 @@ import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   LogoutOutlined,
+  SettingOutlined,
+  DashboardOutlined,
+  TeamOutlined,
+  FileOutlined,
 } from "@ant-design/icons";
 import Link from "antd/es/typography/Link";
 import { useAuth } from "../../context/AuthContext";
@@ -25,27 +29,52 @@ const Header: React.FC<HeaderProps> = ({
   toggleCollapsed,
   username,
 }) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { logout } = useAuth();
+
   const handleSearch = (value: string) => {
     console.log(value);
   };
 
   const handleLogout = () => {
-    // Implement logout logic here
-    logout()
+    logout();
     console.log("Logging out...");
   };
 
   const menu = (
     <Menu>
-      <Menu.Item key="0" onClick={handleLogout}>
-        <LogoutOutlined />
-        Logout
-      </Menu.Item>
-      <Menu.Item key="1" onClick={()=>navigate("/profile")}>
-        <LogoutOutlined />
+      <SubMenu key="sub1" title="Admin" icon={<SettingOutlined />}>
+        <Menu.Item
+          key="1"
+          icon={<DashboardOutlined />}
+          onClick={() => navigate("/dashboard")}
+        >
+          Dashboard
+        </Menu.Item>
+        <Menu.Item
+          key="2"
+          icon={<TeamOutlined />}
+          onClick={() => navigate("/manage-staff")}
+        >
+          Manage Staff
+        </Menu.Item>
+        <Menu.Item
+          key="3"
+          icon={<FileOutlined />}
+          onClick={() => navigate("/reports")}
+        >
+          Reports
+        </Menu.Item>
+      </SubMenu>
+      <Menu.Item
+        key="4"
+        icon={<UserOutlined />}
+        onClick={() => navigate("/profile")}
+      >
         Profile
+      </Menu.Item>
+      <Menu.Item key="5" icon={<LogoutOutlined />} onClick={handleLogout}>
+        Logout
       </Menu.Item>
     </Menu>
   );
@@ -72,14 +101,7 @@ const Header: React.FC<HeaderProps> = ({
             onClick={toggleCollapsed}
           />
         </Col>
-        {/* <Col span={6} style={{ padding: "10px 0" }}>
-          <img
-            src="/fpp.jpg"
-            alt="Company Logo"
-            style={{ height: "50px", borderRadius: "20px" }}
-          />
-        </Col> */}
-        <Col span={12} style={{}}>
+        <Col span={12}>
           <Input
             placeholder="Search Employee"
             allowClear

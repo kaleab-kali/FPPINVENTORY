@@ -28,7 +28,10 @@ import {
   TeamOutlined,
 } from "@ant-design/icons";
 import "./Profile.css";
-
+import { useProfile } from "../../services/queries/profileQueries";
+import { useUpdateSelfPassword } from "../../services/mutations/staffMutation";
+import { useEmployeeProfile } from "../../services/queries/employeeQueries";
+import { useAuth } from "../../context/AuthContext";
 const { Content } = Layout;
 const { Text, Title } = Typography;
 
@@ -118,13 +121,13 @@ const teamMembers = [
   { id: 3, name: "Carol White", role: "Logistics Coordinator", status: "away" },
 ];
 
-const statusMap: Record<
-  string,
-  "success" | "default" | "warning" | "processing" | "error"
-> = {
-  read: "default",
-  unread: "processing",
-};
+// const statusMap: Record<
+//   string,
+//   "success" | "default" | "warning" | "processing" | "error"
+// > = {
+//   read: "default",
+//   unread: "processing",
+// };
 
 const taskStatusMap: Record<string, "success" | "default" | "warning"> = {
   completed: "success",
@@ -133,24 +136,48 @@ const taskStatusMap: Record<string, "success" | "default" | "warning"> = {
 };
 
 const Profile: React.FC = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  // const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
-  const [profile, setProfile] = useState(profileData);
+  const  {user} = useAuth()
+  const staffProfile = useProfile()
+  const employee = useEmployeeProfile(user?.employeeId||'');
 
-  const showModal = () => {
-    form.setFieldsValue(profile); // Set form fields to current profile data
-    setIsModalVisible(true);
-  };
+  // const profile = staffProfile.data;
 
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
+  const profile = user?.type === "invstaff" ? staffProfile.data : employee.data;
+  console.log(employee.data);
+  const updateSelfPassword = useUpdateSelfPassword() 
+   const [isModalVisible, setIsModalVisible] = useState(false);
+
+   const showModal = () => {
+     setIsModalVisible(true);
+   };
+
+   const handleCancel = () => {
+     setIsModalVisible(false);
+   };
+
+   const handleFinish = (values: any) => {
+     console.log("Received values: ", values);
+     // Handle the form submission logic here
+     const updateValues = {...values, email: profile?.email}
+     updateSelfPassword.mutate(updateValues)
+     setIsModalVisible(false);
+   };
+  // const showModal = () => {
+  //   form.setFieldsValue(profile); // Set form fields to current profile data
+  //   setIsModalVisible(true);
+  // };
+
+  // const handleCancel = () => {
+  //   setIsModalVisible(false);
+  // };
 
   const handleOk = () => {
     form
       .validateFields()
       .then((values) => {
-        setProfile(values);
+        // setProfile(values);
         setIsModalVisible(false);
       })
       .catch((info) => {
@@ -166,86 +193,168 @@ const Profile: React.FC = () => {
             style={{
               display: "flex",
               width: "100%",
-              justifyContent: "space-between",
+              justifyContent: "space-evenly",
             }}
           >
             <Card
               className="profile-card"
               hoverable
               style={{ width: "70%" }}
-              extra={
-                <Tooltip title="Edit Profile">
-                  <EditOutlined
-                    onClick={showModal}
-                    style={{ fontSize: "18px" }}
-                  />
-                </Tooltip>
-              }
+              // extra={
+              //   <Tooltip title="Edit Profile">
+              //     <EditOutlined
+              //       onClick={showModal}
+              //       style={{ fontSize: "18px" }}
+              //     />
+              //   </Tooltip>
+              // }
             >
               <Space size="large">
-                <Avatar size={64} icon={<UserOutlined />} />
+                <Avatar
+                  size={130}
+                  src={`http://localhost:7000/${profile?.photo}`}
+                  // shape="square"
+                />
                 <div>
-                  <Title level={4}>{profile.name}</Title>
-                  <Text type="secondary">{profile.role}</Text>
+                  <Title level={4}>
+                    {profile?.firstName + " " + profile?.lastName}
+                  </Title>
+                  <Text type="secondary">{profile?.role}</Text>
                   <br />
-                  <Text type="secondary">{profile.location}</Text>
+                  <Text type="secondary">{profile?.title}</Text>
                   <br />
                   <Space size="middle">
                     <Text>
-                      <MailOutlined /> {profile.email}
+                      <MailOutlined /> {profile?.email}
                     </Text>
                     <Text>
-                      <PhoneOutlined /> {profile.phone}
+                      <PhoneOutlined />{" "}
+                      {user?.type === "invstaff"
+                        ? profile?.phoneNumber
+                        : profile?.phoneNumber.prefix +
+                          " " +
+                          profile?.phoneNumber.number}
                     </Text>
-                    <Text>{profile.company}</Text>
-                  </Space>
-                  <br />
-                  <Space size="middle">
-                    <a
-                      href={profile.social.facebook}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <FacebookOutlined
-                        style={{ fontSize: "20px", color: "#3b5998" }}
-                      />
-                    </a>
-                    <a
-                      href={profile.social.twitter}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <TwitterOutlined
-                        style={{ fontSize: "20px", color: "#1DA1F2" }}
-                      />
-                    </a>
-                    <a
-                      href={profile.social.linkedin}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <LinkedinOutlined
-                        style={{ fontSize: "20px", color: "#0077b5" }}
-                      />
-                    </a>
+                    <Text>{profile?.company}</Text>
                   </Space>
                 </div>
               </Space>
             </Card>
+            <Space size="small">
+              <div className="current-plan">
+                <Title level={4} style={{ color: "#9254de" }}>
+                  <img
+                    src="Waving Hand Medium Skin Tone.png"
+                    alt="Waving Hand Medium Skin Tone"
+                    width="25"
+                    height="25"
+                  />{" "}
+                  Welcome {profile?.firstName}
+                </Title>
+                {user?.type === "invstaff" ? (
+                  <>
+                    <Text>Click Here to Change your Password</Text>
+                    <br />
+                    <br />
+
+                    <Button type="primary" onClick={showModal}>
+                      Change Password
+                    </Button>
+                  </>
+                ) : (
+                  <div style={{ display: "flex" }}>
+                    <h3>{profile?.gender}</h3>
+                    <Text>Gender</Text>
+                    <h3>{profile?.empId}</h3>
+                    <Text>ID</Text>
+                  </div>
+                )}
+              </div>
+              <Modal
+                title="Change Password"
+                visible={isModalVisible}
+                onCancel={handleCancel}
+                footer={null}
+              >
+                <Form layout="vertical" onFinish={handleFinish}>
+                  <Form.Item
+                    name="currentPassword"
+                    label="Current Password"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please enter your current password",
+                      },
+                    ]}
+                  >
+                    <Input.Password />
+                  </Form.Item>
+                  <Form.Item
+                    name="newPassword"
+                    label="New Password"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please enter your new password",
+                      },
+                      {
+                        pattern:
+                          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                        message:
+                          "Password must be at least 8 characters long, contain one uppercase letter, one lowercase letter, one number, and one special character",
+                      },
+                    ]}
+                  >
+                    <Input.Password />
+                  </Form.Item>
+                  <Form.Item
+                    name="confirmPassword"
+                    label="Confirm Password"
+                    dependencies={["newPassword"]}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please confirm your new password",
+                      },
+                      ({ getFieldValue }) => ({
+                        validator(_, value) {
+                          if (
+                            !value ||
+                            getFieldValue("newPassword") === value
+                          ) {
+                            return Promise.resolve();
+                          }
+                          return Promise.reject(
+                            new Error("The two passwords do not match")
+                          );
+                        },
+                      }),
+                    ]}
+                  >
+                    <Input.Password />
+                  </Form.Item>
+                  <Form.Item>
+                    <Button type="primary" htmlType="submit">
+                      Change Password
+                    </Button>
+                  </Form.Item>
+                </Form>
+              </Modal>
+            </Space>
           </div>
 
           <div
             style={{
               display: "flex",
               width: "100%",
-              justifyContent: "space-between",
+              justifyContent: "space-evenly",
             }}
           >
             <Card
               title="Latest Messages"
               className="message-card"
               extra={<Button type="link">+</Button>}
-              style={{ width: "48%" }}
+              style={{ width: "30%" }}
             >
               <List
                 itemLayout="horizontal"
@@ -271,7 +380,7 @@ const Profile: React.FC = () => {
             <Card
               title="Recent Activity"
               className="activity-card"
-              style={{ width: "48%" }}
+              style={{ width: "35%" }}
             >
               <List
                 itemLayout="vertical"
@@ -290,7 +399,7 @@ const Profile: React.FC = () => {
               title="Tasks"
               className="tasks-card"
               extra={<Button type="link">+</Button>}
-              style={{ width: "48%" }}
+              style={{ width: "30%" }}
             >
               <List
                 itemLayout="horizontal"
@@ -373,7 +482,7 @@ const Profile: React.FC = () => {
           </div>
         </Space>
 
-        <Modal
+        {/* <Modal
           title="Edit Profile"
           visible={isModalVisible}
           onOk={handleOk}
@@ -436,7 +545,7 @@ const Profile: React.FC = () => {
               <Input />
             </Form.Item>
           </Form>
-        </Modal>
+        </Modal> */}
       </Content>
     </Layout>
   );

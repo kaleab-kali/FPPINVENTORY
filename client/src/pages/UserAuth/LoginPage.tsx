@@ -37,7 +37,8 @@ const LoginPage = () => {
       } else {
         data = await loginInvStaff(values.email, values.password);
       }
-      login(data.token, data.role, loginType);
+      login(data.token, data.role, loginType, data.employeeId);
+      console.log(data.token, data.role, loginType);
       navigate("/")
       message.success("Login successful!");
     } catch (error) {

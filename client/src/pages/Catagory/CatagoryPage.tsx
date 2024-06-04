@@ -3,13 +3,14 @@ import Title from "antd/lib/typography/Title";
 import { Layout, theme } from "antd";
 import AddCatagory from "../../components/Catagory/AddCatagory";
 import ListCatagoryTable from "../../components/Catagory/ListCatagory";
+import { useAuth } from "../../context/AuthContext";
 const { Content } = Layout;
 
 const UnitsPage = () => {
     const {
         token: { colorBgContainer, borderRadiusLG },
       } = theme.useToken();
-    
+    const {user} =useAuth()
       return (
         <>
           <Title
@@ -28,12 +29,15 @@ const UnitsPage = () => {
                 borderRadius: borderRadiusLG,
               }}
             >
-                <AddCatagory />
-                <Title level={5}> Catagory Data</Title>
-                <ListCatagoryTable />
-    
-    
-              
+              {user?.role === "invmanager" ? (
+                <>
+                  <AddCatagory />
+                </>
+              ) : (
+                ""
+              )}
+              <Title level={5}> Catagory Data</Title>
+              <ListCatagoryTable />
             </Content>
           </Layout>
         </>

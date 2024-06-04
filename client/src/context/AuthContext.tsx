@@ -4,11 +4,12 @@ interface User {
   role: string;
   token: string;
   type: "employee" | "invstaff";
+  employeeId: string;
 }
 
 interface AuthContextType {
   user: User | null;
-  login: (token: string, role: string, type: "employee" | "invstaff") => void;
+  login: (token: string, role: string, type: "employee" | "invstaff", employeeId:string) => void;
   logout: () => void;
 }
 
@@ -20,10 +21,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = (
     token: string,
     role: string,
-    type: "employee" | "invstaff"
+    type: "employee" | "invstaff",
+    employeeId: string,
   ) => {
-    setUser({ token, role, type });
-    localStorage.setItem("user", JSON.stringify({ token, role,type }));
+    setUser({ token, role, type, employeeId });
+    localStorage.setItem(
+      "user",
+      JSON.stringify({ token, role, type, employeeId })
+    );
 
   };
 

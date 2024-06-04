@@ -3,6 +3,7 @@ import InventoryRegistrationForm from '../../components/InventoryOperations/Inve
 import Title from "antd/lib/typography/Title";
 import { Layout, theme } from "antd";
 import { useLocation } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 const { Content } = Layout;
 
@@ -10,7 +11,7 @@ const InventoryRegistrationPage: React.FC= () => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
-
+  const {user}=useAuth()
   const location = useLocation();
   const productToEdit = location.state?.product;
 
@@ -32,11 +33,14 @@ const InventoryRegistrationPage: React.FC= () => {
             borderRadius: borderRadiusLG,
           }}
         >
-           {/* < InventoryRegistrationForm /> */}
-           < InventoryRegistrationForm initialValues={productToEdit}/>
-
-
-          
+          {/* < InventoryRegistrationForm /> */}
+          {user?.role === "invmanager" ? (
+            <>
+            <InventoryRegistrationForm initialValues={productToEdit} />
+            </>
+          ) : (
+            ""
+          )}
         </Content>
       </Layout>
     </>

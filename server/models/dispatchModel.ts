@@ -26,7 +26,7 @@ const dispatchSchema = new Schema<DispatchInfo>(
     itemCategory: { type: String, required: true },
     quantity: { type: Number, required: true },
     purpose: { type: String, required: true },
-    status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
+    status: { type: String, enum: ['pending', 'approved', 'rejected', 'dispatched'], default: 'pending' },
   },
   { timestamps: true }
 );

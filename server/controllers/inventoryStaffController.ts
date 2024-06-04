@@ -45,7 +45,7 @@ const createINVStaff = async (req: Request, res: Response): Promise<void> => {
 // Creat the admin
 const createAdmin = async (req: Request, res: Response): Promise<void> => {
     try {
-      const { email, firstName, lastName, password} = req.body;
+      const { email, firstName, lastName, password, phoneNumber, employmentDate } = req.body;
   
       // Check if Invetory Staff with the same email already exists
       const existingINVStaff = await INVStaff.findOne({ email });
@@ -56,6 +56,9 @@ const createAdmin = async (req: Request, res: Response): Promise<void> => {
   
       // Hash the password
       const hashedPassword = await bcrypt.hash(password, 10);
+
+      // Get the photo path from the uploaded file
+      const photo = req.file?.path;
   
       // Create the new Invetory Staff
       const newINVStaff = new INVStaff({
@@ -64,6 +67,9 @@ const createAdmin = async (req: Request, res: Response): Promise<void> => {
         lastName,
         password: hashedPassword,
         role: "admin",
+        phoneNumber,
+        employmentDate,
+        photo, 
       });
   
       // Save the new Invetory Staff

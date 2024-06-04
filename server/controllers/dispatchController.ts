@@ -33,7 +33,6 @@ const createDispatch = async (req: Request, res: Response): Promise<void> => {
       res.status(500).json({ error: "Internal Server Error" });
     }
   };
-  
   const approveDispatch = async (req: Request, res: Response): Promise<void> => {
     try {
       const { dispatchId, status } = req.body;
@@ -55,7 +54,32 @@ const createDispatch = async (req: Request, res: Response): Promise<void> => {
         res.status(400).json({ error: "Dispatch can only be approved with 'approved' status" });
         return;
       }
-      
+  
+      dispatch.status = 'approved';
+      await dispatch.save();
+  
+      res.status(200).json({ message: "Dispatch approved successfully", dispatch });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  };
+
+  const dispatchItem = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { dispatchId } = req.body;
+  
+      const dispatch = await Dispatch.findOne({ dispatchId });
+      if (!dispatch) {
+        res.status(404).json({ error: "Dispatch not found" });
+        return;
+      }
+  
+      if (dispatch.status !== 'approved') {
+        res.status(400).json({ error: "Dispatch must be approved before it can be dispatched" });
+        return;
+      }
+  
       // Update stock quantity and outQty
       const stockItem = await Stock.findOne({ productId: dispatch.productId });
       if (stockItem && stockItem.stock !== undefined && stockItem.outQty !== undefined) {
@@ -70,17 +94,65 @@ const createDispatch = async (req: Request, res: Response): Promise<void> => {
         uniqueItem.status = 'dispatched';
         uniqueItem.dispatchDate = new Date();
         uniqueItem.employeeId = dispatch.employeeId; // Add employeeId
-        dispatch.status = 'approved';
-        await dispatch.save();
         await uniqueItem.save();
       }
-
-      res.status(200).json({ message: "Dispatch approved successfully", dispatch });
+  
+      dispatch.status = 'dispatched';
+      await dispatch.save();
+  
+      res.status(200).json({ message: "Item dispatched successfully", dispatch });
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Internal Server Error" });
     }
   };
+  // const approveDispatch = async (req: Request, res: Response): Promise<void> => {
+  //   try {
+  //     const { dispatchId, status } = req.body;
+  
+  //     const dispatch = await Dispatch.findOne({ dispatchId });
+  //     if (!dispatch) {
+  //       res.status(404).json({ error: "Dispatch not found" });
+  //       return;
+  //     }
+  
+  //     if (status === 'rejected') {
+  //       dispatch.status = 'rejected';
+  //       await dispatch.save();
+  //       res.status(200).json({ message: "Dispatch rejected successfully", dispatch });
+  //       return;
+  //     }
+  
+  //     if (status !== 'approved') {
+  //       res.status(400).json({ error: "Dispatch can only be approved with 'approved' status" });
+  //       return;
+  //     }
+      
+  //     // Update stock quantity and outQty
+  //     const stockItem = await Stock.findOne({ productId: dispatch.productId });
+  //     if (stockItem && stockItem.stock !== undefined && stockItem.outQty !== undefined) {
+  //       stockItem.outQty += dispatch.quantity;
+  //       stockItem.stock -= dispatch.quantity;
+  //       await stockItem.save();
+  //     }
+  
+  //     // Update status of unique items in the unique item schema
+  //     const uniqueItems = await UniqueItem.find({ productId: dispatch.productId, status: 'in_stock' }).limit(dispatch.quantity);
+  //     for (const uniqueItem of uniqueItems) {
+  //       uniqueItem.status = 'dispatched';
+  //       uniqueItem.dispatchDate = new Date();
+  //       uniqueItem.employeeId = dispatch.employeeId; // Add employeeId
+  //       dispatch.status = 'approved';
+  //       await dispatch.save();
+  //       await uniqueItem.save();
+  //     }
+
+  //     res.status(200).json({ message: "Dispatch approved successfully", dispatch });
+  //   } catch (error) {
+  //     console.error(error);
+  //     res.status(500).json({ error: "Internal Server Error" });
+  //   }
+  // };
 
   // Return Item Controller
 // const returnItem = async (req: Request, res: Response): Promise<void> => {
@@ -209,4 +281,4 @@ const getAllDispatches = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export { createDispatch, approveDispatch, returnItem, getAllDispatches, approveReturn };
+export { createDispatch, approveDispatch, dispatchItem, returnItem, getAllDispatches, approveReturn };

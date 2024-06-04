@@ -1,5 +1,5 @@
 import express, { Router } from "express";
-import { createDispatch, approveDispatch, returnItem, getAllDispatches } from "../controllers/dispatchController";
+import { createDispatch, approveDispatch, returnItem, getAllDispatches, dispatchItem } from "../controllers/dispatchController";
 
 const router: Router = express.Router();
 
@@ -8,6 +8,9 @@ router.post("/", createDispatch);
 
 // Approve a Dispatch request
 router.put("/approve", approveDispatch);
+
+// Approve Dispatch an item
+router.put("/dispatch-item", dispatchItem);
 
 // return item
 router.put("/return", returnItem);

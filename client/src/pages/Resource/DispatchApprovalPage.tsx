@@ -1,13 +1,10 @@
-import React from 'react'
+import React from "react";
 import { Layout, theme, Typography } from "antd";
-import DispatchApproval from '../../components/Resource/DispatchApproval';
-import ReturnForm from '../../components/Resource/ReturnForm';
-
+import DispatchApproval from "../../components/Resource/DispatchApproval";
 
 const { Content } = Layout;
-const { Title} = Typography;
-
-const ReturnablePage = () => {
+const { Title } = Typography;
+const DispatchApprovalPage = () => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -18,7 +15,7 @@ const ReturnablePage = () => {
         level={4}
         style={{ padding: "10px 30px", marginBottom: "0", marginTop: 10 }}
       >
-        Lsit of Dispatch requests
+        Lsit of Suppliers
       </Title>
       <Layout>
         <Content
@@ -30,16 +27,13 @@ const ReturnablePage = () => {
             borderRadius: borderRadiusLG,
           }}
         >
-            
-            <Title level={5}> Retrun Data</Title>
-            <ReturnForm />
-
-
-          
+          <Title level={5}> Disparch Data</Title>
+          <DispatchApproval />
+         
         </Content>
       </Layout>
     </>
   );
-}
+};
 
-export default ReturnablePage
+export default DispatchApprovalPage;

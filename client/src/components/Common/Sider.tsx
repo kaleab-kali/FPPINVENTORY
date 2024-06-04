@@ -185,14 +185,14 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
             icon={<ShopOutlined />}
             onClick={() => handleMenuClick("stockReturnableList")}
           >
-            <NavLink to="/stock/returnable">Returnable </NavLink>
+            <NavLink to="/stock/return">Return Item </NavLink>
           </Menu.Item>
           <Menu.Item
-            key="stockNonReturnableList"
+            key="stockDispatch"
             icon={<ShopOutlined />}
-            onClick={() => handleMenuClick("stockNonReturnableList")}
+            onClick={() => handleMenuClick("stockDispatch")}
           >
-            <NavLink to="/stock/nonreturnable">Non Returnable </NavLink>
+            <NavLink to="/stock/dispatch">Dispatch </NavLink>
           </Menu.Item>
         </Menu.SubMenu>
 
@@ -204,8 +204,8 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
           <Menu.Item key="request" onClick={() => handleMenuClick("request")}>
             <NavLink to="/resource/request">Request</NavLink>
           </Menu.Item>
-          <Menu.Item key="transfer" onClick={() => handleMenuClick("transfer")}>
-            <NavLink to="/resource/transfer">Transfer</NavLink>
+          <Menu.Item key="resourceApprove" onClick={() => handleMenuClick("resourceApprove")}>
+            <NavLink to="/resource/approval">Approval</NavLink>
           </Menu.Item>
           <Menu.Item
             key="currentDispacth"

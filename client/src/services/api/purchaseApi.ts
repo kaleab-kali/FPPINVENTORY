@@ -43,13 +43,13 @@ export const getPurchaseIds = async () => {
   
   export const createPurchase = async (data: PurchaseInfo[]) => {
     console.log("Data before mutation:", data);
-    // await fetch(`${BASE_URL}/purchase`, {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(data),
-    // });
+    await fetch(`${BASE_URL}/purchase`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
   };
 
   export const updatePurchase = async (data: PurchaseInfo) => {

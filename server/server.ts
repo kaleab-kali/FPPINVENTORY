@@ -15,6 +15,7 @@ import dotenv from "dotenv";
 import cors from  "cors";
 import employeeRoute from "./routes/employeeRoute";
 import invstaffRoute from "./routes/inventoryStaffRoutes";
+import notificationsRouter from './routes/notificationRoutes';
 declare module "colors" {
   interface String {
     cyan: String;
@@ -46,6 +47,7 @@ app.use("/stock", stockRoute);
 app.use("/employee", employeeRoute);
 app.use("/invstaff", invstaffRoute );
 app.use("/profile", profileRoute);
+app.use('/notifications', notificationsRouter);
 
 
 app.listen(PORT, () => {

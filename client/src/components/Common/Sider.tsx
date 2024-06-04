@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import { LiaShippingFastSolid } from "react-icons/lia";
-import { FaBoxOpen, FaChartLine, FaRuler, FaWarehouse } from "react-icons/fa";
+import {
+  FaBoxOpen,
+  FaChartLine,
+  FaRuler,
+  FaWarehouse,
+  FaHouseUser,
+} from "react-icons/fa";
 import { TbCategory2 } from "react-icons/tb";
 import { RiProductHuntLine } from "react-icons/ri";
 import {
@@ -9,11 +15,15 @@ import {
   FileTextOutlined,
   HistoryOutlined,
   ShopOutlined,
+  UsergroupAddOutlined,
+  UngroupOutlined,
 } from "@ant-design/icons";
+import { LuWarehouse } from "react-icons/lu";
+import { IoPersonAddOutline } from "react-icons/io5";
 import { Layout, Menu, Tooltip } from "antd";
 import { NavLink } from "react-router-dom";
 import "../../styles/SiderLayout.css";
-
+import { useAuth } from "../../context/AuthContext";
 const { Sider: AntdSider } = Layout;
 
 interface SiderProps {
@@ -22,7 +32,7 @@ interface SiderProps {
 
 const Sider: React.FC<SiderProps> = ({ collapsed }) => {
   const [activeKey, setActiveKey] = useState("");
-
+  const { user } = useAuth();
   const handleMenuClick = (key: string) => {
     setActiveKey(key);
   };
@@ -61,6 +71,49 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
         >
           <NavLink to="/">Dashboard</NavLink>
         </Menu.Item>
+        {(user?.role === "admin" || user?.role === "invmanager") && (
+          <Menu.SubMenu
+            key="staff"
+            title="Staff"
+            icon={<LuWarehouse size={20} />}
+          >
+            <Menu.Item
+              key="allStaffList"
+              icon={<UngroupOutlined />}
+              onClick={() => handleMenuClick("allStaffList")}
+            >
+              <NavLink to="/staff/allStaff">All Staff</NavLink>
+            </Menu.Item>
+
+            {/* {user?.role === "admin" && (
+            <Menu.Item
+              key="stockStaffList"
+              icon={<UngroupOutlined />}
+              onClick={() => handleMenuClick("stockStaffList")}
+            >
+              <NavLink to="/staff/stockStaff">Stock Staff</NavLink>
+            </Menu.Item>
+          )}
+          {user?.role === "admin" && (
+            <Menu.Item
+              key="inventoryStaffList"
+              icon={<FaHouseUser />}
+              onClick={() => handleMenuClick("inventoryStaffList")}
+            >
+              <NavLink to="/staff/inventoryStaff">Inventory Staff</NavLink>
+            </Menu.Item>
+          )}
+          {(user?.role === "admin" || user?.role === "invmanager") && (
+            <Menu.Item
+              key="personnelStaffList"
+              icon={<UsergroupAddOutlined />}
+              onClick={() => handleMenuClick("personnelStaffList")}
+            >
+              <NavLink to="/staff/personnelStaff">Personnel Staff</NavLink>
+            </Menu.Item>
+          )} */}
+          </Menu.SubMenu>
+        )}
         <Menu.SubMenu
           key="supplierSubMenu"
           title="Supplier"
@@ -108,7 +161,16 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
           title="Product"
           icon={<RiProductHuntLine />}
         >
-          <Menu.Item
+          {(user?.role === "invmanager" || user?.role === "personnel") && (
+            <Menu.Item
+              key="productRegistration"
+              icon={<UserOutlined />}
+              onClick={() => handleMenuClick("productRegistration")}
+            >
+              <NavLink to="/product/registration">Registration</NavLink>
+            </Menu.Item>
+          )}
+          {/* <Menu.Item
             key="productRegistration"
             icon={<UserOutlined />}
             onClick={() => handleMenuClick("productRegistration")}
@@ -118,7 +180,7 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
             // }}
           >
             <NavLink to="/product/registration">Registration</NavLink>
-          </Menu.Item>
+          </Menu.Item> */}
           <Menu.Item
             key="productView"
             icon={<FileTextOutlined />}
@@ -139,13 +201,22 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
           title="Purchase"
           icon={<RiProductHuntLine />}
         >
-          <Menu.Item
+          {user?.role === "invmanager" && (
+            <Menu.Item
+              key="purchaseRegistration"
+              icon={<UserOutlined />}
+              onClick={() => handleMenuClick("purchaseRegistration")}
+            >
+              <NavLink to="/purchase/addPurchase">Registration</NavLink>
+            </Menu.Item>
+          )}
+          {/* <Menu.Item
             key="purchaseRegistration"
             icon={<UserOutlined />}
             onClick={() => handleMenuClick("purchaseRegistration")}
           >
             <NavLink to="/purchase/addPurchase">Registration</NavLink>
-          </Menu.Item>
+          </Menu.Item> */}
           <Menu.Item
             key="purchaseList"
             icon={<UserOutlined />}
@@ -201,11 +272,23 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
           title="Resource"
           icon={<FaBoxOpen />}
         >
+          {(user?.role === "invmanager" || user?.role === "employee") && (
+            <Menu.Item
+              key="request"
+              icon={<UserOutlined />}
+              onClick={() => handleMenuClick("request")}
+            >
+              <NavLink to="/resource/request">Request</NavLink>
+            </Menu.Item>
+          )}
           <Menu.Item key="request" onClick={() => handleMenuClick("request")}>
             <NavLink to="/resource/request">Request</NavLink>
           </Menu.Item>
           <Menu.Item key="resourceApprove" onClick={() => handleMenuClick("resourceApprove")}>
             <NavLink to="/resource/approval">Approval</NavLink>
+          </Menu.Item> 
+          <Menu.Item key="transfer" onClick={() => handleMenuClick("transfer")}>
+            <NavLink to="/resource/transfer">Transfer</NavLink>
           </Menu.Item>
           <Menu.Item
             key="currentDispacth"

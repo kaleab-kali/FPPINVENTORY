@@ -1,21 +1,26 @@
 import { Input, Checkbox, Button, Form } from "antd";
 import React from "react";
 import type { FormProps } from "antd";
+import { Navigate, useNavigate } from "react-router-dom";
 type FieldType = {
   username?: string;
   password?: string;
   remember?: string;
 };
 
-const onFinish = (values: any) => {
-  console.log("Success:", values);
-};
 
-const onFinishFailed = (errorInfo: any) => {
-  console.log("Failed:", errorInfo);
-};
 
-const LoginForm = () => {
+const LoginForm :React.FC= () => {
+  const navigate = useNavigate();
+  const onFinish = (values: any) => {
+    console.log("Success:", values);
+    navigate("/dashboard");
+    
+  };
+  
+  const onFinishFailed = (errorInfo: any) => {
+    console.log("Failed:", errorInfo);
+  };
   return (
     <Form
       name="basic"

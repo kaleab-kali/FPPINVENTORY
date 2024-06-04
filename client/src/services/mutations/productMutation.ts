@@ -1,25 +1,27 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ProductInfo } from '../../../../shared/types/Product';
+import { ProductInfo } from "../../../../shared/types/Product";
 import { createProduct, updateProduct, deleteProduct } from "../api/productApi";
+import { message } from "antd";
 
 export function useCreateProduct() {
-  // console.log("useCreateProduct");
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: ProductInfo) => createProduct(data),
     onMutate: () => {
       console.log("Mutating");
     },
-    onError: () => {
-      console.log("error");
+    onError: (error: any) => {
+      console.error("Error creating product:", error);
+      message.error(error.message || "Failed to create product");
     },
     onSuccess: () => {
-      console.log("success");
+      console.log("Success");
+      message.success("Product created successfully");
     },
     onSettled: async (_: any, error: any) => {
-      console.log("settled");
+      console.log("Settled");
       if (error) {
-        console.log(error);
+        console.error("Error on settle:", error);
       } else {
         await queryClient.invalidateQueries({ queryKey: ["product"] });
       }
@@ -28,40 +30,53 @@ export function useCreateProduct() {
 }
 
 export function useUpdateProduct() {
-  console.log("useUpdateSupplier");
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: ProductInfo) => {
       console.log("Data before mutation:", data);
       return updateProduct(data);
     },
-    onSuccess(result, variables, context) {
-      console.log("Successfully updated Product");
+    onError: (error: any) => {
+      console.error("Error updating product:", error);
+      message.error(error.message || "Failed to update product");
+    },
+    onSuccess: () => {
+      console.log("Successfully updated product");
+      message.success("Product updated successfully");
       queryClient.invalidateQueries({ queryKey: ["product"] });
-      queryClient.invalidateQueries({ queryKey: ["product", {id : variables.productID}] });
-      
-    }
-    
-   
+    },
+    onSettled: async (_: any, error: any, variables: { productID: any }) => {
+      console.log("Settled");
+      if (error) {
+        console.error("Error on settle:", error);
+      } else {
+        await queryClient.invalidateQueries({
+          queryKey: ["product", { id: variables.productID }],
+        });
+      }
+    },
   });
-
 }
 
-export function useDeleteProduct () {
-  console.log("useDeleteProduct");
+export function useDeleteProduct() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => deleteProduct(id),
-    onSuccess() {
-      console.log("Successfully deleted Product");
+    onError: (error: any) => {
+      console.error("Error deleting product:", error);
+      message.error(error.message || "Failed to delete product");
+    },
+    onSuccess: () => {
+      console.log("Successfully deleted product");
+      message.success("Product deleted successfully");
     },
     onSettled: async (_: any, error: any) => {
+      console.log("Settled");
       if (error) {
-        console.log(error);
+        console.error("Error on settle:", error);
       } else {
         await queryClient.invalidateQueries({ queryKey: ["product"] });
       }
     },
   });
-
 }

@@ -3,7 +3,7 @@ import {  Layout } from "antd";
 
 import Header from "../components/Common/Header";
 import Sider from "../components/Common/Sider";
-import {  Route, Routes } from "react-router-dom";
+import {  Outlet, Route, Routes } from "react-router-dom";
 
 
 import InventoryProfilePage from "./InventoryProfile/InventoryProfilePage";
@@ -20,44 +20,115 @@ import AddPurchasePage from "./Purchase/AddPurchasePage";
 import AllPurchasePage from "./Purchase/AllPurchasePage";
 import ApprovedPurchasePage from "./Purchase/ApprovedPurchasePage";
 import ResourceAllocationPage from "./Resource/ResourceAllocationPage";
+<<<<<<< HEAD
 import ReturnablePage from "./Stock/ReturnablePage";
 import DispatchApprovalPage from "./Resource/DispatchApprovalPage";
 import DispatchDistributePage from "./Stock/DispatchDistributePage";
+=======
+import Profile from "./Profile/Profile";
+import StockStaff from "./Staff/AllStaff";
+// import InventoryStaff from "./Staff/InventoryStaff";
+// import Personnel from "./Staff/Personnel";
+import ProtectedRoute from "../components/ProtectedRoute/ProtectedRoute";
+>>>>>>> origin/mesekir-branch
 // import Stat from "./Stat";
 
 const { Content } = Layout;
 
 const Dashboard: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
+const userString = localStorage.getItem("user");
 
+if (!userString) {
+  throw new Error("User not found in local storage");
+}
+
+const user = JSON.parse(userString);
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
   };
   return (
     <Layout>
       <Sider collapsed={collapsed} />
-     
+
       {/* <Divider /> */}
       <Layout>
-      <Header collapsed={collapsed} toggleCollapsed={toggleCollapsed}/>
-        
+        <Header
+          collapsed={collapsed}
+          toggleCollapsed={toggleCollapsed}
+          username={user.role}
+        />
+
         <Content>
           <Routes>
             <Route path="/" element={<Stat />}></Route>
-            <Route path="/supplier" >
+            <Route path="/profile" element={<Profile />} />
+            <Route
+              path="/staff"
+              element={
+                <ProtectedRoute roles={["invmanager", "admin"]}>
+                  <Outlet />
+                </ProtectedRoute>
+              }
+            >
+              {/* Invmanager and admin can see personnelStaff */}
+              <Route
+                path="allStaff"
+                element={
+                  <ProtectedRoute roles={["invmanager", "admin"]}>
+                    <StockStaff />
+                  </ProtectedRoute>
+                }
+              />
+              {/* <Route
+                path="personnelStaff"
+                element={
+                  <ProtectedRoute roles={["invmanager", "admin"]}>
+                    <Personnel />
+                  </ProtectedRoute>
+                }
+              /> */}
+
+              {/* Only admin can see stockStaff and inventoryStaff */}
+              {/* <Route
+                path="stockStaff"
+                element={
+                  <ProtectedRoute roles={["admin"]}>
+                    <StockStaff />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="inventoryStaff"
+                element={
+                  <ProtectedRoute roles={["admin"]}>
+                    <InventoryStaff />
+                  </ProtectedRoute>
+                }
+              /> */}
+            </Route>
+            <Route path="/supplier">
               <Route path="list" element={<SupplierPage />} />
               <Route path="inactivelist" element={<InactiveSupplierPage />} />
             </Route>
-            <Route path="/category" >
+            <Route path="/category">
               <Route path="list" element={<CatagoryPage />} />
             </Route>
-            <Route path="/units" >
+            <Route path="/units">
               <Route path="list" element={<UnitsPage />} />
             </Route>
             <Route path="/product">
-              <Route
+              {/* <Route
                 path="registration"
                 element={<InventoryRegistrationPage />}
+              /> */}
+              <Route
+                path="registration"
+                element={
+                  <ProtectedRoute roles={["invmanager"]}>
+                    <InventoryRegistrationPage />
+                  </ProtectedRoute>
+                }
               />
 
               <Route path="view" element={<InventoryProfilePage />} />
@@ -65,24 +136,45 @@ const Dashboard: React.FC = () => {
             <Route path="/purchase">
               <Route
                 path="addPurchase"
-                element={<AddPurchasePage />}
+                element={
+                  <ProtectedRoute roles={["invmanager"]}>
+                    <AddPurchasePage />
+                  </ProtectedRoute>
+                }
               />
+              {/* <Route path="addPurchase" element={<AddPurchasePage />} /> */}
 
               <Route path="list" element={<AllPurchasePage />} />
               <Route path="approved" element={<ApprovedPurchasePage />} />
               <Route path="report" element={<ApprovedPurchasePage />} />
             </Route>
-            <Route path="/stock" >
+            <Route path="/stock">
               <Route path="list" element={<StockPage />} />
               <Route path="return" element={<ReturnablePage />} />
               <Route path="dispatch" element={<DispatchDistributePage />} />
             </Route>
 
             <Route path="/resource">
+<<<<<<< HEAD
               <Route path="request" element={<ResourcePage />} />
               <Route path="approval" element={<DispatchApprovalPage />} />
               <Route path="currentDispatch" element={<ResourceAllocationPage />} />
               
+=======
+              <Route
+                path="request"
+                element={
+                  <ProtectedRoute roles={["invmanager","employee"]}>
+                    <ResourcePage />
+                  </ProtectedRoute>
+                }
+              />
+              {/* <Route path="request" element={<ResourcePage />} /> */}
+              <Route
+                path="currentDispatch"
+                element={<ResourceAllocationPage />}
+              />
+>>>>>>> origin/mesekir-branch
             </Route>
           </Routes>
         </Content>

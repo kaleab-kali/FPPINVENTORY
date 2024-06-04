@@ -6,22 +6,24 @@ import {
   updateUnit,
   deleteUnit,
 } from "../controllers/unitController";
+import authAdminProtect from '../middleware/authAdminMiddleware';
+import checkManagerRole from '../middleware/authRoleManagerMiddleware';
 
 const router: Router = express.Router();
 
 // Create an Unit registration
-router.post("/", createUnit);
+router.post("/", authAdminProtect, checkManagerRole, createUnit);
 
 // Get all Units
-router.get("/", getAllUnits);
+router.get("/", authAdminProtect, getAllUnits);
 
 // Get a specific Unit by ID
-router.get("/:id", getUnitById);
+router.get("/:id", authAdminProtect, getUnitById);
 
 // Update an Unit by ID
-router.put("/:id", updateUnit);
+router.put("/:id", authAdminProtect, checkManagerRole, updateUnit);
 
 // Delete an Unit by ID
-router.delete("/:id", deleteUnit);
+router.delete("/:id", authAdminProtect, checkManagerRole, deleteUnit);
 
 export default router;

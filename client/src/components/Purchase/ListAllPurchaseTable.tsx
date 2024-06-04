@@ -5,9 +5,10 @@ import type { TableProps } from 'antd/es/table';
 import { useAllPurchases } from '../../services/queries/purchaseQueries';
 import { PurchaseInfo } from '../../../../shared/types/Purchase';
 import { formatDate} from '../../utils/utilityfunction'
-
+import { useAuth } from '../../context/AuthContext';
 
 const ListAllPurchaseTable: React.FC = () => {
+  const {user}=useAuth()
   const allPurchasesQuery = useAllPurchases();
   console.log('All Purchases Query:', allPurchasesQuery.data);
   const source = allPurchasesQuery.data ? allPurchasesQuery.data.map(
@@ -70,18 +71,34 @@ const ListAllPurchaseTable: React.FC = () => {
         </Tag>
       ),
     },
-    {
-      title: 'Action',
-      key: 'action',
-      render: (_, record) => (
-        record.status === 'pending' && (
-          <Button type="primary" danger onClick={() => handleApprove(record.purchaseID || "")}>
+    // {
+    //   title: 'Action',
+    //   key: 'action',
+    //   render: (_, record) => (
+    //     record.status === 'pending' && (
+    //       <Button type="primary" danger onClick={() => handleApprove(record.purchaseID || "")}>
+    //         Approve
+    //       </Button>
+    //     )
+    //   ),
+    // },
+  ];
+  if (user?.role === "invmanager") {
+    columns.push({
+      title: "Action",
+      key: "action",
+      render: (_, record) =>
+        record.status === "pending" && (
+          <Button
+            type="primary"
+            danger
+            onClick={() => handleApprove(record.purchaseID || "")}
+          >
             Approve
           </Button>
-        )
-      ),
-    },
-  ];
+        ),
+    });
+  }
 
   const tableProps: TableProps<PurchaseInfo> = {
     columns,

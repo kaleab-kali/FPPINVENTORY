@@ -3,7 +3,7 @@ import {  Layout } from "antd";
 
 import Header from "../components/Common/Header";
 import Sider from "../components/Common/Sider";
-import {  Outlet, Route, Routes } from "react-router-dom";
+import {  Navigate, Outlet, Route, Routes } from "react-router-dom";
 
 
 import InventoryProfilePage from "./InventoryProfile/InventoryProfilePage";
@@ -28,6 +28,8 @@ import StockStaff from "./Staff/AllStaff";
 // import InventoryStaff from "./Staff/InventoryStaff";
 // import Personnel from "./Staff/Personnel";
 import ProtectedRoute from "../components/ProtectedRoute/ProtectedRoute";
+import DispatchedItemsPage from "./Stock/DispatchedItemsPage";
+import ApproveReturnPage from "./Stock/ApproveReturnPage";
 // import Stat from "./Stat";
 
 const { Content } = Layout;
@@ -61,11 +63,15 @@ const user = JSON.parse(userString);
             <Route
               path="/"
               element={
-                <ProtectedRoute
-                  roles={["invmanager", "stockmanager", "admin", "personnel"]}
-                >
-                  <Stat />
-                </ProtectedRoute>
+                user?.role === "employee" ? (
+                  <Navigate to="/profile" replace />
+                ) : (
+                  <ProtectedRoute
+                    roles={["invmanager", "stockmanager", "admin", "personnel"]}
+                  >
+                    <Stat />
+                  </ProtectedRoute>
+                )
               }
             />
             {/* <Route path="/" element={<Stat />}></Route> */}
@@ -194,18 +200,16 @@ const user = JSON.parse(userString);
                 path="list"
                 element={
                   <ProtectedRoute
-                    roles={["invmanager", "stockmanager", "admin", "personnel"]}
+                    roles={["invmanager", "stockmanager", "admin"]}
                   >
                     <AllPurchasePage />
                   </ProtectedRoute>
                 }
               />
               <Route
-                path="approved"
+                path="approval"
                 element={
-                  <ProtectedRoute
-                    roles={["invmanager", "stockmanager", "admin", "personnel"]}
-                  >
+                  <ProtectedRoute roles={["invmanager"]}>
                     <ApprovedPurchasePage />
                   </ProtectedRoute>
                 }
@@ -213,9 +217,7 @@ const user = JSON.parse(userString);
               <Route
                 path="report"
                 element={
-                  <ProtectedRoute
-                    roles={["invmanager", "stockmanager", "admin", "personnel"]}
-                  >
+                  <ProtectedRoute roles={["invmanager"]}>
                     <ApprovedPurchasePage />
                   </ProtectedRoute>
                 }
@@ -238,21 +240,34 @@ const user = JSON.parse(userString);
               <Route
                 path="dispatch"
                 element={
-                  <ProtectedRoute
-                    roles={["invmanager", "stockmanager", "admin", "personnel"]}
-                  >
+                  <ProtectedRoute roles={["stockmanager"]}>
                     <DispatchDistributePage />
                   </ProtectedRoute>
                 }
               />
-              {/* <Route path="dispatch" element={<DispatchDistributePage />} /> */}
+              <Route
+                path="dispatchedItems"
+                element={
+                  <ProtectedRoute roles={["stockmanager","admin"]}>
+                    <DispatchedItemsPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="returnApproval"
+                element={
+                  <ProtectedRoute roles={["stockmanager"]}>
+                    <ApproveReturnPage />
+                  </ProtectedRoute>
+                }
+              />
             </Route>
 
             <Route path="/resource">
               <Route
                 path="request"
                 element={
-                  <ProtectedRoute roles={["employee"]}>
+                  <ProtectedRoute roles={["employee", "invmanager"]}>
                     <ResourcePage />
                   </ProtectedRoute>
                 }
@@ -267,24 +282,16 @@ const user = JSON.parse(userString);
                   </ProtectedRoute>
                 }
               />
-              {/* <Route
-                path="currentDispatch"
-                element={<ResourceAllocationPage />}
-              /> */}
               <Route
                 path="approval"
                 element={
                   <ProtectedRoute
-                    roles={["invmanager", "admin", "stockmanager", "personnel"]}
+                    roles={["invmanager"]}
                   >
                     <DispatchApprovalPage />
                   </ProtectedRoute>
                 }
               />
-              {/* <Route path="approval" element={<DispatchApprovalPage />} /> */}
-              {/* <Route path="request" element={<ResourcePage />} /> */}
-              {/* <Route path="request" element={<ResourcePage />} /> */}
-              {/* <Route path="currentDispatch" element={<ResourceAllocationPage />} /> */}
             </Route>
           </Routes>
         </Content>

@@ -1,188 +1,98 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Layout,
   Card,
   Avatar,
-  List,
-  Button,
-  Typography,
   Space,
   Badge,
   Modal,
   Form,
   Input,
-  Tooltip,
-  Divider,
+  Button,
+  Typography,
+  List,
+  Row,
+  Col,
 } from "antd";
 import {
-  UserOutlined,
-  PhoneOutlined,
   MailOutlined,
-  EditOutlined,
-  ClockCircleOutlined,
-  FacebookOutlined,
-  TwitterOutlined,
-  LinkedinOutlined,
-  CheckCircleOutlined,
+  PhoneOutlined,
   BellOutlined,
-  TeamOutlined,
+  ClockCircleOutlined,
 } from "@ant-design/icons";
-import "./Profile.css";
 import { useProfile } from "../../services/queries/profileQueries";
 import { useUpdateSelfPassword } from "../../services/mutations/staffMutation";
 import { useEmployeeProfile } from "../../services/queries/employeeQueries";
 import { useAuth } from "../../context/AuthContext";
+import "./Profile.css";
+import { useNotification } from "../../services/queries/notificationQueries";
+import { useUpdateNotification } from "../../services/mutations/notificationMutation";
 const { Content } = Layout;
 const { Text, Title } = Typography;
 
-const profileData = {
-  name: "John Doe",
-  role: "Inventory Admin",
-  location: "Addis Ababa, Ethiopia",
-  email: "john.doe@inventory.com",
-  phone: "+251 912 345 678",
-  company: "Inventory Management Co.",
-  social: {
-    facebook: "https://facebook.com",
-    twitter: "https://twitter.com",
-    linkedin: "https://linkedin.com",
-  },
-};
-
-const messages = [
-  {
-    id: 1,
-    sender: "Employee A",
-    text: "Report submitted.",
-    time: "15 min ago",
-    status: "read",
-  },
-  {
-    id: 2,
-    sender: "Manager B",
-    text: "Meeting at 3 PM.",
-    time: "2 h ago",
-    status: "unread",
-  },
-  {
-    id: 3,
-    sender: "Employee C",
-    text: "Inventory updated.",
-    time: "Yesterday",
-    status: "read",
-  },
-  {
-    id: 4,
-    sender: "Employee D",
-    text: "Request for approval.",
-    time: "5 min ago",
-    status: "unread",
-  },
-];
-
-const activities = [
-  {
-    id: 1,
-    date: "January 2nd, 04:35 AM",
-    description: "Approved new inventory stock.",
-  },
-  {
-    id: 2,
-    date: "January 4th, 06:19 AM",
-    description: "Reviewed monthly report.",
-  },
-  {
-    id: 3,
-    date: "January 5th, 12:34 AM",
-    description: "Updated system settings.",
-  },
-];
-
-const tasks = [
-  { id: 1, task: "Check inventory levels", status: "completed" },
-  { id: 2, task: "Review new orders", status: "pending" },
-  { id: 3, task: "Update supplier information", status: "in-progress" },
-];
-
-const notifications = [
-  { id: 1, notification: "New user registered", time: "10 min ago" },
-  { id: 2, notification: "Inventory low alert", time: "1 h ago" },
-  { id: 3, notification: "System maintenance scheduled", time: "3 h ago" },
-];
-
-const teamMembers = [
-  { id: 1, name: "Alice Smith", role: "Stock Manager", status: "online" },
-  {
-    id: 2,
-    name: "Bob Johnson",
-    role: "Inventory Specialist",
-    status: "offline",
-  },
-  { id: 3, name: "Carol White", role: "Logistics Coordinator", status: "away" },
-];
-
-// const statusMap: Record<
-//   string,
-//   "success" | "default" | "warning" | "processing" | "error"
-// > = {
-//   read: "default",
-//   unread: "processing",
-// };
-
-const taskStatusMap: Record<string, "success" | "default" | "warning"> = {
-  completed: "success",
-  pending: "default",
-  "in-progress": "warning",
-};
+interface Message {
+  _id: string;
+  title: string;
+  message: string;
+  isRead: boolean;
+  createdAt: string;
+}
 
 const Profile: React.FC = () => {
-  // const [isModalVisible, setIsModalVisible] = useState(false);
-  const [form] = Form.useForm();
-  const  {user} = useAuth()
-  const staffProfile = useProfile()
-  const employee = useEmployeeProfile(user?.employeeId||'');
-
-  // const profile = staffProfile.data;
-
+  const { user } = useAuth();
+  const staffProfile = useProfile();
+  const employee = useEmployeeProfile(user?.employeeId || "");
   const profile = user?.type === "invstaff" ? staffProfile.data : employee.data;
-  console.log(employee.data);
-  const updateSelfPassword = useUpdateSelfPassword() 
-   const [isModalVisible, setIsModalVisible] = useState(false);
+  const getNotification = useNotification(user?.ObjId || "");
+  const updateSelfPassword = useUpdateSelfPassword();
+  const employeeNotifications = getNotification.data;
+  const updateNotification = useUpdateNotification();
+  const [isPasswordModalVisible, setIsPasswordModalVisible] = useState(false);
+  const [isMessageModalVisible, setIsMessageModalVisible] = useState(false);
+  const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
 
-   const showModal = () => {
-     setIsModalVisible(true);
-   };
+  const [messages, setMessages] = useState<Message[]>([]);
 
-   const handleCancel = () => {
-     setIsModalVisible(false);
-   };
+  useEffect(() => {
+    if (employeeNotifications?.notifications) {
+      setMessages(employeeNotifications.notifications);
+    }
+  }, [employeeNotifications]);
 
-   const handleFinish = (values: any) => {
-     console.log("Received values: ", values);
-     // Handle the form submission logic here
-     const updateValues = {...values, email: profile?.email}
-     updateSelfPassword.mutate(updateValues)
-     setIsModalVisible(false);
-   };
-  // const showModal = () => {
-  //   form.setFieldsValue(profile); // Set form fields to current profile data
-  //   setIsModalVisible(true);
-  // };
+  const showPasswordModal = () => setIsPasswordModalVisible(true);
+  const hidePasswordModal = () => setIsPasswordModalVisible(false);
 
-  // const handleCancel = () => {
-  //   setIsModalVisible(false);
-  // };
+  const showMessageModal = (message: Message) => {
+    setSelectedMessage(message);
+    const notificationSeen = { ...message, isRead: true };
+    updateNotification.mutate(notificationSeen);
+    setIsMessageModalVisible(true);
+  };
+  const hideMessageModal = () => setIsMessageModalVisible(false);
 
-  const handleOk = () => {
-    form
-      .validateFields()
-      .then((values) => {
-        // setProfile(values);
-        setIsModalVisible(false);
-      })
-      .catch((info) => {
-        console.log("Validate Failed:", info);
-      });
+  const handleFinish = (values: any) => {
+    const updateValues = { ...values, email: profile?.email };
+    updateSelfPassword.mutate(updateValues);
+    hidePasswordModal();
+  };
+
+  // Get unique message types from the fetched notifications
+  const uniqueMessageTypes = Array.from(
+    new Set(messages.map((message) => message.title))
+  );
+
+  const [showAllMessages, setShowAllMessages] = useState<
+    Record<string, boolean>
+  >(Object.fromEntries(uniqueMessageTypes.map((type) => [type, false])));
+
+  const toggleShowAllMessages = (type: string) => {
+    setShowAllMessages((prev) => ({ ...prev, [type]: !prev[type] }));
+  };
+
+  const truncateMessage = (message: string, length: number) => {
+    return message.length > length
+      ? message.substring(0, length) + "..."
+      : message;
   };
 
   return (
@@ -196,24 +106,11 @@ const Profile: React.FC = () => {
               justifyContent: "space-evenly",
             }}
           >
-            <Card
-              className="profile-card"
-              hoverable
-              style={{ width: "70%" }}
-              // extra={
-              //   <Tooltip title="Edit Profile">
-              //     <EditOutlined
-              //       onClick={showModal}
-              //       style={{ fontSize: "18px" }}
-              //     />
-              //   </Tooltip>
-              // }
-            >
+            <Card className="profile-card" hoverable style={{ width: "70%" }}>
               <Space size="large">
                 <Avatar
                   size={130}
                   src={`http://localhost:7000/${profile?.photo}`}
-                  // shape="square"
                 />
                 <div>
                   <Title level={4}>
@@ -243,12 +140,6 @@ const Profile: React.FC = () => {
             <Space size="small">
               <div className="current-plan">
                 <Title level={4} style={{ color: "#9254de" }}>
-                  <img
-                    src="Waving Hand Medium Skin Tone.png"
-                    alt="Waving Hand Medium Skin Tone"
-                    width="25"
-                    height="25"
-                  />{" "}
                   Welcome {profile?.firstName}
                 </Title>
                 {user?.type === "invstaff" ? (
@@ -256,8 +147,7 @@ const Profile: React.FC = () => {
                     <Text>Click Here to Change your Password</Text>
                     <br />
                     <br />
-
-                    <Button type="primary" onClick={showModal}>
+                    <Button type="primary" onClick={showPasswordModal}>
                       Change Password
                     </Button>
                   </>
@@ -272,8 +162,8 @@ const Profile: React.FC = () => {
               </div>
               <Modal
                 title="Change Password"
-                visible={isModalVisible}
-                onCancel={handleCancel}
+                visible={isPasswordModalVisible}
+                onCancel={hidePasswordModal}
                 footer={null}
               >
                 <Form layout="vertical" onFinish={handleFinish}>
@@ -343,209 +233,77 @@ const Profile: React.FC = () => {
             </Space>
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              width: "100%",
-              justifyContent: "space-evenly",
-            }}
-          >
-            <Card
-              title="Latest Messages"
-              className="message-card"
-              extra={<Button type="link">+</Button>}
-              style={{ width: "30%" }}
-            >
-              <List
-                itemLayout="horizontal"
-                dataSource={messages}
-                renderItem={(item) => (
-                  <List.Item
-                    className={
-                      item.status === "unread"
-                        ? "message-unread"
-                        : "message-read"
-                    }
-                  >
-                    <List.Item.Meta
-                      avatar={<Avatar icon={<UserOutlined />} />}
-                      title={<a href="#">{item.sender}</a>}
-                      description={item.text}
-                    />
-                    <Text>{item.time}</Text>
-                  </List.Item>
-                )}
-              />
-            </Card>
-            <Card
-              title="Recent Activity"
-              className="activity-card"
-              style={{ width: "35%" }}
-            >
-              <List
-                itemLayout="vertical"
-                dataSource={activities}
-                renderItem={(item) => (
-                  <List.Item>
-                    <ClockCircleOutlined style={{ color: "#9254de" }} />
-                    <Text strong>{item.date}</Text>
-                    <br />
-                    <Text type="secondary">{item.description}</Text>
-                  </List.Item>
-                )}
-              />
-            </Card>
-            <Card
-              title="Tasks"
-              className="tasks-card"
-              extra={<Button type="link">+</Button>}
-              style={{ width: "30%" }}
-            >
-              <List
-                itemLayout="horizontal"
-                dataSource={tasks}
-                renderItem={(item) => (
-                  <List.Item>
-                    <List.Item.Meta title={item.task} />
-                    <Badge
-                      status={taskStatusMap[item.status]}
-                      text={item.status}
-                    />
-                  </List.Item>
-                )}
-              />
-            </Card>
-          </div>
+          {/* Messages Section */}
+          <Row gutter={[16, 16]}>
+            {uniqueMessageTypes.map((type) => {
+              const filteredMessages = messages.filter(
+                (message) => message.title === type
+              );
+              const displayMessages = showAllMessages[type]
+                ? filteredMessages
+                : filteredMessages.slice(0, 5);
 
-          <div
-            style={{
-              display: "flex",
-              width: "100%",
-              justifyContent: "space-between",
-            }}
-          >
-            <Card
-              title="Notifications"
-              className="notifications-card"
-              extra={<Button type="link">+</Button>}
-              style={{ width: "48%" }}
-            >
-              <List
-                itemLayout="horizontal"
-                dataSource={notifications}
-                renderItem={(item) => (
-                  <List.Item>
-                    <List.Item.Meta title={item.notification} />
-                    <Text>{item.time}</Text>
-                  </List.Item>
-                )}
-              />
-            </Card>
-          </div>
+              return (
+                <Col span={8} key={type}>
+                  <Card title={type}>
+                    <List
+                      itemLayout="horizontal"
+                      dataSource={displayMessages.sort(
+                        (a, b) =>
+                          new Date(b.createdAt).getTime() -
+                          new Date(a.createdAt).getTime()
+                      )}
+                      renderItem={(message) => (
+                        <List.Item onClick={() => showMessageModal(message)}>
+                          <List.Item.Meta
+                            avatar={
+                              <Badge dot={!message.isRead}>
+                                <Avatar icon={<BellOutlined />} />
+                              </Badge>
+                            }
+                            title={truncateMessage(message.message, 50)} // Truncate the message here
+                            description={
+                              message.createdAt
+                                ? new Date(message.createdAt).toLocaleString()
+                                : "Unknown date"
+                            }
+                          />
+                        </List.Item>
+                      )}
+                    />
+                    {filteredMessages.length > 5 && (
+                      <Button
+                        type="link"
+                        onClick={() => toggleShowAllMessages(type)}
+                      >
+                        {showAllMessages[type] ? "Show Less" : "Show More"}
+                      </Button>
+                    )}
+                  </Card>
+                </Col>
+              );
+            })}
+          </Row>
 
-          <div
-            style={{
-              display: "flex",
-              width: "100%",
-              justifyContent: "space-between",
-            }}
+          <Modal
+            title={selectedMessage?.title}
+            visible={isMessageModalVisible}
+            onCancel={hideMessageModal}
+            footer={[
+              <Button key="close" onClick={hideMessageModal}>
+                Close
+              </Button>,
+            ]}
           >
-            <Card
-              title="Team Members"
-              className="team-card"
-              extra={<Button type="link">+</Button>}
-              style={{ width: "100%" }}
-            >
-              <List
-                itemLayout="horizontal"
-                dataSource={teamMembers}
-                renderItem={(item) => (
-                  <List.Item>
-                    <List.Item.Meta
-                      avatar={<Avatar icon={<UserOutlined />} />}
-                      title={item.name}
-                      description={item.role}
-                    />
-                    <Badge
-                      status={
-                        item.status === "online"
-                          ? "success"
-                          : item.status === "offline"
-                          ? "default"
-                          : "warning"
-                      }
-                    />
-                  </List.Item>
-                )}
-              />
-            </Card>
-          </div>
+            <p>{selectedMessage?.message}</p>
+            <p>
+              <ClockCircleOutlined />{" "}
+              {selectedMessage?.createdAt
+                ? new Date(selectedMessage.createdAt).toLocaleString()
+                : "Unknown date"}
+            </p>
+          </Modal>
         </Space>
-
-        {/* <Modal
-          title="Edit Profile"
-          visible={isModalVisible}
-          onOk={handleOk}
-          onCancel={handleCancel}
-        >
-          <Form form={form} layout="vertical" initialValues={profile}>
-            <Form.Item
-              name="name"
-              label="Name"
-              rules={[{ required: true, message: "Please input your name!" }]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="role"
-              label="Role"
-              rules={[{ required: true, message: "Please input your role!" }]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="location"
-              label="Location"
-              rules={[
-                { required: true, message: "Please input your location!" },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="email"
-              label="Email"
-              rules={[{ required: true, message: "Please input your email!" }]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="phone"
-              label="Phone"
-              rules={[{ required: true, message: "Please input your phone!" }]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="company"
-              label="Company"
-              rules={[
-                { required: true, message: "Please input your company!" },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item name={["social", "facebook"]} label="Facebook">
-              <Input />
-            </Form.Item>
-            <Form.Item name={["social", "twitter"]} label="Twitter">
-              <Input />
-            </Form.Item>
-            <Form.Item name={["social", "linkedin"]} label="LinkedIn">
-              <Input />
-            </Form.Item>
-          </Form>
-        </Modal> */}
       </Content>
     </Layout>
   );

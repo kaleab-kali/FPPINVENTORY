@@ -84,34 +84,6 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
             >
               <NavLink to="/staff/allStaff">All Staff</NavLink>
             </Menu.Item>
-
-            {/* {user?.role === "admin" && (
-            <Menu.Item
-              key="stockStaffList"
-              icon={<UngroupOutlined />}
-              onClick={() => handleMenuClick("stockStaffList")}
-            >
-              <NavLink to="/staff/stockStaff">Stock Staff</NavLink>
-            </Menu.Item>
-          )}
-          {user?.role === "admin" && (
-            <Menu.Item
-              key="inventoryStaffList"
-              icon={<FaHouseUser />}
-              onClick={() => handleMenuClick("inventoryStaffList")}
-            >
-              <NavLink to="/staff/inventoryStaff">Inventory Staff</NavLink>
-            </Menu.Item>
-          )}
-          {(user?.role === "admin" || user?.role === "invmanager") && (
-            <Menu.Item
-              key="personnelStaffList"
-              icon={<UsergroupAddOutlined />}
-              onClick={() => handleMenuClick("personnelStaffList")}
-            >
-              <NavLink to="/staff/personnelStaff">Personnel Staff</NavLink>
-            </Menu.Item>
-          )} */}
           </Menu.SubMenu>
         )}
         {user?.role !== "employee" && (
@@ -128,13 +100,15 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
               >
                 <NavLink to="/supplier/list">List</NavLink>
               </Menu.Item>
-              <Menu.Item
-                key="supplierInactiveList"
-                icon={<ShopOutlined />}
-                onClick={() => handleMenuClick("supplierInactiveList")}
-              >
-                <NavLink to="/supplier/inactivelist">Inactive</NavLink>
-              </Menu.Item>
+              {user?.role === "admin" && (
+                <Menu.Item
+                  key="supplierInactiveList"
+                  icon={<ShopOutlined />}
+                  onClick={() => handleMenuClick("supplierInactiveList")}
+                >
+                  <NavLink to="/supplier/inactivelist">Inactive</NavLink>
+                </Menu.Item>
+              )}
             </Menu.SubMenu>
             <Menu.SubMenu key="unitsSubMenu" title="Units" icon={<FaRuler />}>
               <Menu.Item
@@ -163,7 +137,7 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
               title="Product"
               icon={<RiProductHuntLine />}
             >
-              {(user?.role === "invmanager") && (
+              {user?.role === "invmanager" && (
                 <Menu.Item
                   key="productRegistration"
                   icon={<UserOutlined />}
@@ -172,30 +146,12 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
                   <NavLink to="/product/registration">Registration</NavLink>
                 </Menu.Item>
               )}
-              {/* <Menu.Item
-            key="productRegistration"
-            icon={<UserOutlined />}
-            onClick={() => handleMenuClick("productRegistration")}
-            // style={{
-            //   color: activeKey === "employeeRegistration" ? "blue" : "",
-            //   fontWeight: activeKey === "employeeRegistration" ? "bold" : "",
-            // }}
-          >
-            <NavLink to="/product/registration">Registration</NavLink>
-          </Menu.Item> */}
               <Menu.Item
                 key="productView"
                 icon={<FileTextOutlined />}
                 onClick={() => handleMenuClick("productView")}
               >
                 <NavLink to="/product/view">List</NavLink>
-              </Menu.Item>
-              <Menu.Item
-                key="productInactive"
-                icon={<FileTextOutlined />}
-                onClick={() => handleMenuClick("productInactive")}
-              >
-                <NavLink to="/product/inactive">Inactive</NavLink>
               </Menu.Item>
             </Menu.SubMenu>
             <Menu.SubMenu
@@ -212,34 +168,35 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
                   <NavLink to="/purchase/addPurchase">Registration</NavLink>
                 </Menu.Item>
               )}
-              {/* <Menu.Item
-              key="purchaseRegistration"
-              icon={<UserOutlined />}
-              onClick={() => handleMenuClick("purchaseRegistration")}
-            >
-              <NavLink to="/purchase/addPurchase">Registration</NavLink>
-            </Menu.Item> */}
-              <Menu.Item
-                key="purchaseList"
-                icon={<UserOutlined />}
-                onClick={() => handleMenuClick("purchaseList")}
-              >
-                <NavLink to="/purchase/list">All Purchase</NavLink>
-              </Menu.Item>
-              <Menu.Item
-                key="purchaseApproved"
-                icon={<UserOutlined />}
-                onClick={() => handleMenuClick("purchaseApproved")}
-              >
-                <NavLink to="/purchase/approved">Approved</NavLink>
-              </Menu.Item>
-              <Menu.Item
-                key="purchaseReport"
-                icon={<UserOutlined />}
-                onClick={() => handleMenuClick("purchaseReport")}
-              >
-                <NavLink to="/purchase/report">Report</NavLink>
-              </Menu.Item>
+              {user?.role !== "personnel" && (
+                <>
+                  <Menu.Item
+                    key="purchaseList"
+                    icon={<UserOutlined />}
+                    onClick={() => handleMenuClick("purchaseList")}
+                  >
+                    <NavLink to="/purchase/list">All Purchase</NavLink>
+                  </Menu.Item>
+                  {user?.role === "invmanager" && (
+                    <>
+                      <Menu.Item
+                        key="purchaseApproved"
+                        icon={<UserOutlined />}
+                        onClick={() => handleMenuClick("purchaseApproved")}
+                      >
+                        <NavLink to="/purchase/approval">Approval</NavLink>
+                      </Menu.Item>
+                      <Menu.Item
+                        key="purchaseReport"
+                        icon={<UserOutlined />}
+                        onClick={() => handleMenuClick("purchaseReport")}
+                      >
+                        <NavLink to="/purchase/report">Report</NavLink>
+                      </Menu.Item>
+                    </>
+                  )}
+                </>
+              )}
             </Menu.SubMenu>
           </>
         )}
@@ -248,22 +205,6 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
           title={user?.role === "employee" ? "Stock" : "Stock Management"}
           icon={<FaWarehouse />}
         >
-          {user?.role !== "employee" && (
-            <Menu.Item
-              key="stockList"
-              icon={<ShopOutlined />}
-              onClick={() => handleMenuClick("stockList")}
-            >
-              <NavLink to="/stock/list">Report</NavLink>
-            </Menu.Item>
-          )}
-          {/* <Menu.Item
-            key="stockList"
-            icon={<ShopOutlined />}
-            onClick={() => handleMenuClick("stockList")}
-          >
-            <NavLink to="/stock/list">Report</NavLink>
-          </Menu.Item> */}
           {user?.role === "employee" && (
             <Menu.Item
               key="stockReturnableList"
@@ -273,29 +214,47 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
               <NavLink to="/stock/return">Return Item </NavLink>
             </Menu.Item>
           )}
-          {/* <Menu.Item
-            key="stockReturnableList"
-            icon={<ShopOutlined />}
-            onClick={() => handleMenuClick("stockReturnableList")}
-          >
-            <NavLink to="/stock/return">Return Item </NavLink>
-          </Menu.Item> */}
           {user?.role !== "employee" && (
-            <Menu.Item
-              key="stockDispatch"
-              icon={<ShopOutlined />}
-              onClick={() => handleMenuClick("stockDispatch")}
-            >
-              <NavLink to="/stock/dispatch">Dispatch </NavLink>
-            </Menu.Item>
+            <>
+              <Menu.Item
+                key="stockList"
+                icon={<ShopOutlined />}
+                onClick={() => handleMenuClick("stockList")}
+              >
+                <NavLink to="/stock/list">Report</NavLink>
+              </Menu.Item>
+              {user?.role === "stockmanager" && (
+                <>
+                  <Menu.Item
+                    key="stockDispatch"
+                    icon={<ShopOutlined />}
+                    onClick={() => handleMenuClick("stockDispatch")}
+                  >
+                    <NavLink to="/stock/dispatch">Dispatch Confirm </NavLink>
+                  </Menu.Item>
+                </>
+              )}
+              {(user?.role === "stockmanager" ||
+                user?.role === "admin") && (
+                <Menu.Item
+                  key="stockDispatchItems"
+                  icon={<ShopOutlined />}
+                  onClick={() => handleMenuClick("stockDispatchItems")}
+                >
+                  <NavLink to="/stock/dispatcheditems">Dispatched Items </NavLink>
+                </Menu.Item>
+              )}
+              {user?.role === "stockmanager" && (
+                <Menu.Item
+                  key="stockReturnApproval"
+                  icon={<ShopOutlined />}
+                  onClick={() => handleMenuClick("stockReturnApproval")}
+                >
+                  <NavLink to="/stock/returnApproval">Return Approval </NavLink>
+                </Menu.Item>
+              )}
+            </>
           )}
-          {/* <Menu.Item
-            key="stockDispatch"
-            icon={<ShopOutlined />}
-            onClick={() => handleMenuClick("stockDispatch")}
-          >
-            <NavLink to="/stock/dispatch">Dispatch </NavLink>
-          </Menu.Item> */}
         </Menu.SubMenu>
 
         <Menu.SubMenu
@@ -312,13 +271,6 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
               <NavLink to="/resource/request">Request</NavLink>
             </Menu.Item>
           )}
-
-          {/* <Menu.Item key="request" onClick={() => handleMenuClick("request")}>
-            <NavLink to="/resource/request">Request</NavLink>
-          </Menu.Item> */}
-          <Menu.Item key="transfer" onClick={() => handleMenuClick("transfer")}>
-            <NavLink to="/resource/transfer">Transfer</NavLink>
-          </Menu.Item>
           {user?.role !== "employee" && (
             <>
               <Menu.Item
@@ -330,12 +282,16 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
                   Allocated Items
                 </NavLink>
               </Menu.Item>
-              <Menu.Item
-                key="resourceApprove"
-                onClick={() => handleMenuClick("resourceApprove")}
-              >
-                <NavLink to="/resource/approval">Approval</NavLink>
-              </Menu.Item>
+              {user?.role === "invmanager" && (
+                <Menu.Item
+                  key="resourceApprove"
+                  icon={<UserOutlined />}
+                  onClick={() => handleMenuClick("resourceApprove")}
+                >
+                  <NavLink to="/resource/approval">Approval</NavLink>
+                </Menu.Item>
+              )}
+
               <Menu.Item
                 key="resourceHistory"
                 icon={<UserOutlined />}
@@ -345,40 +301,7 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
               </Menu.Item>
             </>
           )}
-          {/* <Menu.Item
-            key="currentDispacth"
-            onClick={() => handleMenuClick("currentDispatch")}
-          >
-            <NavLink to="/resource/currentDispatch">Allocated Items</NavLink>
-          </Menu.Item> */}
-          {/* {user?.role !== "employee" && (
-          )} */}
-          {/* <Menu.Item key="resourceHistory">
-            <NavLink to="/resource/history">History</NavLink>
-          </Menu.Item> */}
         </Menu.SubMenu>
-
-        {/* <Menu.SubMenu key="attendanceSubMenu" title="Attendance">
-          <Menu.Item key="currentAttendance">
-            <NavLink to="/attendace/currentCurrentAttendance">
-              Current Attendance
-            </NavLink>
-          </Menu.Item>
-          <Menu.Item key="attendanceHistory">
-            <NavLink to="/attendance/history">History</NavLink>
-          </Menu.Item>
-        </Menu.SubMenu>
-
-        <Menu.SubMenu key="performanceSubMenu" title="performance">
-          <Menu.Item key="currentperformance">
-            <NavLink to="/performance/currentperformance">
-              Current performance
-            </NavLink>
-          </Menu.Item>
-          <Menu.Item key="performanceHistory">
-            <NavLink to="/performance/history">History</NavLink>
-          </Menu.Item>
-        </Menu.SubMenu> */}
       </Menu>
     </AntdSider>
   );

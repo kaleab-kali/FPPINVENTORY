@@ -15,7 +15,6 @@ import { useCreateStaff } from "../../services/mutations/staffMutation";
 
 const { Option } = Select;
 
-
 const RegistrationForm: React.FC = () => {
   const [form] = Form.useForm();
   const { user } = useAuth();
@@ -38,15 +37,12 @@ const RegistrationForm: React.FC = () => {
       formData.append("phoneNumber", values.phoneNumber);
       formData.append("email", values.email);
       formData.append("password", values.password);
-            createStaff.mutate(formData);
-
+      createStaff.mutate(formData);
 
       // Log FormData content for debugging
       formData.forEach((value, key) => {
         console.log(`${key}: ${value}`);
       });
-
-     
     } catch (error) {
       console.log("Validate Failed:", error);
     }

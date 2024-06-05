@@ -1,20 +1,21 @@
 import React from "react";
-import { Table, Button, Tag, Flex } from "antd";
+import { Table, Button, Tag } from "antd";
 import { CheckCircleOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
 import type { TableProps } from "antd/es/table";
 import { DispatchInfo } from "../../../../shared/types/Dispatch";
 import { useAllDispatchs } from "../../services/queries/dispatchQueries";
-import { useUpdateDispatch } from "../../services/mutations/dispatchMutation";
-import { FaRecordVinyl } from "react-icons/fa";
+import { useDistributeDispatch } from "../../services/mutations/dispatchMutation";
 
-const DispatchApproval: React.FC = () => {
+const AllDispatcheditems: React.FC = () => {
   const allDispatchesQuery = useAllDispatchs();
 
   console.log("All dispacth Query:", allDispatchesQuery.data);
   const source = allDispatchesQuery.data
     ? allDispatchesQuery.data
-        .filter((queryResult: DispatchInfo) => queryResult.status === "pending")
+        .filter(
+          (queryResult: DispatchInfo) => queryResult.status === "dispatched"
+        )
         .map((queryResult: DispatchInfo) => {
           return {
             key: queryResult.dispatchId,
@@ -30,7 +31,7 @@ const DispatchApproval: React.FC = () => {
         })
     : [];
 
-  const updateDispatchMutation = useUpdateDispatch();
+  const updateDistributeDispatchMutation = useDistributeDispatch();
 
   const columns: ColumnsType<DispatchInfo> = [
     {
@@ -72,54 +73,17 @@ const DispatchApproval: React.FC = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status: "pending") => <Tag color="orange">Pending</Tag>,
-    },
-    {
-      title: "Action",
-      key: "action",
-      render: (_, record) => (
-        <Flex gap="small">
-          <Button
-            type="primary"
-            icon={<CheckCircleOutlined />}
-            onClick={() => handleApprove(record.dispatchId || "")}
-          >
-            Approve
-          </Button>
-          <Button
-            type="dashed"
-            icon={<CheckCircleOutlined />}
-            onClick={() => handleReject(record.dispatchId || "")}
-          >
-            Reject
-          </Button>
-        </Flex>
-      ),
+      render: (status) => <Tag color="yellow">{status}</Tag>,
     },
   ];
-
-  const handleApprove = (dispatchId: string) => {
-    console.log(`Approve purchase with ID: ${dispatchId}`);
-    updateDispatchMutation.mutate({
-      dispatchId,
-      status: "approved",
-    });
-  };
-  const handleReject = (dispatchId: string) => {
-    console.log(`Reject purchase with ID: ${dispatchId}`);
-    updateDispatchMutation.mutate({
-      dispatchId,
-      status: "rejected",
-    });
-  };
 
   const tableProps: TableProps = {
     columns,
     dataSource: source,
-    rowKey: "purchaseID",
+    rowKey: "dispatchId",
   };
 
   return <Table {...tableProps} />;
 };
 
-export default DispatchApproval;
+export default AllDispatcheditems;

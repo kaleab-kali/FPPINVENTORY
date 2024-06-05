@@ -8,10 +8,12 @@ import {
 import { message } from "antd";
 
 export function useCreateStaff() {
-  console.log("useCreateStaff");
+  console.log("useCreateStaff: ");
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: FormData) => createStaff(data),
+    mutationFn: (data: FormData) => {
+  console.log("useCreateStaff:", Array.from(data.entries()));
+      createStaff(data)},
     onMutate: () => {
       console.log("Mutating");
     },

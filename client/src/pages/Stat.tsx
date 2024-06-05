@@ -26,7 +26,7 @@ const Stat = () => {
         style={{ marginLeft: "20px", marginRight: "30px" }}
       >
         <Flex vertical>
-          <h1 style={{ marginLeft: "20px" }}>Employee Structure</h1>
+          <h1 style={{ marginLeft: "20px" }}>Inventory Structure</h1>
           <Flex vertical={false} align="center" justify="space-around">
             <div
               style={{

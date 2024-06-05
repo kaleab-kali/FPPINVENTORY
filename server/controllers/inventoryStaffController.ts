@@ -120,7 +120,7 @@ const loginINVStaff = async (req: Request, res: Response): Promise<void> => {
       { expiresIn: "1h" }
     );
 
-    res.status(200).json({ message: "Login successful", token, role });
+    res.status(200).json({ message: "Login successful", token, role,ObjId: invStaff._id });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });

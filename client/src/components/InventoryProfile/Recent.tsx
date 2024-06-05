@@ -5,10 +5,17 @@ import { MdOutlineLibraryAdd } from "react-icons/md";
 import { TbTruckDelivery } from "react-icons/tb";
 import { CiExport } from "react-icons/ci";
 import { HiDotsVertical } from "react-icons/hi";
+import { useAuth } from '../../context/AuthContext';
+import { UserOutlined} from "@ant-design/icons";
+import { useProfile } from '../../services/queries/profileQueries';
 const { Meta } = Card;
 const Recent = () => {
+  const {user} = useAuth()
+  const staffProfile = useProfile();
+  const profile = staffProfile.data
+
   return (
-    <div style={{ backgroundColor: "white", width:"100%" }}>
+    <div style={{ backgroundColor: "white", width: "100%" }}>
       <Card>
         <Flex
           gap="large"
@@ -18,9 +25,16 @@ const Recent = () => {
         >
           <Meta
             avatar={
-              <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+              <Avatar
+                src={
+                  profile?.photo
+                    ? `http://localhost:7000/${profile.photo}`
+                    : undefined
+                }
+                icon={!profile?.photo ? <UserOutlined /> : undefined}
+              />
             }
-            title="Abebe Driba"
+            title={profile?.firstName }
             description="Admin"
           />
           <HiDotsVertical />

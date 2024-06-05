@@ -22,18 +22,19 @@ export const getPersonnelStaff = async () => {
 
 export const createStaff = async (data: FormData) => {
   try {
-    console.log("Data before mutation:", data);
+    console.log("Data before mutation:", Array.from(data.entries()));
     await fetchWithAuth(`${BASE_URL}/invstaff/create-invstaff`, {
       method: "POST",
-        // headers: {
-        //   "Content-Type": "application/json",
-        // },
+      // headers: {
+      //   "Content-Type": "multipart/form-data",
+      // },
       body: data,
     });
   } catch (error) {
     handleError(error);
   }
 };
+
 
 export const updateStaff = async (data: FormData) => {
   try {

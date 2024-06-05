@@ -5,6 +5,7 @@ import {
   updateDispatch,
   updateDistributeDispatch,
   returnDispatch,
+  returnApproval,
 } from "../api/dispatchApi";
 import { message } from "antd";
 
@@ -96,6 +97,25 @@ export function useReturnDispatch() {
       queryClient.invalidateQueries({
         queryKey: ["dispatch", { id: variables.dispatchId }],
       });
+    },
+  });
+}
+export function useUpdateReturnApproval() {
+  console.log("useUpdateDispatchapproval");
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: any) => {
+      console.log("Data before mutation:", data);
+      return returnApproval(data);
+    },
+    onError: (error: any) => {
+      console.log("error");
+      message.error(error.message || "Failed to approve return dispatch");
+    },
+    onSuccess(result: any, variables: any, context: any) {
+      console.log("Successfully updated Dispatch");
+      message.success("Dispatch returned successfully");
+      queryClient.invalidateQueries({ queryKey: ["dispatch"] });
     },
   });
 }

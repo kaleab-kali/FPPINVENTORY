@@ -91,3 +91,18 @@ export const returnDispatch = async (data: DispatchInfo) => {
     handleError(error);
   }
 };
+
+export const returnApproval = async (data: any) => {
+  try {
+    console.log("Data before mutation return approval api:", data);
+    await fetchWithAuth(`${BASE_URL}/dispatch/approve-return`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+  } catch (error) {
+    handleError(error);
+  }
+};

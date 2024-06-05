@@ -137,7 +137,7 @@ const StaffTable: React.FC = () => {
     Modal.confirm({
       title: "This action is not reversible. Are you sure you want to delete?",
       onOk: () => {
-        message.success("Record deleted");
+        // message.success("Record deleted");
         setIsDeleteConfirmVisible(false);
         // Implement delete logic here
       },

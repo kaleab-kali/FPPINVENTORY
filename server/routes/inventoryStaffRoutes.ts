@@ -1,18 +1,18 @@
 import express, { Router } from "express";
-import {
-  createINVStaff,
+import { 
+  createINVStaff, 
   createAdmin,
   loginINVStaff,
   changePassword,
   getAllINVStaff,
-  getPersonnel,
-  updateINVStaff,
+  getPersonnel, 
+  updateINVStaff
 } from "../controllers/inventoryStaffController";
-import authAdminProtect from "../middleware/authAdminMiddleware";
-import checkRole from "../middleware/authRoleMiddleware";
-import checkAdminRole from "../middleware/authAdminControlMiddleware";
-import checkManagerRole from "../middleware/authRoleManagerMiddleware";
-import upload from "../config/multerConfig";
+import authAdminProtect from '../middleware/authAdminMiddleware';
+import checkRole from '../middleware/authRoleMiddleware';
+import checkAdminRole from '../middleware/authAdminControlMiddleware';
+import checkManagerRole from '../middleware/authRoleManagerMiddleware';
+import upload from '../config/multerConfig'
 
 const router: Router = express.Router();
 
@@ -38,15 +38,9 @@ router.post("/change-password", authAdminProtect, changePassword);
 router.get("/", authAdminProtect, checkAdminRole, getAllINVStaff);
 
 // get personnel information
-router.get("/personnel", authAdminProtect, checkManagerRole, getPersonnel);
+router.get('/personnel', authAdminProtect, checkManagerRole, getPersonnel)
 
 // update inventory staff information
-router.put(
-  "/update-invstaff/:id",
-  authAdminProtect,
-  checkAdminRole,
-  upload,
-  updateINVStaff
-);
+router.put('/update-invstaff/:id', authAdminProtect, checkAdminRole, upload, updateINVStaff);
 
 export default router;

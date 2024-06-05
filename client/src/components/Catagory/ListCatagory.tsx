@@ -4,12 +4,14 @@ import { useAllCategorys } from "../../services/queries/categoryQueries";
 import { CategoryInfo } from "../../../../shared/types/Category";
 import { useDeleteCategory } from "../../services/mutations/categoryMutation";
 import CategoryForm from "./CategoryForm";
+import { useAuth } from "../../context/AuthContext";
+import { ColumnsType } from "antd/es/table";
 
 const ListCatagoryTable: React.FC = () => {
   const [searchValue, setSearchValue] = useState("");
   const [editRecord, setEditRecord] = useState<any>(null);
   const [editModalVisible, setEditModalVisible] = useState(false);
-
+  const {user} = useAuth()
   const allCategorysQuery = useAllCategorys();
   const deleteCategoryMutation = useDeleteCategory();
 
@@ -26,10 +28,22 @@ const ListCatagoryTable: React.FC = () => {
       })
     : [];
 
+  // const handleEdit = (record: any) => {
+  //   setSelectedRow(record);
+  //   form.setFieldsValue({
+  //     categoryName: record.categoryName,
+  //     unitName: record.unitName,
+  //   });
+  //   console.log(record);
+  //   setIsModalVisible(true);
+  // };
+  // const handleCancel = () => {
+  //   setIsModalVisible(false);
+  // };  
   console.log("Source:", Source);
-  const filteredData = Source.filter((entry) =>
-    entry.categoryName?.toLowerCase().includes(searchValue.toLowerCase())
-  );
+  // const filteredData = Source.filter((entry: { categoryName: string; }) =>
+  //   entry.categoryName?.toLowerCase().includes(searchValue.toLowerCase())
+  // );
 
   const handleSearch = (value: string) => {
     setSearchValue(value);
@@ -49,7 +63,7 @@ const ListCatagoryTable: React.FC = () => {
     setEditModalVisible(false);
     setEditRecord(null);
   };
-  const columns = [
+  const columns:ColumnsType = [
     {
       title: "ID",
       dataIndex: "catID",
@@ -66,7 +80,28 @@ const ListCatagoryTable: React.FC = () => {
       key: "unit",
     },
 
-    {
+    // {
+    //   title: "Action",
+    //   key: "action",
+    //   render: (text: string, record: any) => (
+    //     <Space size="middle">
+    //       <Button type="primary" onClick={() => handleEdit(record)}>
+    //         Edit
+    //       </Button>
+    //       <Popconfirm
+    //         title="Are you sure to delete this row?"
+    //         onConfirm={() => handleDelete(record.catID || "")}
+    //         okText="Yes"
+    //         cancelText="No"
+    //       >
+    //         <Button type="dashed">Delete</Button>
+    //       </Popconfirm>
+    //     </Space>
+    //   ),
+    // },
+  ];
+  if (user?.role === "invmanager") {
+    columns.push({
       title: "Action",
       key: "action",
       render: (text: string, record: any) => (
@@ -76,7 +111,7 @@ const ListCatagoryTable: React.FC = () => {
           </Button>
           <Popconfirm
             title="Are you sure to delete this row?"
-            onConfirm={() => handleDelete(record.id || "")}
+            onConfirm={() => handleDelete(record.catID || "")}
             okText="Yes"
             cancelText="No"
           >
@@ -84,8 +119,8 @@ const ListCatagoryTable: React.FC = () => {
           </Popconfirm>
         </Space>
       ),
-    },
-  ];
+    });
+  }
 
   return (
     <>
@@ -95,7 +130,7 @@ const ListCatagoryTable: React.FC = () => {
         value={searchValue}
         onChange={(e) => handleSearch(e.target.value)}
       />
-      <Table columns={columns} dataSource={filteredData} />
+      <Table columns={columns} dataSource={Source} />
       <CategoryForm
         initialValues={editRecord}
         visible={editModalVisible}

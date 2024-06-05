@@ -8,10 +8,12 @@ import { useAllPurchases } from '../../services/queries/purchaseQueries';
 import { useUpdatePurchase } from '../../services/mutations/purchaseMutation';
 import { formatDate} from '../../utils/utilityfunction'
 import { useQueryClient } from "@tanstack/react-query";
+import { useAuth } from '../../context/AuthContext';
 
 
 
 const ApprovalPurhase: React.FC = () => {
+  const {user}=useAuth()
   const allPurchasesQuery = useAllPurchases();
   const queryClient = useQueryClient();
   console.log('All Purchases Query:', allPurchasesQuery.data);
@@ -77,16 +79,31 @@ const ApprovalPurhase: React.FC = () => {
         <Tag color='orange'>Pending</Tag>
       ),
     },
-    {
-      title: 'Action',
-      key: 'action',
+    // {
+    //   title: 'Action',
+    //   key: 'action',
+    //   render: (_, record) => (
+    //     <Button type="primary" icon={<CheckCircleOutlined />} onClick={() => handleApprove(record.purchaseID || "")}>
+    //       Approve
+    //     </Button>
+    //   ),
+    // },
+  ];
+  if (user?.role === "invmanager") {
+    columns.push({
+      title: "Action",
+      key: "action",
       render: (_, record) => (
-        <Button type="primary" icon={<CheckCircleOutlined />} onClick={() => handleApprove(record.purchaseID || "")}>
+        <Button
+          type="primary"
+          icon={<CheckCircleOutlined />}
+          onClick={() => handleApprove(record.purchaseID || "")}
+        >
           Approve
         </Button>
       ),
-    },
-  ];
+    });
+  }
 
   const handleApprove = (purchaseID: string) => {
     console.log(`Approve purchase with ID: ${purchaseID}`);

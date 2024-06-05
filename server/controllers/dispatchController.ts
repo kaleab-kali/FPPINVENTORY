@@ -375,7 +375,7 @@ const dispatchItem = async (req: Request, res: Response): Promise<void> => {
 //   }
 // };
 
-// Return Item Controller
+  // Return Item Controller
 // const returnItem = async (req: Request, res: Response): Promise<void> => {
 //   try {
 //     const { uniqueId, employeeId } = req.body;
@@ -432,15 +432,10 @@ const returnItem = async (req: Request, res: Response): Promise<void> => {
     }
 
     // Set approval status to pending
-    uniqueItem.approvalStatus = "pending";
+    uniqueItem.approvalStatus = 'pending';
     await uniqueItem.save();
 
-    res
-      .status(200)
-      .json({
-        message: "Return request submitted, awaiting approval",
-        uniqueItem,
-      });
+    res.status(200).json({ message: "Return request submitted, awaiting approval", uniqueItem });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -453,10 +448,7 @@ const approveReturn = async (req: Request, res: Response): Promise<void> => {
     const { uniqueId, approve } = req.body;
 
     // Find the unique item that is being approved/rejected
-    const uniqueItem = await UniqueItem.findOne({
-      uniqueId,
-      approvalStatus: "pending",
-    });
+    const uniqueItem = await UniqueItem.findOne({ uniqueId, approvalStatus: 'pending' });
     if (!uniqueItem) {
       res.status(400).json({ error: "Pending return request not found" });
       return;
@@ -464,16 +456,14 @@ const approveReturn = async (req: Request, res: Response): Promise<void> => {
 
     if (approve) {
       // If approved, update the unique item's status and return date
-      uniqueItem.status = "in_stock";
+      uniqueItem.status = 'in_stock';
       uniqueItem.returnDate = new Date();
-      uniqueItem.approvalStatus = "approved";
+      uniqueItem.approvalStatus = 'approved';
       uniqueItem.condition = req.body.condition;
       await uniqueItem.save();
 
       // Find the corresponding stock item
-      const stockItem = await Stock.findOne({
-        productId: uniqueItem.productId,
-      });
+      const stockItem = await Stock.findOne({ productId: uniqueItem.productId });
       if (!stockItem) {
         res.status(400).json({ error: "Stock item not found" });
         return;
@@ -490,17 +480,11 @@ const approveReturn = async (req: Request, res: Response): Promise<void> => {
 
       await stockItem.save();
 
-      res
-        .status(200)
-        .json({
-          message: "Item return approved and processed",
-          uniqueItem,
-          stockItem,
-        });
+      res.status(200).json({ message: "Item return approved and processed", uniqueItem, stockItem });
     } else {
       // If rejected, update the unique item's status and condition
-      uniqueItem.status = "rejected";
-      uniqueItem.approvalStatus = "rejected";
+      uniqueItem.status = 'rejected';
+      uniqueItem.approvalStatus = 'rejected';
       uniqueItem.condition = req.body.condition;
       await uniqueItem.save();
 
@@ -523,11 +507,4 @@ const getAllDispatches = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export {
-  createDispatch,
-  approveDispatch,
-  dispatchItem,
-  returnItem,
-  getAllDispatches,
-  approveReturn,
-};
+export { createDispatch, approveDispatch, returnItem, getAllDispatches, approveReturn, dispatchItem};

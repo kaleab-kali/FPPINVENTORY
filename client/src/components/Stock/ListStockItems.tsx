@@ -23,7 +23,7 @@ const ListStockItems = () => {
 
   const allStockQeries = useAllStocks();
 
-  const data = allStockQeries.data
+  const data = Array.isArray(allStockQeries.data)
     ? allStockQeries.data.map((queryResult: StockInfo) => {
         return {
           key: queryResult.productId,

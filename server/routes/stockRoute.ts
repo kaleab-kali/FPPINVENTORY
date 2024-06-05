@@ -3,11 +3,12 @@ import {
   getAllStocks,
 
 } from "../controllers/stockController";
+import authAdminProtect from '../middleware/authAdminMiddleware';
 
 const router: Router = express.Router();
 
 
-router.get("/", getAllStocks);
+router.get("/", authAdminProtect, getAllStocks);
 
 
 export default router;

@@ -1,5 +1,5 @@
 import { useQueries, useQuery } from "@tanstack/react-query";
-import { getCategory, getAllCategorys, getCategoryIds} from "../api/categoryApi";
+import { getCategory, getAllCategories, getCategoryIds} from "../api/categoryApi";
 
 export function useCategoryIds() {
     console.log("useCategoryIds");
@@ -11,7 +11,7 @@ export function useCategoryIds() {
 export function useAllCategorys() {
     return useQuery({
       queryKey: ["category"],
-      queryFn: getAllCategorys,
+      queryFn: getAllCategories,
     });
   }
 export function useCategorys(ids: (string | undefined)[] | undefined) {

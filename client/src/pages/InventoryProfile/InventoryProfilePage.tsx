@@ -3,13 +3,14 @@ import Title from "antd/lib/typography/Title";
 import { Layout, theme } from "antd";
 import AddProduct from "../../components/Product/AddProduct";
 import ListProductTable from "../../components/Product/ListProductTable";
+import { useAuth } from "../../context/AuthContext";
 const { Content } = Layout;
 
 const InventoryProfilePage = () => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
-
+  const {user} = useAuth()
   return (
     <>
       <Title
@@ -27,12 +28,16 @@ const InventoryProfilePage = () => {
             background: colorBgContainer,
             borderRadius: borderRadiusLG,
           }}
-        > 
-        <AddProduct />
-        <Title level={5}> Product Data</Title>
-       <ListProductTable />
-
-
+        >
+          {user?.role === "invmanager" ? (
+            <>
+              <AddProduct />
+            </>
+          ) : (
+            ""
+          )}
+          <Title level={5}> Product Data</Title>
+          <ListProductTable />
         </Content>
       </Layout>
       {/* <EmployeeRegistrationForm /> */}

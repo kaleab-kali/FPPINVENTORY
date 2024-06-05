@@ -5,7 +5,7 @@ import type { ColumnsType } from 'antd/es/table';
 import type { TableProps } from 'antd/es/table';
 import { DispatchInfo } from '../../../../shared/types/Dispatch';
 import { useAllDispatchs } from '../../services/queries/dispatchQueries';
-import { useDisrtibuteDispatch } from '../../services/mutations/dispatchMutation';
+import { useDistributeDispatch } from '../../services/mutations/dispatchMutation';
 
 const AllDispatcheditems: React.FC = () => {
     const allDispatchesQuery = useAllDispatchs();
@@ -32,7 +32,7 @@ const AllDispatcheditems: React.FC = () => {
       }
     ): [];
   
-    const updateDistributeDispatchMutation = useDisrtibuteDispatch();
+    const updateDistributeDispatchMutation = useDistributeDispatch();
   
     const columns: ColumnsType<DispatchInfo> = [
       {

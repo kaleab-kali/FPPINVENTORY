@@ -5,7 +5,7 @@ import type { ColumnsType } from "antd/es/table";
 import type { TableProps } from "antd/es/table";
 import { UniqueItemInfo } from "../../../../shared/types/UniqueItems";
 import { useAllUniqueItems } from "../../services/queries/uniqueItemQueries";
-import { useDisrtibuteDispatch, useUpdateReturnApproval } from "../../services/mutations/dispatchMutation";
+import { useDistributeDispatch, useUpdateReturnApproval } from "../../services/mutations/dispatchMutation";
 
 const ReturnApproval: React.FC = () => {
   const allUniqueItemsQuery = useAllUniqueItems();

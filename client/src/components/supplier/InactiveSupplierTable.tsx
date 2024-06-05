@@ -4,14 +4,15 @@ import { useAllSuppliers} from "../../services/queries/supplierQueries";
 import { SupplierInfo } from "../../../../shared/types/Supplier";
 import { useDeleteSupplier } from "../../services/mutations/supplierMutation";
 import SupplierForm from "./SupplierForm";
-
+import { ColumnsType } from "antd/es/table";
+import {useAuth} from "../../context/AuthContext"
 
 const ListTable = () => {
   
   const [searchValue, setSearchValue] = useState("");
   const [editRecord, setEditRecord] = useState<any>(null);
   const [editModalVisible, setEditModalVisible] = useState(false);
-
+  const {user} = useAuth()
   const allSuppliersQuery = useAllSuppliers();
   const deleteSupplierMutation = useDeleteSupplier();
   console.log("All Suppliers Query:", allSuppliersQuery.data);
@@ -50,7 +51,7 @@ const ListTable = () => {
   }
 
 
-  const columns = [
+  const columns: ColumnsType<SupplierInfo> = [
     {
       title: "SID",
       dataIndex: "sid",
@@ -76,12 +77,40 @@ const ListTable = () => {
       dataIndex: "address",
       key: "address",
     },
-    {
+    // {
+    //   title: "Action",
+    //   key: "action",
+    //   render: (text: string, record: SupplierInfo) => (
+    //     <Space size="middle">
+    //       <Button
+    //         type="primary"
+    //         onClick={() => handleActivate(record.sid || "")}
+    //       >
+    //         Activate
+    //       </Button>
+    //       {/* <Button type="dashed" onClick={() => handleDelete(record.sid || "")}>Delete</Button> */}
+    //       {/* <Popconfirm
+    //         title="Are you sure to delete this row?"
+    //         onConfirm={() => handleDelete(record.sid || '')} // Ensure record.sid is always a string
+    //         okText="Yes"
+    //         cancelText="No"
+    //       >
+    //         <Button type="dashed">Delete</Button>
+    //       </Popconfirm> */}
+    //     </Space>
+    //   ),
+    // },
+  ];
+  if (user?.role === "invmanager") {
+    columns.push({
       title: "Action",
       key: "action",
       render: (text: string, record: SupplierInfo) => (
         <Space size="middle">
-          <Button type="primary" onClick={() => handleActivate(record.sid || "")}>
+          <Button
+            type="primary"
+            onClick={() => handleActivate(record.sid || "")}
+          >
             Activate
           </Button>
           {/* <Button type="dashed" onClick={() => handleDelete(record.sid || "")}>Delete</Button> */}
@@ -95,8 +124,8 @@ const ListTable = () => {
           </Popconfirm> */}
         </Space>
       ),
-    },
-  ];
+    });
+  }
 
 
   return (

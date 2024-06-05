@@ -6,6 +6,7 @@ import { BrowserRouter } from "react-router-dom";
 // import reportWebVitals from './reportWebVitals';
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { AuthProvider } from "./context/AuthContext";
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );

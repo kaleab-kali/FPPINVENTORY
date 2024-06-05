@@ -27,7 +27,7 @@ const DispatchApprovalPage = () => {
             borderRadius: borderRadiusLG,
           }}
         >
-          <Title level={5}> Disparch Data</Title>
+          <Title level={5}> Dispatch Data</Title>
           <DispatchApproval />
          
         </Content>

@@ -1,25 +1,31 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { SupplierInfo } from '../../../../shared/types/Supplier';
-import { createSupplier, updateSupplier , deleteSupplier} from "../api/supplierApi";
+import { SupplierInfo } from "../../../../shared/types/Supplier";
+import {
+  createSupplier,
+  updateSupplier,
+  deleteSupplier,
+} from "../api/supplierApi";
+import { message } from "antd";
 
 export function useCreateSupplier() {
-  console.log("useCreateSupplier");
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: SupplierInfo) => createSupplier(data),
     onMutate: () => {
       console.log("Mutating");
     },
-    onError: () => {
-      console.log("error");
+    onError: (error: any) => {
+      console.error("Error creating supplier:", error);
+      message.error(error.message || "Failed to create supplier");
     },
     onSuccess: () => {
-      console.log("success");
+      console.log("Success");
+      message.success("Supplier created successfully");
     },
     onSettled: async (_: any, error: any) => {
-      console.log("settled");
+      console.log("Settled");
       if (error) {
-        console.log(error);
+        console.error("Error on settle:", error);
       } else {
         await queryClient.invalidateQueries({ queryKey: ["supplier"] });
       }
@@ -28,41 +34,53 @@ export function useCreateSupplier() {
 }
 
 export function useUpdateSupplier() {
-  console.log("useUpdateSupplier");
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: SupplierInfo) => {
       console.log("Data before mutation:", data);
       return updateSupplier(data);
     },
-    onSuccess(result, variables, context) {
+    onError: (error: any) => {
+      console.error("Error updating supplier:", error);
+      message.error(error.message || "Failed to update supplier");
+    },
+    onSuccess: () => {
       console.log("Successfully updated supplier");
+      message.success("Supplier updated successfully");
       queryClient.invalidateQueries({ queryKey: ["supplier"] });
-      queryClient.invalidateQueries({ queryKey: ["suppliers", {id : variables.sid}] });
-      
-    }
-    
-   
+    },
+    onSettled: async (_: any, error: any, variables: { sid: any }) => {
+      console.log("Settled");
+      if (error) {
+        console.error("Error on settle:", error);
+      } else {
+        await queryClient.invalidateQueries({
+          queryKey: ["suppliers", { id: variables.sid }],
+        });
+      }
+    },
   });
-
 }
 
-export function useDeleteSupplier () {
-  console.log("useDeleteSupplier");
+export function useDeleteSupplier() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => deleteSupplier(id),
-    onSuccess() {
+    onError: (error: any) => {
+      console.error("Error deleting supplier:", error);
+      message.error(error.message || "Failed to delete supplier");
+    },
+    onSuccess: () => {
       console.log("Successfully deleted supplier");
+      message.success("Supplier deleted successfully");
     },
     onSettled: async (_: any, error: any) => {
+      console.log("Settled");
       if (error) {
-        console.log(error);
+        console.error("Error on settle:", error);
       } else {
         await queryClient.invalidateQueries({ queryKey: ["supplier"] });
       }
     },
   });
-
 }
-

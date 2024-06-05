@@ -69,11 +69,11 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
         console.log("Updating Category with this specfoc id:", categoryInfo.catID);
         // debugger;
         updateCategoryMutation.mutate(categoryInfo);
-        message.success("Category updated successfully!");
+        // message.success("Category updated successfully!");
       } else {
         createCategoryMutation.mutate(categoryInfo);
         console.log("Creating Category:", categoryInfo);
-        message.success("Category added successfully!");
+        // message.success("Category added successfully!");
       }
       form.resetFields();
       onCancel();
@@ -114,7 +114,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
               ]}
             >
               <Select placeholder="Select a unit" allowClear>
-                {unitSource.map((unit) => {
+                {unitSource.map((unit:any) => {
                   return (
                     <Select.Option
                       key={unit.id}

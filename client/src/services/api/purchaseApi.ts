@@ -1,81 +1,72 @@
-import { PurchaseInfo } from '../../../../shared/types/Purchase';
-import BASE_URL from '../sharedVariables';
+import { PurchaseInfo } from "../../../../shared/types/Purchase";
+import { fetchWithAuth, handleError, BASE_URL } from "../shared/sharedApi";
 
 export const getPurchaseIds = async () => {
-    // console.log("getProductIds");
-    const response = await fetch(`${BASE_URL}/purchase`);
-  
-    if (!response.ok) {
-      throw new Error("Failed to fetch Product IDs");
-    }
-  
-    const data = await response.json();
-  
-    return data.map((purchase: PurchaseInfo ) => purchase.purchaseID );
-  };
-  
-  export const getPurchase = async (id: string) => {
-    console.log("getPurchase", id);
-    const response = await fetch(`${BASE_URL}/purchase/${id}`);
-  
-    if (!response.ok) {
-      throw new Error("Failed to fetch Purchases");
-    }
-  
-    const data: PurchaseInfo = await response.json();
-    console.log("Fetched Purchases:", data);
-  
-    return data;
-  };
+  try {
+    const data = await fetchWithAuth(`${BASE_URL}/purchase`);
+    return data.map((purchase: PurchaseInfo) => purchase.purchaseID);
+  } catch (error) {
+    handleError(error);
+  }
+};
 
-  export const getAllPurchases = async () => {
-    const response = await fetch(`${BASE_URL}/purchase`);
-  
-    if (!response.ok) {
-      throw new Error("Failed to fetch Purchase IDs");
-    }
-  
-  const data: PurchaseInfo[] = await response.json();
-  // console.log(data); 
+export const getPurchase = async (id: string) => {
+  try {
+    const data: PurchaseInfo = await fetchWithAuth(
+      `${BASE_URL}/purchase/${id}`
+    );
+    console.log("Fetched Purchase:", data);
     return data;
-  };
-  
-  
-  export const createPurchase = async (data: PurchaseInfo[]) => {
-    console.log("Data before mutation:", data);
-    await fetch(`${BASE_URL}/purchase`, {
+  } catch (error) {
+    handleError(error);
+  }
+
+}
+
+
+export const getAllPurchases = async () => {
+  try {
+    const data: PurchaseInfo[] = await fetchWithAuth(`${BASE_URL}/purchase`);
+    return data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const createPurchase = async (data: PurchaseInfo[]) => {
+  try {
+    await fetchWithAuth(`${BASE_URL}/purchase`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
     });
-  };
+  } catch (error) {
+    handleError(error);
+  }
+};
 
-  export const updatePurchase = async (data: PurchaseInfo) => {
-    const response = await fetch(`${BASE_URL}/purchase/${data.purchaseID}`, {
+export const updatePurchase = async (data: PurchaseInfo) => {
+  try {
+    await fetchWithAuth(`${BASE_URL}/purchase/${data.purchaseID}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
     });
-  
-    if (!response.ok) {
-      throw new Error("Failed to update Purchase data");
-    }
-  };
-  
-  
-  export const deletePurchase = async (id: string) => {
-    const response = await fetch(`${BASE_URL}/purchase/${id}`, {
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const deletePurchase = async (id: string) => {
+  try {
+    await fetchWithAuth(`${BASE_URL}/purchase/${id}`, {
       method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
     });
-  
-    if (!response.ok) {
-      throw new Error("Failed to delete Purchase");
-    }
-  };
+  } catch (error) {
+    handleError(error);
+  }
+};

@@ -29,7 +29,7 @@ const DispatchDistributePage = () => {
                 borderRadius: borderRadiusLG,
               }}
             >
-              <Title level={5}> Disparch Data</Title>
+              <Title level={5}> Dispatch Data</Title>
               <DispatchDistribute />
              
             </Content>

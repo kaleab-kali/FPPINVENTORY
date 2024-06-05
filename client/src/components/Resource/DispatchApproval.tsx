@@ -7,9 +7,11 @@ import { DispatchInfo } from '../../../../shared/types/Dispatch';
 import { useAllDispatchs } from '../../services/queries/dispatchQueries';
 import { useUpdateDispatch } from '../../services/mutations/dispatchMutation';
 import { FaRecordVinyl } from 'react-icons/fa';
+import { useAuth } from '../../context/AuthContext';
 
 const DispatchApproval: React.FC = () => {
   const allDispatchesQuery = useAllDispatchs();
+  const {user}=useAuth()
  
   console.log('All dispacth Query:', allDispatchesQuery.data);
   const source = allDispatchesQuery.data ?
@@ -80,22 +82,47 @@ const DispatchApproval: React.FC = () => {
         <Tag color='orange'>Pending</Tag>
       ),
     },
-    {
-      title: 'Action',
-      key: 'action',
+//     {
+//       title: 'Action',
+//       key: 'action',
+//       render: (_, record) => (
+//         <Flex gap="small">
+// <Button type="primary" icon={<CheckCircleOutlined />} onClick={() => handleApprove(record.dispatchId || "")}>
+//           Approve
+//         </Button>
+//         <Button type="dashed" icon={<CheckCircleOutlined />} onClick={() => handleReject(record.dispatchId || "")}>
+//           Reject
+//         </Button>
+//         </Flex>
+        
+//       ),
+//     },
+  ];
+
+  if (user?.role === "stockmanager") {
+    columns.push({
+      title: "Action",
+      key: "action",
       render: (_, record) => (
         <Flex gap="small">
-<Button type="primary" icon={<CheckCircleOutlined />} onClick={() => handleApprove(record.dispatchId || "")}>
-          Approve
-        </Button>
-        <Button type="dashed" icon={<CheckCircleOutlined />} onClick={() => handleReject(record.dispatchId || "")}>
-          Reject
-        </Button>
+          <Button
+            type="primary"
+            icon={<CheckCircleOutlined />}
+            onClick={() => handleApprove(record.dispatchId || "")}
+          >
+            Approve
+          </Button>
+          <Button
+            type="dashed"
+            icon={<CheckCircleOutlined />}
+            onClick={() => handleReject(record.dispatchId || "")}
+          >
+            Reject
+          </Button>
         </Flex>
-        
       ),
-    },
-  ];
+    });
+  }
 
   const handleApprove = (dispatchId: string) => {
     console.log(`Approve purchase with ID: ${dispatchId}`);

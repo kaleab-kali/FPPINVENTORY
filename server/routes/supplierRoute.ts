@@ -6,22 +6,24 @@ import {
   updateSupplier,
   deleteSupplier,
 } from "../controllers/supplierController";
+import authAdminProtect from '../middleware/authAdminMiddleware';
+import checkManagerRole from '../middleware/authRoleManagerMiddleware';
 
 const router: Router = express.Router();
 
 // Create an Supplier registration
-router.post("/", createSupplier);
+router.post("/", authAdminProtect, checkManagerRole, createSupplier);
 
 // Get all Suppliers
-router.get("/", getAllSuppliers);
+router.get("/", authAdminProtect, getAllSuppliers);
 
 // Get a specific Supplier by ID
-router.get("/:id", getSupplierById);
+router.get("/:id", authAdminProtect, getSupplierById);
 
 // Update an Supplier by ID
-router.put("/:id", updateSupplier);
+router.put("/:id", authAdminProtect, checkManagerRole, updateSupplier);
 
 // Delete an Supplier by ID
-router.delete("/:id", deleteSupplier);
+router.delete("/:id", authAdminProtect, checkManagerRole, deleteSupplier);
 
 export default router;

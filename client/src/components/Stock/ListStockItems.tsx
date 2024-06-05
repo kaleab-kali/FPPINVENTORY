@@ -1,79 +1,58 @@
 import { Input, Table, Button, Space, Popconfirm } from "antd";
 import React, { useState } from "react";
+import { useAllStocks } from "../../services/queries/stockQueries";
+// import { StockInfo } from "../../../../shared/types/Stock";
+export interface StockInfo{
+  stockId?: string;
+  productId?: string;
+  uniqueProductIds?: string[];
+  productName?: string;
+  category?: string;
+  unit?: string;
+  models?: string;
+  brand?: string;
+  supplier?: string;
+  inQty?: number;
+  outQty?: number;
+  stock?: number;
+}
 
-const data = [
-  {
-    key: "1",
-    stid: "FPCSIID-0001",
-    productname: "hp",
-    catagory: "tech",
-    unit: "pcs",
-    supplier: "jj",
-    intqty: 50,
-    outqty: 20,
-    remqty: 30,
-
-  },
-  {
-    key: "2",
-    stid: "FPCSIID-0002",
-    productname: "Jim Green",
-    catagory: "tech",
-    unit: "pcs",
-    supplier: "jj",
-    intqty: 50,
-    outqty: 20,
-    remqty: 30,
-    
-  },
-  {
-    key: "3",
-    stid: "FPCSID-0003",
-    productname: "Joe Black",
-    catagory: "tech",
-    unit: "pcs",
-    supplier: "jj",
-    intqty: 50,
-    outqty: 20,
-    remqty: 30,
-    
-  },
-  {
-    key: "4",
-    stid: "FPCSID-0004",
-    productname: "Jim Red",
-    catagory: "tech",
-    unit: "pcs",
-    supplier: "jj",
-    intqty: 50,
-    outqty: 20,
-    remqty: 30,
-  
-  },
-];
 
 const ListStockItems = () => {
-  const [dataSource, setDataSource] = useState(data);
   const [searchValue, setSearchValue] = useState("");
+
+  const allStockQeries = useAllStocks();
+
+  const data = allStockQeries.data
+    ? allStockQeries.data.map((queryResult: StockInfo) => {
+        return {
+          key: queryResult.productId,
+          productId: queryResult.productId,
+          productname: queryResult.productName,
+          catagory: queryResult.category,
+          unit: queryResult.unit,
+          supplier: queryResult.supplier,
+          intqty: queryResult.inQty,
+          outqty: queryResult.outQty,
+          remqty: queryResult.stock,
+        };
+      })
+    : [];
 
   const handleSearch = (value: string) => {
     setSearchValue(value);
-    const filteredData = data.filter((entry) =>
-      entry.productname.toLowerCase().includes(value.toLowerCase())
-    );
-    setDataSource(filteredData);
+    // const filteredData = data.filter((entry) =>
+    //   entry.productname.toLowerCase().includes(value.toLowerCase())
+    // );
+    // setDataSource(filteredData);
   };
 
-  const handleDelete = (key: string) => {
-    const filteredDataSource = dataSource.filter((item) => item.key !== key);
-    setDataSource(filteredDataSource);
-  };
 
   const columns = [
     {
-      title: "STID",
-      dataIndex: "stid",
-      key: "stid",
+      title: "Product ID",
+      dataIndex: "productId",
+      key: "productId",
     },
     {
       title: "Product Name",
@@ -81,7 +60,7 @@ const ListStockItems = () => {
       key: "productname",
     },
     {
-      title: "Catagory",
+      title: "Category",
       dataIndex: "catagory",
       key: "catagory",
     },
@@ -96,20 +75,21 @@ const ListStockItems = () => {
       key: "supplier",
     },
     {
-        title: "INTQTY",
-        dataIndex: "intqty",
-        key: "intqty",
-      },
-      {
-        title: "OutQTY",
-        dataIndex: "outqty",
-        key: "outqty",
-      },
-      {
-        title: "Stock",
-        dataIndex: "remqty",
-        key: "remqty",
-      },
+      title: "In Qty",
+      dataIndex: "intqty",
+      key: "intqty",
+    },
+    {
+      title: "Out Qty",
+      dataIndex: "outqty",
+      key: "outqty",
+    },
+    {
+      title: "Remaining Qty",
+      dataIndex: "remqty",
+      key: "remqty",
+    },
+    
   ];
 
   const handleEdit = (key: string) => {
@@ -124,7 +104,7 @@ const ListStockItems = () => {
         value={searchValue}
         onChange={(e) => handleSearch(e.target.value)}
       />
-      <Table columns={columns} dataSource={dataSource} />
+      <Table columns={columns} dataSource={data} />
     </>
   );
 };

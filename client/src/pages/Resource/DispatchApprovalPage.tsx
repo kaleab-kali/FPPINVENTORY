@@ -15,7 +15,7 @@ const DispatchApprovalPage = () => {
         level={4}
         style={{ padding: "10px 30px", marginBottom: "0", marginTop: 10 }}
       >
-        Lsit of Suppliers
+        Dispatch Request Approval
       </Title>
       <Layout>
         <Content

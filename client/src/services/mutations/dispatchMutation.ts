@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { DispatchInfo } from '../../../../shared/types/Dispatch';
-import { createDispatch, updateDispatch, updateDistributeDispatch, returnDispatch } from "../api/dispatchApi";
+import { createDispatch, updateDispatch, updateDistributeDispatch, returnDispatch, returnApproval } from "../api/dispatchApi";
 import exp from "constants";
 
 
@@ -81,6 +81,24 @@ export function useUpdateDispatch() {
         console.log("Successfully updated Dispatch");
         queryClient.invalidateQueries({ queryKey: ["dispatch"] });
         queryClient.invalidateQueries({ queryKey: ["dispatch", {id : variables.dispatchId}] });
+        
+      }
+      
+     
+    });
+  }
+
+  export function useUpdateReturnApproval() {
+    console.log("useUpdateDispatchapproval");
+    const queryClient = useQueryClient();
+    return useMutation({
+      mutationFn: (data: any) => {
+        console.log("Data before mutation:", data);
+        return returnApproval(data);
+      },
+      onSuccess(result, variables, context) {
+        console.log("Successfully updated Dispatch");
+        queryClient.invalidateQueries({ queryKey: ["dispatch"] });
         
       }
       

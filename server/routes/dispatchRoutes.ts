@@ -1,5 +1,5 @@
 import express, { Router } from "express";
-import { createDispatch, approveDispatch, returnItem, getAllDispatches, dispatchItem } from "../controllers/dispatchController";
+import { createDispatch, approveDispatch, dispatchItem, returnItem, getAllDispatches, approveReturn } from "../controllers/dispatchController";
 
 const router: Router = express.Router();
 
@@ -10,10 +10,13 @@ router.post("/", createDispatch);
 router.put("/approve", approveDispatch);
 
 // Approve Dispatch an item
-router.put("/dispatch-item", dispatchItem);
+router.put("/dispatch-item",dispatchItem);
 
 // return item
 router.put("/return", returnItem);
+
+// Endpoint for stock managers to approve/reject the return
+router.post('/approve-return',approveReturn);
 
 // get all Dispatch
 router.get("/", getAllDispatches);

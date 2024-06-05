@@ -449,6 +449,7 @@ const returnItem = async (req: Request, res: Response): Promise<void> => {
 
 const approveReturn = async (req: Request, res: Response): Promise<void> => {
   try {
+    console.log("approveReturn");
     const { uniqueId, approve } = req.body;
 
     // Find the unique item that is being approved/rejected

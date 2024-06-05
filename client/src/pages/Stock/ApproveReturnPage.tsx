@@ -1,12 +1,12 @@
-import React from 'react'
+import React from "react";
 import { Layout, theme, Typography } from "antd";
-import DispatchDistribute from '../../components/Stock/DispatchDistribute';
-
+import DispatchApproval from "../../components/Resource/DispatchApproval";
+import ReturnApproval from "../../components/Stock/ReturnApproval";
 
 const { Content } = Layout;
 const { Title } = Typography;
 
-const DispatchDistributePage = () => {
+const ApproveReturnPage = () => {
     const {
         token: { colorBgContainer, borderRadiusLG },
       } = theme.useToken();
@@ -17,7 +17,7 @@ const DispatchDistributePage = () => {
             level={4}
             style={{ padding: "10px 30px", marginBottom: "0", marginTop: 10 }}
           >
-           Dispatch Distribution Confirmaiton
+            All Approval request for Return
           </Title>
           <Layout>
             <Content
@@ -29,8 +29,8 @@ const DispatchDistributePage = () => {
                 borderRadius: borderRadiusLG,
               }}
             >
-              <Title level={5}> Disparch Data</Title>
-              <DispatchDistribute />
+              <Title level={5}> Return Approval Item Lsit </Title>
+              <ReturnApproval />
              
             </Content>
           </Layout>
@@ -38,4 +38,4 @@ const DispatchDistributePage = () => {
       );
 }
 
-export default DispatchDistributePage
+export default ApproveReturnPage

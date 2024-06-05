@@ -23,6 +23,8 @@ import ResourceAllocationPage from "./Resource/ResourceAllocationPage";
 import ReturnablePage from "./Stock/ReturnablePage";
 import DispatchApprovalPage from "./Resource/DispatchApprovalPage";
 import DispatchDistributePage from "./Stock/DispatchDistributePage";
+import ApproveReturnPage from "./Stock/ApproveReturnPage";
+import DispatchedItemsPage from "./Stock/DispatchedItemsPage";
 // import Stat from "./Stat";
 
 const { Content } = Layout;
@@ -76,6 +78,8 @@ const Dashboard: React.FC = () => {
               <Route path="list" element={<StockPage />} />
               <Route path="return" element={<ReturnablePage />} />
               <Route path="dispatch" element={<DispatchDistributePage />} />
+              <Route path="dispatchItems" element={<DispatchedItemsPage />} />
+              <Route path="returnApproval" element={<ApproveReturnPage />} />
             </Route>
 
             <Route path="/resource">

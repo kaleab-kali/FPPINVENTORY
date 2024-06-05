@@ -192,7 +192,21 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
             icon={<ShopOutlined />}
             onClick={() => handleMenuClick("stockDispatch")}
           >
-            <NavLink to="/stock/dispatch">Dispatch </NavLink>
+            <NavLink to="/stock/dispatch">Dispatch Confirm </NavLink>
+          </Menu.Item>
+          <Menu.Item
+            key="stockDispatchItems"
+            icon={<ShopOutlined />}
+            onClick={() => handleMenuClick("stockDispatchItems")}
+          >
+            <NavLink to="/stock/dispatchitems">Dispatch Items </NavLink>
+          </Menu.Item>
+          <Menu.Item
+            key="stockReturnApproval"
+            icon={<ShopOutlined />}
+            onClick={() => handleMenuClick("stockReturnApproval")}
+          >
+            <NavLink to="/stock/returnApproval">Return Approval </NavLink>
           </Menu.Item>
         </Menu.SubMenu>
 
@@ -218,27 +232,6 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
           </Menu.Item>
         </Menu.SubMenu>
 
-        {/* <Menu.SubMenu key="attendanceSubMenu" title="Attendance">
-          <Menu.Item key="currentAttendance">
-            <NavLink to="/attendace/currentCurrentAttendance">
-              Current Attendance
-            </NavLink>
-          </Menu.Item>
-          <Menu.Item key="attendanceHistory">
-            <NavLink to="/attendance/history">History</NavLink>
-          </Menu.Item>
-        </Menu.SubMenu>
-
-        <Menu.SubMenu key="performanceSubMenu" title="performance">
-          <Menu.Item key="currentperformance">
-            <NavLink to="/performance/currentperformance">
-              Current performance
-            </NavLink>
-          </Menu.Item>
-          <Menu.Item key="performanceHistory">
-            <NavLink to="/performance/history">History</NavLink>
-          </Menu.Item>
-        </Menu.SubMenu> */}
       </Menu>
     </AntdSider>
   );

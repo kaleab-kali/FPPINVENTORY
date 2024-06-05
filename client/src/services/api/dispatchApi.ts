@@ -58,7 +58,7 @@ export const createDispatch = async (data: DispatchInfo) => {
 
 
   export const updateDispatch = async (data: DispatchInfo) => {
-    console.log("Data before mutation update api:", data);
+    console.log("Data before mutation update api Tick:", data);
     const response = await fetch(`${BASE_URL}/dispatch/approve`, {
       method: "PUT",
       headers: {
@@ -101,3 +101,15 @@ export const createDispatch = async (data: DispatchInfo) => {
       throw new Error("Failed to update Dispatch data");
     }
   }
+
+export const returnApproval = async (data: any) => {
+  console.log("Data before mutation return approval api:", data);
+  await fetch(`${BASE_URL}/dispatch/approve-return`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+}

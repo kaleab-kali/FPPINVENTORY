@@ -38,7 +38,7 @@ import { getStockManagerIds } from '../services/inventoryStockService';
 //   };
 const createDispatch = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { employeeId, employeeFullName, issueDate, expectedReturnDate, productId, productName, itemCategory, quantity, purpose, status } = req.body;
+    const { employeeId, issueDate, expectedReturnDate, productId, productName, itemCategory, quantity, purpose, status } = req.body;
 
     // Check if employee exists
     const employee = await Employee.findOne({ empId: employeeId });
@@ -55,7 +55,7 @@ const createDispatch = async (req: Request, res: Response): Promise<void> => {
     }
 
     // Create a new dispatch record
-    const newDispatch = new Dispatch({ employeeId, employeeFullName, issueDate, expectedReturnDate, productId, productName, itemCategory, quantity, purpose, status });
+    const newDispatch = new Dispatch({ employeeId, employeeFullName: `${employee.firstName} ${employee.lastName}`, issueDate, expectedReturnDate, productId, productName, itemCategory, quantity, purpose, status });
     await newDispatch.save();
 
     // Notify inventory manager about the new dispatch request

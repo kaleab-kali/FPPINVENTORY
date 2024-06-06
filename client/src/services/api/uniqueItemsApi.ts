@@ -4,9 +4,11 @@ import { fetchWithAuth, handleError, BASE_URL } from "../shared/sharedApi";
 
 export const getAllUniqueItems = async () => {
     try {
-      const response = await fetchWithAuth(`${BASE_URL}/uniqueItem`);
-      const data: UniqueItemInfo[] = await response.json();
+      const data = await fetchWithAuth(`${BASE_URL}/uniqueItem`);
+      // const data = await response.json();
       // console.log(data);
+    console.log("Fetched unique Item:", data);
+
       return data;
     } catch (error) {
       handleError(error);

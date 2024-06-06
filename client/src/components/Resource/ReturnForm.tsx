@@ -16,14 +16,17 @@ import type { ColumnsType } from "antd/es/table";
 import type { TableProps } from "antd/es/table";
 import { useReturnDispatch } from "../../services/mutations/dispatchMutation";
 import { UniqueItemInfo } from "../../../../shared/types/UniqueItems";
-import { useAllUniqueItems } from "../../services/queries/uniqueItemQueries";
+import { useAllUniqueItems, useUniqueItemById } from "../../services/queries/uniqueItemQueries";
 import { formatDate } from "../../utils/utilityfunction";
+import { useAuth } from "../../context/AuthContext";
 
 const { Title } = Typography;
 
 const ReturnForm: React.FC = () => {
   const [form] = Form.useForm();
-
+  const { user } = useAuth();
+  const uniqueItemQueries = useUniqueItemById(user?.employeeId);
+  const uniqueItem = uniqueItemQueries.data;
   const updateReturnDispatchMutation = useReturnDispatch();
 
   const onFinish = (values: any) => {
@@ -34,8 +37,8 @@ const ReturnForm: React.FC = () => {
   const allUniqueItemsQuery = useAllUniqueItems();
 
   console.log("All dispacth Query:", allUniqueItemsQuery.data);
-  const source = allUniqueItemsQuery.data
-    ? allUniqueItemsQuery.data
+  const source = uniqueItemQueries.data
+    ? uniqueItemQueries.data
         .filter(
           (queryResult: UniqueItemInfo) => queryResult.status === "dispatched"
         )
@@ -106,7 +109,7 @@ const ReturnForm: React.FC = () => {
           </Col>
           <Col span={8}>
             <Form.Item
-              label="Product ID"
+              label="Unique ID"
               name="uniqueId"
               rules={[{ required: true, message: "Please enter product id" }]}
             >

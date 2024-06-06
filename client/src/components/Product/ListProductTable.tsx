@@ -6,13 +6,14 @@ import { useNavigate } from 'react-router-dom';
 import exp from "constants";
 import { useAuth } from "../../context/AuthContext";
 import { ColumnsType } from "antd/es/table";
+import { useDeleteProduct } from "../../services/mutations/productMutation";
 
 const ListTable: React.FC = () => {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState("");
   const {user} = useAuth()
   const allProductsQuery = useAllProducts();
-
+  const deleteProduct = useDeleteProduct()
   const Source = allProductsQuery.data
     ? allProductsQuery.data.map(
         (queryResult: ProductInfo) => {
@@ -50,7 +51,8 @@ const ListTable: React.FC = () => {
   };
 
   const handleDelete = (key: string) => {
-    
+    // console.log("key:", key);
+    deleteProduct.mutate(key);
     // setDataSource(filteredDataSource);
   };
 
@@ -80,11 +82,11 @@ const ListTable: React.FC = () => {
       dataIndex: "unit",
       key: "unit",
     },
-    {
-      title: "Quantity",
-      dataIndex: "quantity",
-      key: "quantity",
-    },
+    // {
+    //   title: "Quantity",
+    //   dataIndex: "quantity",
+    //   key: "quantity",
+    // },
     
     // {
     //   title: "Action",

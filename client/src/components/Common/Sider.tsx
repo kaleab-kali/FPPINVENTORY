@@ -45,6 +45,7 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
         paddingTop: "20px",
         backgroundColor: "#001529",
         zIndex: 1,
+        
       }}
       trigger={null}
       collapsible
@@ -132,28 +133,32 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
                 <NavLink to="/category/list">List</NavLink>
               </Menu.Item>
             </Menu.SubMenu>
-            <Menu.SubMenu
-              key="productSubMenu"
-              title="Product"
-              icon={<RiProductHuntLine />}
+          </>
+        )}
+        <Menu.SubMenu
+          key="productSubMenu"
+          title="Product"
+          icon={<RiProductHuntLine />}
+        >
+          {user?.role === "invmanager" && (
+            <Menu.Item
+              key="productRegistration"
+              icon={<UserOutlined />}
+              onClick={() => handleMenuClick("productRegistration")}
             >
-              {user?.role === "invmanager" && (
-                <Menu.Item
-                  key="productRegistration"
-                  icon={<UserOutlined />}
-                  onClick={() => handleMenuClick("productRegistration")}
-                >
-                  <NavLink to="/product/registration">Registration</NavLink>
-                </Menu.Item>
-              )}
-              <Menu.Item
-                key="productView"
-                icon={<FileTextOutlined />}
-                onClick={() => handleMenuClick("productView")}
-              >
-                <NavLink to="/product/view">List</NavLink>
-              </Menu.Item>
-            </Menu.SubMenu>
+              <NavLink to="/product/registration">Registration</NavLink>
+            </Menu.Item>
+          )}
+          <Menu.Item
+            key="productView"
+            icon={<FileTextOutlined />}
+            onClick={() => handleMenuClick("productView")}
+          >
+            <NavLink to="/product/view">List</NavLink>
+          </Menu.Item>
+        </Menu.SubMenu>
+        {user?.role !== "employee" && (
+          <>
             <Menu.SubMenu
               key="purchaseSubMenu"
               title="Purchase"
@@ -234,14 +239,15 @@ const Sider: React.FC<SiderProps> = ({ collapsed }) => {
                   </Menu.Item>
                 </>
               )}
-              {(user?.role === "stockmanager" ||
-                user?.role === "admin") && (
+              {(user?.role === "stockmanager" || user?.role === "admin") && (
                 <Menu.Item
                   key="stockDispatchItems"
                   icon={<ShopOutlined />}
                   onClick={() => handleMenuClick("stockDispatchItems")}
                 >
-                  <NavLink to="/stock/dispatcheditems">Dispatched Items </NavLink>
+                  <NavLink to="/stock/dispatcheditems">
+                    Dispatched Items{" "}
+                  </NavLink>
                 </Menu.Item>
               )}
               {user?.role === "stockmanager" && (

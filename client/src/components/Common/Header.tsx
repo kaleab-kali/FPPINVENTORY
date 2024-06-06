@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Layout,
   Row,
@@ -10,6 +10,7 @@ import {
   Dropdown,
   Badge,
   Modal,
+  message,
 } from "antd";
 import {
   UserOutlined,
@@ -46,15 +47,24 @@ const Header: React.FC<HeaderProps> = ({
   const navigate = useNavigate();
   const { logout, user } = useAuth();
   const [activeKey, setActiveKey] = useState("");
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
   const handleMenuClick = (key: string) => {
     setActiveKey(key);
   };
+
   const getNotification = useNotification(user?.ObjId || "");
   const employeeNotifications = getNotification.data;
   const staffProfile = useProfile();
   const employee = useEmployeeProfile(user?.employeeId || "");
+
   const profile = user?.type === "invstaff" ? staffProfile.data : employee.data;
-  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  useEffect(() => {
+    // if (!profile) {
+    //   message.error("Profile data not loaded");
+    // }
+  }, [profile]);
 
   const showLogoutConfirm = () => {
     setIsModalVisible(true);
@@ -68,6 +78,7 @@ const Header: React.FC<HeaderProps> = ({
   const handleCancel = () => {
     setIsModalVisible(false);
   };
+
   const handleSearch = (value: string) => {
     console.log(value);
   };
@@ -91,8 +102,8 @@ const Header: React.FC<HeaderProps> = ({
     case "stockmanager":
       title = "SManager";
       break;
-    case "user":
-      title = "User";
+    case "personnel":
+      title = "Personnel";
       break;
     default:
       title = "Role";
@@ -110,8 +121,8 @@ const Header: React.FC<HeaderProps> = ({
             <Menu.Item
               key="1"
               icon={<DashboardOutlined />}
-              onClick={async () => {
-                await handleMenuClick("dashboard");
+              onClick={() => {
+                handleMenuClick("dashboard");
                 navigate("/");
               }}
             >
@@ -121,8 +132,8 @@ const Header: React.FC<HeaderProps> = ({
               <Menu.Item
                 key="2"
                 icon={<TeamOutlined />}
-                onClick={async () => {
-                  await handleMenuClick("allStaffList");
+                onClick={() => {
+                  handleMenuClick("allStaffList");
                   navigate("/staff/allStaff");
                 }}
               >
@@ -141,15 +152,13 @@ const Header: React.FC<HeaderProps> = ({
           </>
         )}
         {user?.role === "employee" && (
-          <>
-            <Menu.Item
-              key="7"
-              icon={<FaBell />}
-              onClick={() => navigate("/profile")}
-            >
-              Messages
-            </Menu.Item>
-          </>
+          <Menu.Item
+            key="7"
+            icon={<FaBell />}
+            onClick={() => navigate("/profile")}
+          >
+            Messages
+          </Menu.Item>
         )}
       </SubMenu>
       <Menu.Item
@@ -159,18 +168,10 @@ const Header: React.FC<HeaderProps> = ({
       >
         Profile
       </Menu.Item>
-        <Menu.Item
-          key="5"
-          icon={<LogoutOutlined />}
-          onClick={showLogoutConfirm}
-        >
-          Logout
-        </Menu.Item>
-
-        
-    
+      <Menu.Item key="5" icon={<LogoutOutlined />} onClick={showLogoutConfirm}>
+        Logout
+      </Menu.Item>
     </Menu>
-
   );
 
   return (
@@ -240,7 +241,7 @@ const Header: React.FC<HeaderProps> = ({
                 icon={!profile?.photo ? <UserOutlined /> : undefined}
                 style={{ marginRight: "8px" }}
               />
-              {profile?.firstName}
+              {profile?.firstName || "Loading..."}
             </Link>
           </Dropdown>
         </Col>

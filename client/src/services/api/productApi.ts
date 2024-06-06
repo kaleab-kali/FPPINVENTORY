@@ -59,7 +59,8 @@ export const updateProduct = async (data: ProductInfo) => {
 
 export const deleteProduct = async (id: string) => {
   try {
-    await fetchWithAuth(`${BASE_URL}/product/${id}`, {
+    console.log("deleteProduct: + id: " + id);
+    await fetchWithAuth(`${BASE_URL}/items/${id}`, {
       method: "DELETE",
     });
   } catch (error) {

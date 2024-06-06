@@ -80,7 +80,7 @@ export const updateDistributeDispatch = async (data: DispatchInfo) => {
 export const returnDispatch = async (data: DispatchInfo) => {
   try {
     console.log("Data before mutation return api:", data);
-    await fetchWithAuth(`${BASE_URL}/dispatch/return`, {
+    await fetch(`${BASE_URL}/dispatch/return`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

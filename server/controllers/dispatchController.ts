@@ -209,7 +209,17 @@ import { getStockManagerIds } from '../services/inventoryStockService';
 //   };
 const createDispatch = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { employeeId, employeeFullName, issueDate, expectedReturnDate, productId, productName, itemCategory, quantity, purpose, status } = req.body;
+    const {
+      employeeId,
+      issueDate,
+      expectedReturnDate,
+      productId,
+      productName,
+      itemCategory,
+      quantity,
+      purpose,
+      status,
+    } = req.body;
 
     // Check if employee exists
     const employee = await Employee.findOne({ empId: employeeId });
@@ -220,30 +230,58 @@ const createDispatch = async (req: Request, res: Response): Promise<void> => {
 
     // Check if the requested quantity is available in stock
     const stockItem = await Stock.findOne({ productId });
-    if (!stockItem || stockItem.stock === undefined || stockItem.stock < quantity) {
-      res.status(400).json({ error: "Requested quantity not available in stock" });
+    if (
+      !stockItem ||
+      stockItem.stock === undefined ||
+      stockItem.stock < quantity
+    ) {
+      res
+        .status(400)
+        .json({ error: "Requested quantity not available in stock" });
       return;
     }
 
     // Create a new dispatch record
-    const newDispatch = new Dispatch({ employeeId, employeeFullName, issueDate, expectedReturnDate, productId, productName, itemCategory, quantity, purpose, status });
+    const newDispatch = new Dispatch({
+      employeeId,
+      employeeFullName: `${employee.firstName} ${employee.lastName}`,
+      issueDate,
+      expectedReturnDate,
+      productId,
+      productName,
+      itemCategory,
+      quantity,
+      purpose,
+      status,
+    });
     await newDispatch.save();
 
     // Notify inventory manager about the new dispatch request
     const inventoryManagerIds = await getInventoryManagerIds();
     for (const manager of inventoryManagerIds) {
-      await NotificationService.createNotification(manager._id.toString(), 'New Dispatch Request', `A new dispatch request for ${productName} (ID: ${newDispatch._id}) has been submitted and is waiting for approval.`);
+      await NotificationService.createNotification(
+        manager._id.toString(),
+        "New Dispatch Request",
+        `A new dispatch request for ${productName} (ID: ${newDispatch._id}) has been submitted and is waiting for approval.`
+      );
     }
 
     // Notify the employee that their dispatch request has been submitted
-    await NotificationService.createNotification(employee._id.toString(), 'Dispatch Request Submitted', `Your dispatch request for ${productName} has been submitted and is waiting for approval.`);
+    await NotificationService.createNotification(
+      employee._id.toString(),
+      "Dispatch Request Submitted",
+      `Your dispatch request for ${productName} has been submitted and is waiting for approval.`
+    );
 
-    res.status(201).json({ message: "Dispatch created successfully", newDispatch });
+    res
+      .status(201)
+      .json({ message: "Dispatch created successfully", newDispatch });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
-};  
+};
+ 
 // const approveDispatch = async (req: Request, res: Response): Promise<void> => {
 //     try {
 //       const { dispatchId, status } = req.body;
@@ -531,7 +569,7 @@ const dispatchItem = async (req: Request, res: Response): Promise<void> => {
 const returnItem = async (req: Request, res: Response): Promise<void> => {
   try {
     const { uniqueId, employeeId } = req.body;
-
+    console.log(uniqueId, employeeId);
     // Find the unique item that is being returned
     const uniqueItem = await UniqueItem.findOne({
       uniqueId,
@@ -546,17 +584,26 @@ const returnItem = async (req: Request, res: Response): Promise<void> => {
     // Set approval status to pending
     uniqueItem.approvalStatus = 'pending';
     await uniqueItem.save();
-
+    console.log("her1")
     // Notify stock manager about the return request
     const stockManagerIds = await  getStockManagerIds();
     for (const manager of stockManagerIds) {
+    console.log("here2");
+
       await NotificationService.createNotification(manager._id.toString(), 'Return Request Submitted', `A return request for item ID: ${uniqueItem.uniqueId} has been submitted and is awaiting approval.`);
     }
+    console.log("here3");
 
     const employee = await Employee.findOne({empId: employeeId})
     if (employee){
+    console.log("here4");
+    console.log("here2222" + employee);
+
+
     // Notify the employee that their return request has been submitted
+    console.log("here21"+ employee._id);
     await NotificationService.createNotification(employee._id.toString(), 'Return Request Submitted', `Your return request for item ID: ${uniqueItem.uniqueId} has been submitted and is awaiting approval.`);
+
     }
     res.status(200).json({ message: "Return request submitted, awaiting approval", uniqueItem });
   } catch (error) {

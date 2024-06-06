@@ -2,7 +2,6 @@ import React from "react";
 import { Layout, theme, Typography } from "antd";
 import DispatchApproval from "../../components/Resource/DispatchApproval";
 import ReturnForm from "../../components/Resource/ReturnForm";
-
 const { Content } = Layout;
 const { Title } = Typography;
 

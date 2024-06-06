@@ -13,7 +13,7 @@ const checkRole = async (req: Request, res: Response, next: NextFunction): Promi
     return next();
   }
   // Inventory Managers can create staff
-  if (role === 'invmanager' && req.body.role === 'personnel') {
+  if (role === 'invmanager') {
     return next();
   }
   // Other roles are not allowed

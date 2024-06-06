@@ -2,23 +2,31 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { PurchaseInfo } from "../../../../shared/types/Purchase";
 import { updatePurchase, createPurchase } from "../api/purchaseApi";
 import { message } from "antd";
+import { useLoading } from "../../context/LoadingContext";
 
 export function useCreatePurchase() {
+    const { setLoading } = useLoading();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: PurchaseInfo[]) => createPurchase(data),
+    mutationFn: (data: PurchaseInfo[]) => {
+      setLoading(true);
+      return createPurchase(data)},
     onMutate: () => {
+      // setLoading(true);
       console.log("Mutating");
     },
     onError: (error: any) => {
+      setLoading(false);
       console.error("Error creating purchase:", error);
       message.error(error.message || "Failed to create purchase");
     },
     onSuccess: () => {
+      setLoading(false);
       console.log("Success");
       message.success("Purchase created successfully");
     },
     onSettled: async (_: any, error: any) => {
+      setLoading(false);
       console.log("Settled");
       if (error) {
         console.error("Error on settle:", error);

@@ -17,7 +17,7 @@ const ReturnApproval: React.FC = () => {
   const [selectedItem, setSelectedItem] =
     useState<Partial<UniqueItemInfo> | null>(null);
   const [form] = Form.useForm();
-
+  console.log("stoc return: " + JSON.stringify(allUniqueItemsQuery.data));
   const source = allUniqueItemsQuery.data
     ? allUniqueItemsQuery.data
         .filter(

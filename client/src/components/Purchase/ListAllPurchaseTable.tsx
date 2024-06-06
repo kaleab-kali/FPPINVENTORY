@@ -83,22 +83,7 @@ const ListAllPurchaseTable: React.FC = () => {
     //   ),
     // },
   ];
-  if (user?.role === "invmanager") {
-    columns.push({
-      title: "Action",
-      key: "action",
-      render: (_, record) =>
-        record.status === "pending" && (
-          <Button
-            type="primary"
-            danger
-            onClick={() => handleApprove(record.purchaseID || "")}
-          >
-            Approve
-          </Button>
-        ),
-    });
-  }
+ 
 
   const tableProps: TableProps<PurchaseInfo> = {
     columns,

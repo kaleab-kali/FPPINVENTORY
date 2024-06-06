@@ -55,7 +55,12 @@ const Profile: React.FC = () => {
 
   useEffect(() => {
     if (employeeNotifications?.notifications) {
-      setMessages(employeeNotifications.notifications);
+      setMessages(
+        employeeNotifications.notifications.sort(
+          (a: { createdAt: string | number | Date; }, b: { createdAt: string | number | Date; }) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        )
+      );
     }
   }, [employeeNotifications]);
 
@@ -241,11 +246,11 @@ const Profile: React.FC = () => {
               );
               const displayMessages = showAllMessages[type]
                 ? filteredMessages
-                : filteredMessages.slice(0, 5);
+                : filteredMessages.slice(0, 3);
 
               return (
                 <Col span={8} key={type}>
-                  <Card title={type}>
+                  <Card title={type} className="message-card">
                     <List
                       itemLayout="horizontal"
                       dataSource={displayMessages.sort(
@@ -271,7 +276,7 @@ const Profile: React.FC = () => {
                         </List.Item>
                       )}
                     />
-                    {filteredMessages.length > 5 && (
+                    {filteredMessages.length > 3 && (
                       <Button
                         type="link"
                         onClick={() => toggleShowAllMessages(type)}

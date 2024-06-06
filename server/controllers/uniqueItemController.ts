@@ -7,7 +7,10 @@ const getAllUniqueItems = async (
   res: Response
 ): Promise<void> => {
   try {
+    console.log("Get All Unique")
     const uniqueItems = await UniqueItem.find();
+    console.log("Get All Unique"+uniqueItems);
+    
     res.status(200).json(uniqueItems);
   } catch (error) {
     console.error(error);

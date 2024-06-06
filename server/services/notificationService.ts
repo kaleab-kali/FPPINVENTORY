@@ -10,7 +10,13 @@ class NotificationService {
       // Send email notifications for dispatch and return actions
       if (title.includes('Dispatch') || title.includes('Return')) {
         const user = await Employee.findById(userId); 
+            console.log("here" + user);
+
         if (user && user.email) {
+              // console.log("here2");
+            console.log("here2" + user.email);
+
+
           await this.sendEmailNotification(user.email, title, `You have a new notification: ${message}`);
         }
       }
@@ -27,10 +33,14 @@ class NotificationService {
     async sendEmailNotification(userEmail: string, subject: string, message: string) {
       const transporter = nodemailer.createTransport({
         service: 'gmail',
+        tls: {
+          rejectUnauthorized: false
+        },
         auth: {
           user: process.env.EMAIL_USER,
           pass:process.env.EMAIL_PASS,
         }
+
       });
   
       const mailOptions = {

@@ -33,16 +33,20 @@ const RegistrationForm: React.FC = () => {
         "employmentDate",
         values.employmentDate.format("YYYY-MM-DD")
       );
-      formData.append("photo", values.photo[0].originFileObj);
+      if (values.photo && values.photo.length > 0) {
+        formData.append("photo", values.photo[0].originFileObj);
+      }
       formData.append("phoneNumber", values.phoneNumber);
       formData.append("email", values.email);
       formData.append("password", values.password);
-      createStaff.mutate(formData);
 
       // Log FormData content for debugging
+      console.log("FormData before sending:");
       formData.forEach((value, key) => {
         console.log(`${key}: ${value}`);
       });
+
+      createStaff.mutate(formData);
     } catch (error) {
       console.log("Validate Failed:", error);
     }

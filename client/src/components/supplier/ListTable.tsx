@@ -1,4 +1,4 @@
-import { Input, Table, Button, Space, Popconfirm, Modal, Tag } from "antd";
+import { Input, Table, Button, Space, Popconfirm, } from "antd";
 import React, { useState } from "react";
 import { useAllSuppliers } from "../../services/queries/supplierQueries";
 import { SupplierInfo } from "../../../../shared/types/Supplier";
@@ -54,7 +54,7 @@ const ListTable = () => {
     setEditRecord(null); // Clear edit record after modal is closed
   };
 
-  const columns: ColumnsType<SupplierInfo> = [
+  const columns: ColumnsType = [
     {
       title: "SID",
       dataIndex: "sid",

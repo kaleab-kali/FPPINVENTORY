@@ -53,7 +53,7 @@ export function useUpdatePurchase() {
       message.success("Purchase updated successfully");
       queryClient.invalidateQueries({ queryKey: ["purchase"] });
     },
-    onSettled: async (_: any, error: any, variables: { purchaseID: any }) => {
+    onSettled: async (_: any, error: any, variables) => {
       console.log("Settled");
       if (error) {
         console.error("Error on settle:", error);

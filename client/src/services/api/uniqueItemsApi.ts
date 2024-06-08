@@ -17,7 +17,7 @@ export const getAllUniqueItems = async () => {
 
 export const getUniqueItem = async (id: string) => {
   try {
-    const data: UniqueItemInfo = await fetchWithAuth(
+    const data: UniqueItemInfo[] = await fetchWithAuth(
       `${BASE_URL}/uniqueItem/employee/${id}`
     );
     console.log("Fetched unique:", data);

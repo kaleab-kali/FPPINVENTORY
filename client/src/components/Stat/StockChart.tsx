@@ -3,23 +3,23 @@ import ReactApexChart from "react-apexcharts";
 import { useAllProducts } from "../../services/queries/productQueries";
 import { ApexOptions } from "apexcharts";
 
-interface Product {
-  key: string;
-  productID: string;
-  name: string;
-  model: string;
-  brand: string;
-  category?: string;
-  description?: string;
-  expirationDate?: string;
-  manufactureDate?: string;
-  price?: number;
-  purchaseDate?: string;
-  quantity?: number;
-  returnable?: boolean;
-  suppliername?: string;
-  unit?: string;
-}
+// interface Product {
+//   key: string;
+//   productID: string;
+//   name: string;
+//   model: string;
+//   brand: string;
+//   category?: string;
+//   description?: string;
+//   expirationDate?: string;
+//   manufactureDate?: string;
+//   price?: number;
+//   purchaseDate?: string;
+//   quantity?: number;
+//   returnable?: boolean;
+//   suppliername?: string;
+//   unit?: string;
+// }
 
 interface ChartData {
   series: { name: string; data: number[] }[];
@@ -90,7 +90,7 @@ const StockChart: React.FC = () => {
         const categoryBrandCounts: {
           [category: string]: { [brand: string]: number };
         } = {};
-        productData.forEach((item: Product) => {
+        productData.forEach((item) => {
           const category = item.category || "Uncategorized";
           const brand = item.brand || "Unknown";
           const quantity = item.quantity ?? 1;
@@ -106,7 +106,7 @@ const StockChart: React.FC = () => {
 
         const categories = Object.keys(categoryBrandCounts);
         const brands = Array.from(
-          new Set(productData.map((item: Product) => item.brand || "Unknown"))
+          new Set(productData.map((item) => item.brand || "Unknown"))
         );
 
         const series = brands.map((brand:any) => ({

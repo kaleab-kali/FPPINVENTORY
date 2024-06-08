@@ -63,7 +63,7 @@ export function useUpdateSupplier() {
       message.success("Supplier updated successfully");
       queryClient.invalidateQueries({ queryKey: ["supplier"] });
     },
-    onSettled: async (_: any, error: any, variables: { sid: any }) => {
+    onSettled: async (_: any, error: any, variables) => {
       setLoading(false);
       console.log("Settled");
       if (error) {

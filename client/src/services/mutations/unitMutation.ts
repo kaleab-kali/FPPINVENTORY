@@ -58,7 +58,7 @@ export function useUpdateUnit() {
       message.success("Unit updated successfully");
       queryClient.invalidateQueries({ queryKey: ["unit"] });
     },
-    onSettled: async (_: any, error: any, variables: { unitID: any }) => {
+    onSettled: async (_: any, error: any, variables) => {
       setLoading(false);
       console.log("Settled");
       if (error) {

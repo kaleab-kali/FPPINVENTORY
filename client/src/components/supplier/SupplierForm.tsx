@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Modal, Form, Input, Row, Col, Button, message } from "antd";
+import React, { useEffect } from "react";
+import { Modal, Form, Input, Row, Col, Button } from "antd";
 import { SupplierInfo } from "../../../../shared/types/Supplier";
 import { useCreateSupplier, useUpdateSupplier } from "../../services/mutations/supplierMutation";
 
@@ -20,7 +20,7 @@ const SupplierForm: React.FC<SupplierFormProps> = ({initialValues, visible, onCa
         email: initialValues.email,
         address: initialValues.address,
       });
-      console.log("Initial Values after edit dispaly:", initialValues);
+      // console.log("Initial Values after edit dispaly:", initialValues);
     } else {
       form.resetFields();
     }
@@ -50,11 +50,11 @@ const SupplierForm: React.FC<SupplierFormProps> = ({initialValues, visible, onCa
 
       if (initialValues) {
         updateSupplierMutation.mutate(supplierInfo);
-        message.success("Supplier updated successfully!");
+       
       } else {
         createSupplierMutation.mutate(supplierInfo);
-        console.log("Creating supplier:", supplierInfo);
-        message.success("Supplier added successfully!");
+        // console.log("Creating supplier:", supplierInfo);
+      
       }
       form.resetFields();
       onCancel(); 

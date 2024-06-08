@@ -52,7 +52,7 @@ export function useUpdateCategory() {
       message.error(error.message || "Failed to update category");
       setLoading(false);
     },
-    onSuccess: (result: any, variables: { catID: any }, context: any) => {
+    onSuccess: (result: any, variables, context: any) => {
       console.log("Successfully updated Category");
       message.success("Category updated successfully");
       queryClient.invalidateQueries({ queryKey: ["category"] });

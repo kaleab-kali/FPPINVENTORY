@@ -24,15 +24,15 @@ export function useUpdateNotification() {
     //   message.success("notification updated successfully");
       queryClient.invalidateQueries({ queryKey: ["notification"] });
     },
-    onSettled: async (_: any, error: any, variables: { id: any }) => {
+    onSettled: async (_: any, error: any, variables) => {
       console.log("Settled");
       setLoading(false);
       if (error) {
         console.error("Error on settle:", error);
       } else {
-        await queryClient.invalidateQueries({
-          queryKey: ["product", { id: variables.id }],
-        });
+        // await queryClient.invalidateQueries({
+        //   queryKey: ["product", { id: variables.id }],
+        // });
       }
     },
   });

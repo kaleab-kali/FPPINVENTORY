@@ -46,7 +46,7 @@ export function useUpdateProduct() {
       queryClient.invalidateQueries({ queryKey: ["product"] });
       setLoading(false);
     },
-    onSettled: async (_: any, error: any, variables: { productID: any }) => {
+    onSettled: async (_: any, error: any, variables) => {
       setLoading(false);
       if (!error) {
         await queryClient.invalidateQueries({

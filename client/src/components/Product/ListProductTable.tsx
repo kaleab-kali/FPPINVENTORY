@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { ProductInfo } from "../../../../shared/types/Product";
 import { useAllProducts } from "../../services/queries/productQueries";
 import { useNavigate } from 'react-router-dom';
-import exp from "constants";
+// import exp from "constants";
 import { useAuth } from "../../context/AuthContext";
 import { ColumnsType } from "antd/es/table";
 import { useDeleteProduct } from "../../services/mutations/productMutation";
@@ -39,9 +39,9 @@ const ListTable: React.FC = () => {
     : [];
 
   console.log("Source:", Source);
-  const filteredData = Source.filter((entry: { name: string; }) =>
-    entry.name?.toLowerCase().includes(searchValue.toLowerCase())
-  );
+  // const filteredData = Source.filter((entry: { name: string; }) =>
+  //   entry.name?.toLowerCase().includes(searchValue.toLowerCase())
+  // );
 
 
 
@@ -147,7 +147,7 @@ const ListTable: React.FC = () => {
         value={searchValue}
         onChange={(e) => handleSearch(e.target.value)}
       />
-      <Table columns={columns} dataSource={filteredData} />
+      <Table columns={columns} dataSource={Source} />
     </>
   );
 };

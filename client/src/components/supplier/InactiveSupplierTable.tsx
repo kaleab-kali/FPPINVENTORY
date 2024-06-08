@@ -1,20 +1,15 @@
-import { Input, Table, Button, Space, Popconfirm, Modal, Tag } from "antd";
+import { Input, Table, Button, Space } from "antd";
 import React, { useState } from "react";
 import { useAllSuppliers} from "../../services/queries/supplierQueries";
 import { SupplierInfo } from "../../../../shared/types/Supplier";
-import { useDeleteSupplier } from "../../services/mutations/supplierMutation";
-import SupplierForm from "./SupplierForm";
 import { ColumnsType } from "antd/es/table";
 import {useAuth} from "../../context/AuthContext"
 
 const ListTable = () => {
   
   const [searchValue, setSearchValue] = useState("");
-  const [editRecord, setEditRecord] = useState<any>(null);
-  const [editModalVisible, setEditModalVisible] = useState(false);
   const {user} = useAuth()
   const allSuppliersQuery = useAllSuppliers();
-  const deleteSupplierMutation = useDeleteSupplier();
   console.log("All Suppliers Query:", allSuppliersQuery.data);
 
   const Source = allSuppliersQuery.data
@@ -39,19 +34,13 @@ const ListTable = () => {
     setSearchValue(value);
   };
 
-  const handleDelete = (key: string) => {
-    console.log("Delete Key:", key);
-    deleteSupplierMutation.mutate(key);
-    // const filteredDataSource = dataSource.filter(item => item.key !== key);
-    // setDataSource(filteredDataSource);
-  };
   const handleActivate = (key: string) => {
     console.log("Activate Key:");
    
   }
 
 
-  const columns: ColumnsType<SupplierInfo> = [
+  const columns: ColumnsType = [
     {
       title: "SID",
       dataIndex: "sid",
@@ -77,29 +66,6 @@ const ListTable = () => {
       dataIndex: "address",
       key: "address",
     },
-    // {
-    //   title: "Action",
-    //   key: "action",
-    //   render: (text: string, record: SupplierInfo) => (
-    //     <Space size="middle">
-    //       <Button
-    //         type="primary"
-    //         onClick={() => handleActivate(record.sid || "")}
-    //       >
-    //         Activate
-    //       </Button>
-    //       {/* <Button type="dashed" onClick={() => handleDelete(record.sid || "")}>Delete</Button> */}
-    //       {/* <Popconfirm
-    //         title="Are you sure to delete this row?"
-    //         onConfirm={() => handleDelete(record.sid || '')} // Ensure record.sid is always a string
-    //         okText="Yes"
-    //         cancelText="No"
-    //       >
-    //         <Button type="dashed">Delete</Button>
-    //       </Popconfirm> */}
-    //     </Space>
-    //   ),
-    // },
   ];
   if (user?.role === "invmanager") {
     columns.push({

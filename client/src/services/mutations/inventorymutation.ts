@@ -75,7 +75,7 @@ export function useUpdateItem() {
       message.success("Item updated successfully");
       setLoading(false);
     },
-    onSettled: async (_: any, error: any, variables: { employeeId: any }) => {
+    onSettled: async (_: any, error: any, variables) => {
       setLoading(false);
       if (!error) {
         await queryClient.invalidateQueries({ queryKey: ["Items"] });

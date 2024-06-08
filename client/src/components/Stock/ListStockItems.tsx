@@ -38,6 +38,8 @@ const ListStockItems = () => {
       })
     : [];
 
+    console.log("all stock data", data);
+
   const handleSearch = (value: string) => {
     setSearchValue(value);
     // const filteredData = data.filter((entry) =>

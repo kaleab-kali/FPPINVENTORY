@@ -8,7 +8,6 @@ import {
   Col,
   InputNumber,
   Button,
-  Checkbox,
 } from "antd";
 import { CheckboxChangeEvent } from "antd/lib/checkbox";
 import moment from "moment";
@@ -16,15 +15,10 @@ import { DispatchInfo } from "../../../../shared/types/Resource";
 import { useCreateDispatch } from "../../services/mutations/dispatchMutation";
 
 const { Option } = Select;
-const { TextArea } = Input;
-
-interface ResourceRequestFormProps {
-  onFinish: (values: DispatchInfo) => void;
-}
 
 const ResourceRequestForm: React.FC = () => {
-  const [quantity, setQuantity] = useState(1);
-  const [returnable, setReturnable] = useState(false);
+  // const [quantity, setQuantity] = useState(1);
+  // const [returnable, setReturnable] = useState(false);
 
   const createDispatchMutation = useCreateDispatch();
   const [form] = Form.useForm();
@@ -36,19 +30,19 @@ const ResourceRequestForm: React.FC = () => {
       form.setFieldsValue({ [fieldName]: date?.format("DD/MM/YYYY") });
     };
 
-  const handleQuantityChange = (value: number | null) => {
-    if (value !== null) {
-      setQuantity(value);
-    }
-  };
+  // const handleQuantityChange = (value: number | null) => {
+  //   if (value !== null) {
+  //     setQuantity(value);
+  //   }
+  // };
 
-  const handleReturnChange = (e: CheckboxChangeEvent) => {
-    const isChecked = e.target.checked;
-    setReturnable(isChecked);
-    if (!isChecked) {
-      form.setFieldsValue({ expectedReturnDate: null });
-    }
-  };
+  // const handleReturnChange = (e: CheckboxChangeEvent) => {
+  //   const isChecked = e.target.checked;
+  //   setReturnable(isChecked);
+  //   if (!isChecked) {
+  //     form.setFieldsValue({ expectedReturnDate: null });
+  //   }
+  // };
 
   const onFinish = async (values: any) => {
     try {
@@ -140,7 +134,7 @@ const ResourceRequestForm: React.FC = () => {
           <Form.Item label="Quantity" name="quantity">
             <InputNumber
               min={1}
-              onChange={handleQuantityChange}
+              // onChange={handleQuantityChange}
               style={{ width: "100%" }}
             />
           </Form.Item>

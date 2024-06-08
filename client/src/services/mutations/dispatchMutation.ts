@@ -47,7 +47,7 @@ export function useUpdateDispatch() {
       message.error(error.message || "Failed to update dispatch");
       setLoading(false);
     },
-    onSuccess: (result: any, variables: { dispatchId: any }) => {
+    onSuccess: (result: any, variables) => {
       message.success("Dispatch updated successfully");
       queryClient.invalidateQueries({ queryKey: ["dispatch"] });
       queryClient.invalidateQueries({
@@ -73,7 +73,7 @@ export function useDistributeDispatch() {
       message.error(error.message || "Failed to distribute dispatch");
       setLoading(false);
     },
-    onSuccess: (result: any, variables: { dispatchId: any }) => {
+    onSuccess: (result: any, variables) => {
       message.success("Dispatch distributed successfully");
       queryClient.invalidateQueries({ queryKey: ["dispatch"] });
       queryClient.invalidateQueries({
@@ -99,7 +99,7 @@ export function useReturnDispatch() {
       message.error(error.message || "Failed to return dispatch");
       setLoading(false);
     },
-    onSuccess: (result: any, variables: { _id: any }) => {
+    onSuccess: (result: any, variables) => {
       message.success("Dispatch returned successfully");
       queryClient.invalidateQueries({ queryKey: ["uniqueItem"] });
       queryClient.invalidateQueries({

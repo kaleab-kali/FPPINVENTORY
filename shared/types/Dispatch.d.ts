@@ -1,4 +1,5 @@
 export interface DispatchInfo  {
+    _id?: string;
     employeeId?: string;
     dispatchId?: string;
     employeeFullName?: string;

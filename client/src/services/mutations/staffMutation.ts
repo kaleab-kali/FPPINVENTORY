@@ -58,14 +58,14 @@ export function useUpdateStaff() {
       message.success("staff updated successfully");
       queryClient.invalidateQueries({ queryKey: ["staff"] });
     },
-    onSettled: async (_: any, error: any, variables: { email: any }) => {
+    onSettled: async (_: any, error: any, variables) => {
       setLoading(false);
       console.log("Settled");
       if (error) {
         console.error("Error on settle:", error);
       } else {
         await queryClient.invalidateQueries({
-          queryKey: ["staff", { id: variables.email }],
+          // queryKey: ["staff", { id: variables. }],
         });
       }
     },

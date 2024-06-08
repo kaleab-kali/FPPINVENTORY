@@ -1,11 +1,10 @@
 import React from "react";
-import { Table, Button, Tag } from "antd";
-import { CheckCircleOutlined } from "@ant-design/icons";
+import { Table, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import type { TableProps } from "antd/es/table";
 import { DispatchInfo } from "../../../../shared/types/Dispatch";
 import { useAllDispatchs } from "../../services/queries/dispatchQueries";
-import { useDistributeDispatch } from "../../services/mutations/dispatchMutation";
+// import { useDistributeDispatch } from "../../services/mutations/dispatchMutation";
 
 const AllDispatcheditems: React.FC = () => {
   const allDispatchesQuery = useAllDispatchs();
@@ -31,7 +30,7 @@ const AllDispatcheditems: React.FC = () => {
         })
     : [];
 
-  const updateDistributeDispatchMutation = useDistributeDispatch();
+  // const updateDistributeDispatchMutation = useDistributeDispatch();
 
   const columns: ColumnsType<DispatchInfo> = [
     {

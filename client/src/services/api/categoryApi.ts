@@ -1,82 +1,73 @@
-import { CategoryInfo } from '../../../../shared/types/Category';
-
-const BASE_URL = "http://localhost:7000";
+import { CategoryInfo } from "../../../../shared/types/Category";
+import { fetchWithAuth, handleError, BASE_URL } from "../shared/sharedApi";
 
 export const getCategoryIds = async () => {
-    console.log("getCategoryIds");
-    const response = await fetch(`${BASE_URL}/category`);
-  
-    if (!response.ok) {
-      throw new Error("Failed to fetch Category IDs");
-    }
-  
-    const data = await response.json();
-  
-    return data.map((category: CategoryInfo ) => category.catID);
-  };
-  
-  export const getCategory = async (id: string) => {
-    console.log("getCategory", id);
-    const response = await fetch(`${BASE_URL}/category/${id}`);
-  
-    if (!response.ok) {
-      throw new Error("Failed to fetch Categorys");
-    }
-  
-    const data: CategoryInfo = await response.json();
-    console.log("Fetched Category:", data);
-  
-    return data;
-  };
+  try {
+    const data = await fetchWithAuth(`${BASE_URL}/category`);
+    return data.map((category: CategoryInfo) => category.catID);
+  } catch (error) {
+    handleError(error);
+  }
+};
 
-  export const getAllCategorys = async () => {
-    const response = await fetch(`${BASE_URL}/category`);
-  
-    if (!response.ok) {
-      throw new Error("Failed to fetch Category IDs");
-    }
-  
-  const data: CategoryInfo[] = await response.json();
-  console.log(data); 
+export const getCategory = async (id: string) => {
+  try {
+    const data: CategoryInfo = await fetchWithAuth(
+      `${BASE_URL}/category/${id}`
+    );
+    console.log("Fetched Category:", data);
     return data;
-  };
-  
-  export const createCategory = async (data: CategoryInfo) => {
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const getAllCategories = async () => {
+  try {
+    const data: CategoryInfo[] = await fetchWithAuth(`${BASE_URL}/category`);
+    console.log(data);
+    return data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const createCategory = async (data: CategoryInfo) => {
+  try {
     console.log("Data before mutation:", data);
-    await fetch(`${BASE_URL}/category`, {
+    await fetchWithAuth(`${BASE_URL}/category`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
     });
-  };
+  } catch (error) {
+    handleError(error);
+  }
+};
 
-  export const updateCategory = async (data: CategoryInfo) => {
+export const updateCategory = async (data: CategoryInfo) => {
+  try {
     console.log("Data before update mutation:", data);
-    const response = await fetch(`${BASE_URL}/category/${data.catID}`, {
+    await fetchWithAuth(`${BASE_URL}/category/${data.catID}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
     });
-  
-    if (!response.ok) {
-      throw new Error("Failed to update Category data");
-    }
-  };
-  
-  
-  export const deleteCategory = async (id: string) => {
-    const response = await fetch(`${BASE_URL}/category/${id}`, {
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const deleteCategory = async (id: string) => {
+  try {
+    await fetchWithAuth(`${BASE_URL}/category/${id}`, {
       method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
     });
-  
-    if (!response.ok) {
-      throw new Error("Failed to delete category");
-    }
-  };
+  } catch (error) {
+    handleError(error);
+  }
+};

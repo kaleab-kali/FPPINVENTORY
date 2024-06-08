@@ -1,82 +1,69 @@
-import { ProductInfo } from '../../../../shared/types/Product';
-
-const BASE_URL = "http://localhost:7000";
+import { ProductInfo } from "../../../../shared/types/Product";
+import { fetchWithAuth, handleError, BASE_URL } from "../shared/sharedApi";
 
 export const getProductIds = async () => {
-    // console.log("getProductIds");
-    const response = await fetch(`${BASE_URL}/items`);
-  
-    if (!response.ok) {
-      throw new Error("Failed to fetch Product IDs");
-    }
-  
-    const data = await response.json();
-  
-    return data.map((product: ProductInfo ) => product.productID);
-  };
-  
-  export const getProduct = async (id: string) => {
-    console.log("getProduct", id);
-    const response = await fetch(`${BASE_URL}/items/${id}`);
-  
-    if (!response.ok) {
-      throw new Error("Failed to fetch Products");
-    }
-  
-    const data: ProductInfo = await response.json();
+  try {
+    const data = await fetchWithAuth(`${BASE_URL}/items`);
+    return data.map((product: ProductInfo) => product.productID);
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const getProduct = async (id: string) => {
+  try {
+    const data: ProductInfo = await fetchWithAuth(`${BASE_URL}/items/${id}`);
     console.log("Fetched Product:", data);
-  
     return data;
-  };
+  } catch (error) {
+    handleError(error);
+  }
+};
 
-  export const getAllProducts = async () => {
-    const response = await fetch(`${BASE_URL}/items`);
-  
-    if (!response.ok) {
-      throw new Error("Failed to fetch Product IDs");
-    }
-  
-  const data: ProductInfo[] = await response.json();
-  // console.log(data); 
+export const getAllProducts = async () => {
+  try {
+    const data: ProductInfo[] = await fetchWithAuth(`${BASE_URL}/items`);
     return data;
-  };
-  
-  
-  export const createProduct = async (data: ProductInfo) => {
-    console.log("Data before mutation:", data);
-    // await fetch(`${BASE_URL}/items`, {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(data),
-    // });
-  };
+  } catch (error) {
+    handleError(error);
+  }
+};
 
-  export const updateProduct = async (data: ProductInfo) => {
-    const response = await fetch(`${BASE_URL}/items/${data.productID}`, {
+export const createProduct = async (data: ProductInfo) => {
+  try {
+    await fetchWithAuth(`${BASE_URL}/items`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const updateProduct = async (data: ProductInfo) => {
+  try {
+    await fetchWithAuth(`${BASE_URL}/items/${data.productID}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
     });
-  
-    if (!response.ok) {
-      throw new Error("Failed to update Product data");
-    }
-  };
-  
-  
-  export const deleteProduct = async (id: string) => {
-    const response = await fetch(`${BASE_URL}/product/${id}`, {
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const deleteProduct = async (id: string) => {
+  try {
+    console.log("deleteProduct: + id: " + id);
+    await fetchWithAuth(`${BASE_URL}/items/${id}`, {
       method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
     });
-  
-    if (!response.ok) {
-      throw new Error("Failed to delete Product");
-    }
-  };
+  } catch (error) {
+    handleError(error);
+  }
+};

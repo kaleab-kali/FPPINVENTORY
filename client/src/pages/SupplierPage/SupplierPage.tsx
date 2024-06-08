@@ -3,12 +3,14 @@ import Title from "antd/lib/typography/Title";
 import { Layout, theme } from "antd";
 import AddSupplier from "../../components/supplier/AddSupplier";
 import ListTable from "../../components/supplier/ListTable";
+import { useAuth } from "../../context/AuthContext";
 const { Content } = Layout;
 
 const SupplierPage = () => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+  const {user} = useAuth()
 
   return (
     <>
@@ -28,11 +30,12 @@ const SupplierPage = () => {
             borderRadius: borderRadiusLG,
           }}
         >
+          {user?.role==="invmanager"? (<>
+
             <AddSupplier />
+          </>):("")}
             <Title level={5}> Supplier Data</Title>
             <ListTable />
-
-
           
         </Content>
       </Layout>

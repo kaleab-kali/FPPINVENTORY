@@ -3,14 +3,17 @@ import React, { useState } from "react";
 import { ProductInfo } from "../../../../shared/types/Product";
 import { useAllProducts } from "../../services/queries/productQueries";
 import { useNavigate } from 'react-router-dom';
-import exp from "constants";
+// import exp from "constants";
+import { useAuth } from "../../context/AuthContext";
+import { ColumnsType } from "antd/es/table";
+import { useDeleteProduct } from "../../services/mutations/productMutation";
 
 const ListTable: React.FC = () => {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState("");
-
+  const {user} = useAuth()
   const allProductsQuery = useAllProducts();
-
+  const deleteProduct = useDeleteProduct()
   const Source = allProductsQuery.data
     ? allProductsQuery.data.map(
         (queryResult: ProductInfo) => {
@@ -36,9 +39,9 @@ const ListTable: React.FC = () => {
     : [];
 
   console.log("Source:", Source);
-  const filteredData = Source.filter((entry) =>
-    entry.name?.toLowerCase().includes(searchValue.toLowerCase())
-  );
+  // const filteredData = Source.filter((entry: { name: string; }) =>
+  //   entry.name?.toLowerCase().includes(searchValue.toLowerCase())
+  // );
 
 
 
@@ -48,11 +51,12 @@ const ListTable: React.FC = () => {
   };
 
   const handleDelete = (key: string) => {
-    
+    // console.log("key:", key);
+    deleteProduct.mutate(key);
     // setDataSource(filteredDataSource);
   };
 
-  const columns = [
+  const columns:ColumnsType = [
     {
         title: "PID",
         dataIndex: "productID",
@@ -78,18 +82,39 @@ const ListTable: React.FC = () => {
       dataIndex: "unit",
       key: "unit",
     },
-    {
-      title: "Quantity",
-      dataIndex: "quantity",
-      key: "quantity",
-    },
+    // {
+    //   title: "Quantity",
+    //   dataIndex: "quantity",
+    //   key: "quantity",
+    // },
     
-    {
+    // {
+    //   title: "Action",
+    //   key: "action",
+    //   render: (text: string, record: any) => (
+    //     <Space size="middle">
+    //       <Button type="primary" onClick={() => handleEdit(record)}>Edit</Button>
+    //       <Popconfirm
+    //         title="Are you sure to delete this row?"
+    //         onConfirm={() => handleDelete(record.key)}
+    //         okText="Yes"
+    //         cancelText="No"
+    //       >
+    //         <Button type="dashed">Delete</Button>
+    //       </Popconfirm>
+    //     </Space>
+    //   ),
+    // },
+  ];
+  if (user?.role === "invmanager") {
+    columns.push({
       title: "Action",
       key: "action",
       render: (text: string, record: any) => (
         <Space size="middle">
-          <Button type="primary" onClick={() => handleEdit(record)}>Edit</Button>
+          <Button type="primary" onClick={() => handleEdit(record)}>
+            Edit
+          </Button>
           <Popconfirm
             title="Are you sure to delete this row?"
             onConfirm={() => handleDelete(record.key)}
@@ -100,15 +125,15 @@ const ListTable: React.FC = () => {
           </Popconfirm>
         </Space>
       ),
-    },
-  ];
+    });
+  }
 
   const handleEdit = (record: ProductInfo) => {
     console.log("Edit clicked for row with key:", record);
     
     console.log("Source:", Source);
 
-    const productToEdit = Source.find((product) => product.productID === record.productID);
+    const productToEdit = Source.find((product:any) => product.productID === record.productID);
     console.log("Product to edit:", productToEdit);
     
     navigate("/product/registration", { state: { product: productToEdit } });
@@ -122,7 +147,7 @@ const ListTable: React.FC = () => {
         value={searchValue}
         onChange={(e) => handleSearch(e.target.value)}
       />
-      <Table columns={columns} dataSource={filteredData} />
+      <Table columns={columns} dataSource={Source} />
     </>
   );
 };

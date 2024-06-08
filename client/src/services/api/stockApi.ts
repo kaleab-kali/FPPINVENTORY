@@ -1,73 +1,64 @@
 import { StockInfo } from '../../../../shared/types/Stock';
+import { fetchWithAuth, handleError, BASE_URL } from "../shared/sharedApi";
 
-const BASE_URL = "http://localhost:7000";
+// export const getStockIds = async () => {
+//   try {
+//     const data = await fetchWithAuth(`${BASE_URL}/stock`);
+//     return data.map((stock: StockInfo) => stock._id);
+//   } catch (error) {
+//     handleError(error);
+//   }
+// };
 
-export const getStockIds = async () => {
-    console.log("getStockIds");
-    const response = await fetch(`${BASE_URL}/stock`);
-  
-    if (!response.ok) {
-      throw new Error("Failed to fetch Stock IDs");
-    }
-  
-    const data = await response.json();
-  
-    return data.map((stock: StockInfo ) => stock._id);
-  };
-  
-  export const getStock = async (id: string) => {
-    console.log("getStock", id);
-    const response = await fetch(`${BASE_URL}/stock/${id}`);
-  
-    if (!response.ok) {
-      throw new Error("Failed to fetch Stocks");
-    }
-  
-    const data: StockInfo = await response.json();
-    console.log("Fetched Stock:", data);
-  
+// export const getStock = async (id: string) => {
+//   try {
+//     const data: StockInfo = await fetchWithAuth(`${BASE_URL}/stock/${id}`);
+//     console.log("Fetched Stock:", data);
+//     return data;
+//   } catch (error) {
+//     handleError(error);
+//   }
+// };
+
+export const getAllStocks = async () => {
+  try {
+    const data: StockInfo[] = await fetchWithAuth(`${BASE_URL}/stock`);
+    console.log(data);
     return data;
-  };
+  } catch (error) {
+    handleError(error);
+  }
+};
 
-  export const getAllStocks = async () => {
-    const response = await fetch(`${BASE_URL}/stock`);
-  
-    if (!response.ok) {
-      throw new Error("Failed to fetch Stock IDs");
-    }
-  
-  const data: StockInfo[] = await response.json();
-  console.log(data); 
-    return data;
-  };
-  
-  
-  export const createStock = async (data: StockInfo) => {
-    console.log("Data before mutation:", data);
-    await fetch(`${BASE_URL}/stock`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-  };
+// export const createStock = async (data: StockInfo) => {
+//   try {
+//     console.log("Data before mutation:", data);
+//     await fetchWithAuth(`${BASE_URL}/stock`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify(data),
+//     });
+//   } catch (error) {
+//     handleError(error);
+//   }
+// };
 
-  export const updateStock = async (data: StockInfo) => {
-    const response = await fetch(`${BASE_URL}/stock/${data._id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-  
-    if (!response.ok) {
-      throw new Error("Failed to update Stock data");
-    }
-  };
-  
-  
+// export const updateStock = async (data: StockInfo) => {
+//   try {
+//     const response = await fetchWithAuth(`${BASE_URL}/stock/${data._id}`, {
+//       method: "PUT",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify(data),
+//     });
+//   } catch (error) {
+//     handleError(error);
+//   }
+// };
+
 //   export const deleteStock = async (id: string) => {
 //     const response = await fetch(`${BASE_URL}/Stock/${id}`, {
 //       method: "DELETE",

@@ -1,26 +1,28 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ProductInfo } from '../../../../shared/types/Product';
+import { ProductInfo } from "../../../../shared/types/Product";
 import { createProduct, updateProduct, deleteProduct } from "../api/productApi";
+import { message } from "antd";
+import { useLoading } from "../../context/LoadingContext";
 
 export function useCreateProduct() {
-  // console.log("useCreateProduct");
+  const { setLoading } = useLoading();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: ProductInfo) => createProduct(data),
-    onMutate: () => {
-      console.log("Mutating");
+    mutationFn: (data: ProductInfo) => {
+      setLoading(true);
+      return createProduct(data);
     },
-    onError: () => {
-      console.log("error");
+    onError: (error: any) => {
+      message.error(error.message || "Failed to create product");
+      setLoading(false);
     },
     onSuccess: () => {
-      console.log("success");
+      message.success("Product created successfully");
+      setLoading(false);
     },
     onSettled: async (_: any, error: any) => {
-      console.log("settled");
-      if (error) {
-        console.log(error);
-      } else {
+      setLoading(false);
+      if (!error) {
         await queryClient.invalidateQueries({ queryKey: ["product"] });
       }
     },
@@ -28,40 +30,54 @@ export function useCreateProduct() {
 }
 
 export function useUpdateProduct() {
-  console.log("useUpdateSupplier");
+  const { setLoading } = useLoading();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: ProductInfo) => {
-      console.log("Data before mutation:", data);
+      setLoading(true);
       return updateProduct(data);
     },
-    onSuccess(result, variables, context) {
-      console.log("Successfully updated Product");
+    onError: (error: any) => {
+      message.error(error.message || "Failed to update product");
+      setLoading(false);
+    },
+    onSuccess: () => {
+      message.success("Product updated successfully");
       queryClient.invalidateQueries({ queryKey: ["product"] });
-      queryClient.invalidateQueries({ queryKey: ["product", {id : variables.productID}] });
-      
-    }
-    
-   
+      setLoading(false);
+    },
+    onSettled: async (_: any, error: any, variables) => {
+      setLoading(false);
+      if (!error) {
+        await queryClient.invalidateQueries({
+          queryKey: ["product", { id: variables.productID }],
+        });
+      }
+    },
   });
-
 }
 
-export function useDeleteProduct () {
-  console.log("useDeleteProduct");
+export function useDeleteProduct() {
+  const { setLoading } = useLoading();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => deleteProduct(id),
-    onSuccess() {
-      console.log("Successfully deleted Product");
+    mutationFn: (id: string) => {
+      setLoading(true);
+      return deleteProduct(id);
+    },
+    onError: (error: any) => {
+      message.error(error.message || "Failed to delete product");
+      setLoading(false);
+    },
+    onSuccess: () => {
+      message.success("Product deleted successfully");
+      setLoading(false);
     },
     onSettled: async (_: any, error: any) => {
-      if (error) {
-        console.log(error);
-      } else {
+      setLoading(false);
+      if (!error) {
         await queryClient.invalidateQueries({ queryKey: ["product"] });
       }
     },
   });
-
 }

@@ -1,6 +1,12 @@
 import React from "react";
-import { Card, Typography,Statistic,Row,Col,Layout } from "antd";
+import { Card, Typography, Statistic, Row, Col, Layout, Flex } from "antd";
 import { UserOutlined } from "@ant-design/icons";
+import CardComp from "../components/Stat/CardComp";
+import ItemTable from "../components/InventoryProfile/Table";
+import Recent from "../components/InventoryProfile/Recent";
+import RecentInvoicesTable from "../components/Stat/Invocie";
+import TopTakenItems from "../components/Stat/TopTakenItems";
+import StockChart from "../components/Stat/StockChart";
 
 const { Content } = Layout;
 
@@ -13,86 +19,63 @@ const Stat = () => {
 
   return (
     <>
-    <Title
-      level={4}
-      style={{ padding: "10px 30px", marginBottom: "0", marginTop: 15 }}
-    >
-      Employee Statistics
-    </Title>
-    <Layout>
-      <Content>
-        <div
-          className="site-layout-background"
-          style={{ padding: "0 24px", minHeight: 360 }}
-        >
-          <Row gutter={{ xs: 16, sm: 32, md: 64, lg: 200 }}>
-            <Col xs={24} sm={12} md={8} lg={4}>
-              <Card bordered={false} style={{ width: 200, marginBottom:"20px" }}>
-                <Statistic
-                  title="Employee"
-                  value={2000}
-                  valueStyle={{ color: "#3f8600" }}
-                  prefix={<UserOutlined />}
-                />
-              </Card>
-            </Col>
-            <Col xs={24} sm={12} md={8} lg={4}>
-              <Card bordered={false} style={{ width: 200, marginBottom:"20px" }}>
-                <Statistic
-                  title="Active Employee"
-                  value={1500}
-                  valueStyle={{ color: "#3f8600" }}
-                  prefix={<UserOutlined />}
-                />
-              </Card>
-            </Col>
-            <Col xs={24} sm={12} md={8} lg={4}>
-              <Card bordered={false} style={{ width: 200, marginBottom:"20px" }}>
-                <Statistic
-                  title="On Leave"
-                  value={56}
-                  valueStyle={{ color: "#3f8600" }}
-                  prefix={<UserOutlined />}
-                />
-              </Card>
-            </Col>
-            <Col xs={24} sm={12} md={8} lg={4}>
-              <Card bordered={false} style={{ width: 200, marginBottom:"20px" }}>
-                <Statistic
-                  title="Shift Employee"
-                  value={240}
-                  valueStyle={{ color: "#3f8600" }}
-                  prefix={<UserOutlined />}
-                />
-              </Card>
-            </Col>
-            <Col xs={24} sm={12} md={8} lg={4}>
-              <Card bordered={false} style={{ width: 200, marginBottom:"20px" }}>
-                <Statistic
-                  title="Retired"
-                  value={100}
-                  valueStyle={{ color: "#3f8600" }}
-                  prefix={<UserOutlined />}
-                />
-              </Card>
-            </Col>
-          </Row>
-          {/* <Row  gutter={16}>
-            <Col xs={24} sm={24} md={12} lg={12}>
-              <Card bordered={false}>
-                <Column {...columnConfig} />
-              </Card>
-            </Col>
-            <Col xs={24} sm={24} md={12} lg={12}>
-              <Card bordered={false}>
-                <Pie {...pieConfig} />
-              </Card>
-            </Col>
-          </Row> */}
+      <CardComp />
+      <Flex
+        vertical={false}
+        justify="space-around"
+        style={{ marginLeft: "20px", marginRight: "30px" }}
+      >
+        <Flex vertical>
+          <h1 style={{ marginLeft: "20px" }}>Inventory Structure</h1>
+          <Flex vertical={false} align="center" justify="space-around">
+            <div
+              style={{
+                backgroundColor: "white",
+                marginRight: "10px",
+                borderRadius: "30px",
+              }}
+            >
+              <TopTakenItems />
+            </div>
+            <div
+              style={{
+                backgroundColor: "white",
+                borderRadius: "30px",
+              }}
+            >
+              <StockChart />
+            </div>
+          </Flex>
+          <h1 style={{ marginLeft: "20px" }}>Recent In</h1>
+          <div
+            style={{
+              backgroundColor: "white",
+              borderRadius: "30px",
+              marginTop: "10px",
+              marginLeft: "5px",
+              width: "850px",
+            }}
+          >
+            <RecentInvoicesTable />
+          </div>
+          <h1 style={{ marginLeft: "20px" }}>Recent Out</h1>
+          <div
+            style={{
+              backgroundColor: "white",
+              borderRadius: "30px",
+              marginTop: "10px",
+              marginLeft: "5px",
+              width: "850px",
+            }}
+          >
+            <RecentInvoicesTable />
+          </div>
+        </Flex>
+        <div style={{ marginTop: "70px", marginLeft: "10px" }}>
+          <Recent />
         </div>
-      </Content>
-    </Layout>
-  </>
+      </Flex>
+    </>
   );
 };
 

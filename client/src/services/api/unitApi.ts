@@ -1,81 +1,74 @@
 import { UnitInfo } from "../../../../shared/types/Unit";
-
-const BASE_URL = "http://localhost:7000";
+import { fetchWithAuth, handleError, BASE_URL } from "../shared/sharedApi";
 
 export const getUnitIds = async () => {
-  console.log("getUnitIds");
-  const response = await fetch(`${BASE_URL}/units`);
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch units IDs");
+  try {
+    const data = await fetchWithAuth(`${BASE_URL}/units`);
+    return data.map((unit: UnitInfo) => unit.unitID);
+  } catch (error) {
+    handleError(error);
   }
-
-  const data = await response.json();
-
-  return data.map((unit: UnitInfo) => unit.unitID);
 };
 
 export const getUnit = async (id: string) => {
-  console.log("getUnit", id);
-  const response = await fetch(`${BASE_URL}/units/${id}`);
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch Units");
+  try {
+    const data: UnitInfo = await fetchWithAuth(`${BASE_URL}/units/${id}`);
+    console.log("Fetched Unit:", data);
+    return data;
+  } catch (error) {
+    handleError(error);
   }
-
-  const data: UnitInfo = await response.json();
-  console.log("Fetched Unit:", data);
-
-  return data;
 };
 
 export const getAllUnits = async () => {
-  const response = await fetch(`${BASE_URL}/units`);
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch unit IDs");
+  try {
+    const data: UnitInfo[] = await fetchWithAuth(`${BASE_URL}/units`);
+    console.log(data);
+    return data;
+  } catch (error) {
+    handleError(error);
   }
-
-  const data: UnitInfo[] = await response.json();
-  console.log(data);
-  return data;
 };
 
 export const createUnit = async (data: UnitInfo) => {
-  console.log("Data before mutation:", data);
-  await fetch(`${BASE_URL}/units`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
+  try {
+    console.log("Data before mutation:", data);
+    await fetchWithAuth(`${BASE_URL}/units`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+  } catch (error) {
+    handleError(error);
+  }
 };
 
 export const updateUnit = async (data: UnitInfo) => {
-  console.log("Data before updateApi:", data);
-  const response = await fetch(`${BASE_URL}/units/${data.unitID}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to update unit data");
+  try {
+    console.log("Data before updateApi:", data);
+    const response = await fetchWithAuth(`${BASE_URL}/units/${data.unitID}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+  } catch (error) {
+    handleError(error);
   }
 };
 
 export const deleteUnit = async (id: string) => {
-  const response = await fetch(`${BASE_URL}/units/${id}`, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to delete unit");
+  try {
+    const response = await fetchWithAuth(`${BASE_URL}/units/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error) {
+    handleError(error);
   }
 };

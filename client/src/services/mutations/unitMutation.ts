@@ -1,25 +1,35 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { UnitInfo } from '../../../../shared/types/Unit';
+import { UnitInfo } from "../../../../shared/types/Unit";
 import { createUnit, updateUnit, deleteUnit } from "../api/unitApi";
+import { message } from "antd";
+import { useLoading } from "../../context/LoadingContext";
 
 export function useCreateUnit() {
-  console.log("useCreateUnit");
+    const { setLoading } = useLoading();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: UnitInfo) => createUnit(data),
+    mutationFn: (data: UnitInfo) => {
+            setLoading(true);
+      return createUnit(data)},
     onMutate: () => {
+            // setLoading(true);
       console.log("Mutating");
     },
-    onError: () => {
-      console.log("error");
+    onError: (error: any) => {
+      setLoading(false);
+      console.error("Error creating unit:", error);
+      message.error(error.message || "Failed to create unit");
     },
     onSuccess: () => {
-      console.log("success");
+      setLoading(false);
+      console.log("Success");
+      message.success("Unit created successfully");
     },
     onSettled: async (_: any, error: any) => {
-      console.log("settled");
+      setLoading(false);
+      console.log("Settled");
       if (error) {
-        console.log(error);
+        console.error("Error on settle:", error);
       } else {
         await queryClient.invalidateQueries({ queryKey: ["unit"] });
       }
@@ -28,40 +38,65 @@ export function useCreateUnit() {
 }
 
 export function useUpdateUnit() {
-  console.log("useUpdateSupplier");
+    const { setLoading } = useLoading();
+
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: UnitInfo) => {
-      console.log("Data before use mutation:", data);
+          setLoading(true);
+      console.log("Data before mutation:", data);
       return updateUnit(data);
     },
-    onSuccess(result, variables, context) {
+    onError: (error: any) => {
+      setLoading(false);
+      console.error("Error updating unit:", error);
+      message.error(error.message || "Failed to update unit");
+    },
+    onSuccess: () => {
+      setLoading(false);
       console.log("Successfully updated unit");
+      message.success("Unit updated successfully");
       queryClient.invalidateQueries({ queryKey: ["unit"] });
-      queryClient.invalidateQueries({ queryKey: ["unit", {id : variables.unitID}] });
-      
-    }
-    
-   
+    },
+    onSettled: async (_: any, error: any, variables) => {
+      setLoading(false);
+      console.log("Settled");
+      if (error) {
+        console.error("Error on settle:", error);
+      } else {
+        await queryClient.invalidateQueries({
+          queryKey: ["unit", { id: variables.unitID }],
+        });
+      }
+    },
   });
-
 }
 
-export function useDeleteUnit () {
-  console.log("useDeleteUnit");
+export function useDeleteUnit() {
+    const { setLoading } = useLoading();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => deleteUnit(id),
-    onSuccess() {
+    mutationFn: (id: string) => {
+            setLoading(true);
+      return deleteUnit(id)},
+    onError: (error: any) => {
+      setLoading(false);
+      console.error("Error deleting unit:", error);
+      message.error(error.message || "Failed to delete unit");
+    },
+    onSuccess: () => {
+      setLoading(false);
       console.log("Successfully deleted unit");
+      message.success("Unit deleted successfully");
     },
     onSettled: async (_: any, error: any) => {
+      setLoading(false);
+      console.log("Settled");
       if (error) {
-        console.log(error);
+        console.error("Error on settle:", error);
       } else {
         await queryClient.invalidateQueries({ queryKey: ["unit"] });
       }
     },
   });
-
 }

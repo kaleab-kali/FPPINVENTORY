@@ -43,7 +43,7 @@ const getAllUnits = async (
 
 const updateUnit = async (req: Request, res: Response): Promise<void> => {
   try {
-    console.log("Updating Unit");
+    console.log("Updating Unit" + req.params.id);
     const unit = await Unit.findOneAndUpdate(
       {unitID: req.params.id},
       { $set: req.body },

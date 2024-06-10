@@ -39,9 +39,9 @@ const ListCatagoryTable: React.FC = () => {
   //   setIsModalVisible(false);
   // };  
   console.log("Source:", Source);
-  const filteredData = Source.filter((entry: { categoryName: string; }) =>
-    entry.categoryName?.toLowerCase().includes(searchValue.toLowerCase())
-  );
+  // const filteredData = Source.filter((entry: { categoryName: string; }) =>
+  //   entry.categoryName?.toLowerCase().includes(searchValue.toLowerCase())
+  // );
 
   const handleSearch = (value: string) => {
     setSearchValue(value);
@@ -107,7 +107,7 @@ const ListCatagoryTable: React.FC = () => {
         value={searchValue}
         onChange={(e) => handleSearch(e.target.value)}
       />
-      <Table columns={columns} dataSource={filteredData} />
+     {/* { <Table columns={columns} dataSource={filteredData} />} */}
       <CategoryForm
         initialValues={editRecord}
         visible={editModalVisible}

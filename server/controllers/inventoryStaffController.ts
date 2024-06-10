@@ -3,6 +3,9 @@ import bcrypt from 'bcryptjs';
 import INVStaff from '../models/inventoryStaffModel'; 
 import jwt from 'jsonwebtoken';
 
+const MAX_LOGIN_ATTEMPTS = 3;
+const LOCKOUT_DURATION = 2 * 60 * 1000;
+
 const createINVStaff = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, firstName, lastName, password, role, phoneNumber, employmentDate } = req.body;
@@ -82,33 +85,86 @@ const createAdmin = async (req: Request, res: Response): Promise<void> => {
     }
   };
 
+// const loginINVStaff = async (req: Request, res: Response): Promise<void> => {
+//     try {
+//       const { email, password } = req.body;
+  
+//       // Check if Invetory Staff exists
+//       const invStaff = await INVStaff.findOne({ email });
+//       if (!invStaff) {
+//         res.status(404).json({ message: 'Invetory Staff not found' });
+//         return;
+//       }
+  
+//       // Check if the password matches
+//       const isMatch = await bcrypt.compare(password, invStaff.password);
+//       if (!isMatch) {
+//         res.status(401).json({ message: 'Invalid credentials' });
+//         return;
+//       }
+  
+//       // Generate JWT token
+//       const token = jwt.sign({ id: invStaff._id , email, role: invStaff.role}, process.env.JWT_SECRET as string, { expiresIn: '1h' });
+  
+//       res.status(200).json({ message: 'Login successful', token });
+//     } catch (error) {
+//       console.error(error);
+//       res.status(500).json({ error: 'Internal Server Error' });
+//     }
+//   };
+
 const loginINVStaff = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const { email, password } = req.body;
-  
-      // Check if Invetory Staff exists
-      const invStaff = await INVStaff.findOne({ email });
-      if (!invStaff) {
-        res.status(404).json({ message: 'Invetory Staff not found' });
-        return;
-      }
-  
-      // Check if the password matches
-      const isMatch = await bcrypt.compare(password, invStaff.password);
-      if (!isMatch) {
-        res.status(401).json({ message: 'Invalid credentials' });
-        return;
-      }
-  
-      // Generate JWT token
-      const token = jwt.sign({ id: invStaff._id , email, role: invStaff.role}, process.env.JWT_SECRET as string, { expiresIn: '1h' });
-  
-      res.status(200).json({ message: 'Login successful', token });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
+  try {
+    const { email, password } = req.body;
+
+    // Check if Inventory Staff exists
+    const invStaff = await INVStaff.findOne({ email });
+    if (!invStaff) {
+      res.status(404).json({ message: 'Inventory Staff not found' });
+      return;
     }
-  };
+
+    // Ensure failedLoginAttempts is initialized
+    if (typeof invStaff.failedLoginAttempts !== 'number') {
+      invStaff.failedLoginAttempts = 0;
+    }
+
+    // Check if account is locked
+    if (invStaff.locked && invStaff.lockedUntil && invStaff.lockedUntil.getTime() > Date.now()) {
+      res.status(401).json({ message: 'Account locked. Please try again later.' });
+      return;
+    }
+
+    // Check if the password matches
+    const isMatch = await bcrypt.compare(password, invStaff.password);
+    if (!isMatch) {
+      invStaff.failedLoginAttempts = (invStaff.failedLoginAttempts as number) + 1;
+
+      if ((invStaff.failedLoginAttempts as number) >= MAX_LOGIN_ATTEMPTS) {
+        invStaff.locked = true;
+        invStaff.lockedUntil = new Date(Date.now() + LOCKOUT_DURATION);
+      }
+
+      await invStaff.save();
+      res.status(401).json({ message: invStaff.locked ? 'Account locked. Please try again later.' : 'Invalid credentials' });
+      return;
+    }
+
+    // Reset failed login attempts
+    invStaff.failedLoginAttempts = 0;
+    invStaff.locked = false;
+    invStaff.lockedUntil = undefined;
+    await invStaff.save();
+
+    // Generate JWT token
+    const token = jwt.sign({ id: invStaff._id, email, role: invStaff.role }, process.env.JWT_SECRET as string, { expiresIn: '3d' });
+
+    res.status(200).json({ message: 'Login successful', token });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 
   const changePassword = async (req: Request, res: Response): Promise<void> => {
     try {

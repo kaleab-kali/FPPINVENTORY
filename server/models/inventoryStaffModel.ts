@@ -18,6 +18,9 @@ interface IinvStaff extends Document {
   phoneNumber: string;
   employmentDate: Date;
   photo: string;
+  failedLoginAttempts?: Number;
+  locked?: Boolean;
+  lockedUntil?: Date;
 }
 
 // Define schema for Invetory Staff
@@ -30,6 +33,9 @@ const inventoryStaffSchema: Schema = new Schema({
   phoneNumber: { type: String, required: true },
   employmentDate: { type: String, required: true },
   photo: { type: String },
+  failedLoginAttempts: { type: Number, default: 0 },
+  locked: { type: Boolean, default: false },
+  lockedUntil: { type: Date },
 });
 
 // Create and export Invetory Staff model

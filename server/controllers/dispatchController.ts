@@ -118,6 +118,17 @@ const approveDispatch = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    const stock = await Stock.findOne({ productId: dispatch.productId });
+    if (!stock) {
+      res.status(404).json({ error: "Stock not found for the product" });
+      return;
+    }
+
+    if (typeof stock.stock === 'undefined') {
+      res.status(500).json({ error: "Stock quantity information is unavailable" });
+      return;
+    }
+
     if (status === 'rejected') {
       dispatch.status = 'rejected';
       await dispatch.save();
@@ -133,7 +144,11 @@ const approveDispatch = async (req: Request, res: Response): Promise<void> => {
     }
 
     if (status !== 'approved') {
-      res.status(400).json({ error: "Dispatch can only be approved with 'approved' status" });
+      res.status(400).json({ message: "Dispatch can only be approved with 'approved' status" });
+      return;
+    }
+    if (dispatch.quantity > stock.stock) {
+      res.status(400).json({ message: "Insufficient stock quantity to approve the dispatch" });
       return;
     }
 

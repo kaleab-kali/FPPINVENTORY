@@ -190,6 +190,9 @@ export interface EmployeeDocument extends Document {
   lastUpdated?: Date;
   password?: string;
   passwordChanged?: Boolean;
+  failedLoginAttempts?: Number;
+  locked?: Boolean;
+  lockedUntil?: Date;
 }
 
 const rankChangeSchema = new Schema<RankChange>({
@@ -367,6 +370,9 @@ const employeeSchema = new Schema<EmployeeDocument>(
       //validate: [validatePassword, "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character."],
     },
     passwordChanged: { type: Boolean, default: false },
+    failedLoginAttempts: { type: Number, default: 0 },
+    locked: { type: Boolean, default: false },
+    lockedUntil: { type: Date },
   },
   { timestamps: true }
 );

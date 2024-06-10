@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 
 const checkRole = async (req: Request, res: Response, next: NextFunction): Promise<Response<any, Record<string, any>> | void> => {
   // Check for invalid user token
+  console.log(req.invStaff.role);
   if (!req.invStaff.role) {
     return res.status(401).send('Not Authorized for users');
   }
@@ -12,7 +13,7 @@ const checkRole = async (req: Request, res: Response, next: NextFunction): Promi
     return next();
   }
   // Inventory Managers can create staff
-  if (role === 'invmanager' && req.body.role === 'personnel') {
+  if (role === 'invmanager') {
     return next();
   }
   // Other roles are not allowed

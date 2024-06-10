@@ -1,7 +1,8 @@
 import express, { Router } from "express";
-import { createDispatch, approveDispatch, returnItem, getAllDispatches, approveReturn } from "../controllers/dispatchController";
+import { createDispatch, approveDispatch, dispatchItem, returnItem, getAllDispatches, approveReturn } from "../controllers/dispatchController";
 import authAdminProtect from '../middleware/authAdminMiddleware';
 import checkStockmanagerRole from '../middleware/authRoleStockMiddleware';
+import checkManagerRole from '../middleware/authRoleManagerMiddleware';
 
 const router: Router = express.Router();
 
@@ -9,7 +10,10 @@ const router: Router = express.Router();
 router.post("/", createDispatch);
 
 // Approve a Dispatch request
-router.put("/approve", authAdminProtect, checkStockmanagerRole, approveDispatch);
+router.put("/approve", authAdminProtect, checkManagerRole, approveDispatch);
+
+// Approve Dispatch an item
+router.put("/dispatch-item", authAdminProtect, checkStockmanagerRole, dispatchItem);
 
 // return item
 router.put("/return", returnItem);

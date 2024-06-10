@@ -20,7 +20,9 @@ export const getPurchase = async (id: string) => {
   } catch (error) {
     handleError(error);
   }
-};
+
+}
+
 
 export const getAllPurchases = async () => {
   try {

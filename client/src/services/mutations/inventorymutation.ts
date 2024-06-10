@@ -7,27 +7,27 @@ import {
 } from "../api/inventoryitemapi";
 import { ItemInfo } from "../../../../shared/types/itemTypes";
 import { message } from "antd";
+import { useLoading } from "../../context/LoadingContext";
 
 export function useCreateItem() {
+  const { setLoading } = useLoading();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: ItemInfo) => createItem(data),
-    onMutate: () => {
-      console.log("Mutating");
+    mutationFn: (data: ItemInfo) => {
+      setLoading(true);
+      return createItem(data);
     },
     onError: (error: any) => {
-      console.error("Error creating item:", error);
       message.error(error.message || "Failed to create item");
+      setLoading(false);
     },
     onSuccess: () => {
-      console.log("Success");
       message.success("Item created successfully");
+      setLoading(false);
     },
     onSettled: async (_: any, error: any) => {
-      console.log("Settled");
-      if (error) {
-        console.error("Error on settle:", error);
-      } else {
+      setLoading(false);
+      if (!error) {
         await queryClient.invalidateQueries({ queryKey: ["Items"] });
       }
     },
@@ -35,27 +35,24 @@ export function useCreateItem() {
 }
 
 export function useCreateUpload() {
+  const { setLoading } = useLoading();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: any) => createUpload(data),
-    onMutate: () => {
-      console.log("Mutating");
+    mutationFn: (data: any) => {
+      setLoading(true);
+      return createUpload(data);
     },
     onError: (error: any) => {
-      console.error("Error uploading file:", error);
       message.error(error.message || "Failed to upload file");
+      setLoading(false);
     },
     onSuccess: (data: { filePath: any; fileName: any }) => {
-      console.log("Success");
       message.success("File uploaded successfully");
-      console.log("File uploaded successfully:", data.filePath);
-      console.log("File Name:", data.fileName);
+      setLoading(false);
     },
     onSettled: async (_: any, error: any) => {
-      console.log("Settled");
-      if (error) {
-        console.error("Error on settle:", error);
-      } else {
+      setLoading(false);
+      if (!error) {
         await queryClient.invalidateQueries({ queryKey: ["uploads"] });
       }
     },
@@ -63,25 +60,24 @@ export function useCreateUpload() {
 }
 
 export function useUpdateItem() {
+  const { setLoading } = useLoading();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: ItemInfo) => {
-      console.log("Data before mutation:", data);
+      setLoading(true);
       return updateItem(data);
     },
     onError: (error: any) => {
-      console.error("Error updating item:", error);
       message.error(error.message || "Failed to update item");
+      setLoading(false);
     },
     onSuccess: () => {
-      console.log("Successfully updated Item");
       message.success("Item updated successfully");
+      setLoading(false);
     },
-    onSettled: async (_: any, error: any, variables: { employeeId: any }) => {
-      console.log("Settled");
-      if (error) {
-        console.error("Error on settle:", error);
-      } else {
+    onSettled: async (_: any, error: any, variables) => {
+      setLoading(false);
+      if (!error) {
         await queryClient.invalidateQueries({ queryKey: ["Items"] });
         await queryClient.invalidateQueries({
           queryKey: ["item", { id: variables.employeeId }],
@@ -92,22 +88,24 @@ export function useUpdateItem() {
 }
 
 export function useDeleteItem() {
+  const { setLoading } = useLoading();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => deleteItem(id),
+    mutationFn: (id: string) => {
+      setLoading(true);
+      return deleteItem(id);
+    },
     onError: (error: any) => {
-      console.error("Error deleting item:", error);
       message.error(error.message || "Failed to delete item");
+      setLoading(false);
     },
     onSuccess: () => {
-      console.log("Successfully deleted item");
       message.success("Item deleted successfully");
+      setLoading(false);
     },
     onSettled: async (_: any, error: any) => {
-      console.log("Settled");
-      if (error) {
-        console.error("Error on settle:", error);
-      } else {
+      setLoading(false);
+      if (!error) {
         await queryClient.invalidateQueries({ queryKey: ["Items"] });
       }
     },

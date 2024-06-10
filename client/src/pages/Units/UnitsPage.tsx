@@ -3,13 +3,14 @@ import Title from "antd/lib/typography/Title";
 import { Layout, theme } from "antd";
 import AddUnits from "../../components/Units/AddUnits";
 import ListUnitTable from "../../components/Units/ListUnitTable";
+import { useAuth } from "../../context/AuthContext";
 const { Content } = Layout;
 
 const UnitsPage = () => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
-
+const { user } = useAuth();
   return (
     <>
       <Title
@@ -28,7 +29,13 @@ const UnitsPage = () => {
             borderRadius: borderRadiusLG,
           }}
         >
-          <AddUnits />
+          {user?.role === "invmanager" ? (
+            <>
+              <AddUnits />
+            </>
+          ) : (
+            ""
+          )}
           <Title level={5}> Units Data</Title>
           <ListUnitTable />
         </Content>

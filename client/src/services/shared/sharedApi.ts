@@ -17,13 +17,17 @@ const getUserToken = () => {
 };
 
 const handleResponse = async (response: Response) => {
+  const responseText = await response.text();
   if (!response.ok) {
-    const errorData = await response.json();
-    const errorMessage = errorData.error || "An error occurred";
+    console.error("Server Response:", responseText);
+    const errorData = JSON.parse(responseText);
+    const errorMessage = errorData.message || "An error occurred";
     throw new Error(errorMessage);
   }
-  return response.json();
+  return JSON.parse(responseText);
 };
+
+
 
 const handleError = (error: unknown) => {
   if (error instanceof Error) {

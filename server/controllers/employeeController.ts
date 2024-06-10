@@ -30,11 +30,11 @@ const loginController = async (req: Request, res: Response): Promise<void> => {
       res.status(403).json({ message: "Password change required" });
       return;
     }
-
+    const role= "employee";
     // Generate JWT token
     const token = jwt.sign({ empId: employee.empId }, process.env.JWT_SECRET as string, { expiresIn: "1h" });
 
-    res.status(200).json({ message: "Login successful", token });
+    res.status(200).json({ message: "Login successful", token, role, employeeId:employee.empId, ObjId:employee._id });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -42,7 +42,7 @@ const loginController = async (req: Request, res: Response): Promise<void> => {
 };
 const getEmployeeById = async (req: Request, res: Response): Promise<void> => {
   try {
-    const employee = await Employee.findById(req.params.id);
+    const employee = await Employee.findOne({empId:req.params.id});
     if (!employee) {
       res.status(404).json({ error: "Employee not found" });
       return;

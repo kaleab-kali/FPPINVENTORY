@@ -6,6 +6,8 @@ export function useAllStaff() {
   return useQuery({
     queryKey: ["staff"],
     queryFn: getAllStaff,
+    refetchInterval:500
+  
   });
 }
 export function usePersonnelStaff() {

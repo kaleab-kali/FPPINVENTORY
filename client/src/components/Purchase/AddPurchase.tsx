@@ -1,7 +1,15 @@
 import React, { useState } from 'react';
-import { Form, Input, Button, DatePicker, InputNumber, Row, Col, Typography, Table, Popconfirm } from 'antd';
+import { Form, Input, Button, DatePicker, InputNumber, Row, Col, Typography, Table, Popconfirm, Select } from 'antd';
 import { PurchaseInfo } from "../../../../shared/types/Purchase";
 import { useCreatePurchase } from '../../services/mutations/purchaseMutation';
+import { useAllProducts } from '../../services/queries/productQueries';
+import { useAllCategorys } from '../../services/queries/categoryQueries';
+import { useAllUnits } from '../../services/queries/unitQueries';
+import { useAllSuppliers } from '../../services/queries/supplierQueries';
+import { ProductInfo } from '../../../../shared/types/Product';
+import { UnitInfo } from '../../../../shared/types/Unit';
+import { SupplierInfo } from '../../../../shared/types/Supplier';
+import { CategoryInfo } from '../../../../shared/types/Category';
 
 const { Title } = Typography;
 
@@ -15,7 +23,53 @@ interface PurchaseTableData extends PurchaseInfo {
 const AddPurchase: React.FC = () => {
   const [form] = Form.useForm();
   const [purchases, setPurchases] = useState<PurchaseTableData[]>([]);
+  const allProductsQuery = useAllProducts();
+  const allCategorysQuery = useAllCategorys();
+  const allUnitQuery = useAllUnits();
+  const allSuppliersQuery = useAllSuppliers();
 
+  const products = allProductsQuery.data ? allProductsQuery.data.map(
+    (queryResult: ProductInfo) => {
+      
+      return {
+        key: queryResult.productID,
+        productName: queryResult.name,
+        productID: queryResult.productID,
+        
+
+      }
+    }
+  ): [];
+
+  const units = allUnitQuery.data ? allUnitQuery.data.map(
+    (queryResult: UnitInfo) => {
+      return {
+        key: queryResult.unitID,
+        unit: queryResult.unitName,
+        unitID: queryResult.unitID,
+      }
+    }
+  ): [];
+
+  const category = allCategorysQuery.data ? allCategorysQuery.data.map(
+    (queryResult: CategoryInfo) => {
+      return {
+        key: queryResult.catID,
+        category: queryResult.categoryName,
+        categoryID: queryResult.catID,
+      }
+    }
+  ): [];
+
+  const suppliers = allSuppliersQuery.data ? allSuppliersQuery.data.map(
+    (queryResult: SupplierInfo) => {
+      return {
+        key: queryResult.sid,
+        supplier: queryResult.name,
+        supplierID: queryResult.sid,
+      }
+    }
+  ): [];
   const createProductMutation = useCreatePurchase();
 
   const onFinish = (values: PurchaseInfo) => {
@@ -117,12 +171,44 @@ const AddPurchase: React.FC = () => {
         <Row gutter={16}>
           <Col span={8}>
             <Form.Item name="productName" label="Product Name" rules={[{ required: true }]}>
-              <Input />
+            <Select
+                showSearch
+                placeholder="Select a product"
+                optionFilterProp="children"
+                onChange={(value: string, option: any) => {
+                  const selectedProduct = products.find(product => product.productName === value);
+                  if (selectedProduct) {
+                    form.setFieldsValue({ productId: selectedProduct.productID });
+                  }
+                }}
+                filterOption={(input, option) =>
+                  (option!.children as unknown as string).toLowerCase().includes(input.toLowerCase())
+                }
+              >
+                {
+                  products.map(product => (
+                    <Select.Option key={product.productID} value={product.productName}>
+                      {product.productName}
+                    </Select.Option>
+                  ))
+                }
+              </Select>
+              {/* <Select>
+                {
+                  products.map(product => (
+                    <Select.Option key={product.productID} value={product.productName}>
+                      {product.productName}
+                    </Select.Option>
+                  ))
+                }
+              </Select> */}
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item name="productId" label="Product ID" rules={[{ required: true }]}>
-              <Input />
+              {/* based on selelcted product name dispaly the product id */}
+
+              <Input disabled />
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -139,12 +225,28 @@ const AddPurchase: React.FC = () => {
           </Col>
           <Col span={8}>
             <Form.Item name="supplier" label="Supplier">
-              <Input />
+              <Select>
+                {
+                  suppliers.map(supplier => (
+                    <Select.Option key={supplier.supplierID} value={supplier.supplier}>
+                      {supplier.supplier}
+                    </Select.Option>
+                  ))
+                }
+              </Select>
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item name="unit" label="Unit">
-              <Input />
+              <Select>
+                {
+                  units.map(unit => (
+                    <Select.Option key={unit.unitID} value={unit.unit}>
+                      {unit.unit}
+                    </Select.Option>
+                  ))
+                }
+              </Select>
             </Form.Item>
           </Col>
         </Row>
@@ -168,7 +270,15 @@ const AddPurchase: React.FC = () => {
         <Row gutter={16}>
           <Col span={8}>
             <Form.Item name="category" label="Category" rules={[{ required: true }]}>
-              <Input />
+              <Select>
+                {
+                  category.map(category => (
+                    <Select.Option key={category.categoryID} value={category.category}>
+                      {category.category}
+                    </Select.Option>
+                  ))
+                }
+              </Select>
             </Form.Item>
           </Col>
           <Col span={8}>

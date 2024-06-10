@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Modal, Form, Input, Row, Col, Button, message } from "antd";
+import React, { useEffect } from "react";
+import { Modal, Form, Input, Row, Col, Button } from "antd";
 import { UnitInfo } from "../../../../shared/types/Unit";
 import { useCreateUnit, useUpdateUnit } from "../../services/mutations/unitMutation";
 
@@ -46,11 +46,11 @@ const UnitForm: React.FC<UnitFormProps> = ({initialValues, visible, onCancel }) 
 
       if (initialValues) {
         updateUnitMutation.mutate(unitInfo);
-        // message.success("Unit updated successfully!");
+       
       } else {
         createUnitMutation.mutate(unitInfo);
         console.log("Creating Unit:", unitInfo);
-        // message.success("Unit added successfully!");
+        
       }
       form.resetFields();
       onCancel(); 

@@ -15,7 +15,7 @@ const router: Router = express.Router();
 router.post("/", authAdminProtect, checkManagerRole, createItem);
 
 // Get all Items
-router.get("/", authAdminProtect, getAllItems);
+router.get("/", getAllItems);
 
 // Get a specific Item by ID
 router.get("/:id", authAdminProtect, getItemByProductId);

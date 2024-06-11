@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal, Button, Form, Input, Row, Col, message ,Select } from "antd";
+import { Modal, Button, Form, Input, Row, Col, message, Select } from "antd";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import UnitForm from "../Units/UnitForm";
 import CategoryForm from "./CategoryForm";
@@ -26,8 +26,6 @@ import CategoryForm from "./CategoryForm";
 //   }) : [];
 
 //   console.log("Source:", unitSource);
-
-  
 
 //   const showModal = () => {
 //     setVisible(true);
@@ -85,7 +83,7 @@ import CategoryForm from "./CategoryForm";
 //                     );
 //                   })}
 //                 </Select>
-                
+
 //               </Form.Item>
 //             </Col>
 //           </Row>
@@ -96,7 +94,6 @@ import CategoryForm from "./CategoryForm";
 // };
 
 // export default AddCatagory;
-
 
 const AddCategory: React.FC = () => {
   const [visible, setVisible] = useState(false);
@@ -112,12 +109,12 @@ const AddCategory: React.FC = () => {
   return (
     <>
       <Button
-        type="primary"
+        type='primary'
         style={{ float: "right", marginBottom: "20px" }}
         icon={<PlusCircleOutlined />}
         onClick={showModal}
       >
-        Add Unit
+        Add Catagory
       </Button>
       <CategoryForm visible={visible} onCancel={handleCancel} />
     </>
@@ -125,5 +122,3 @@ const AddCategory: React.FC = () => {
 };
 
 export default AddCategory;
-
-

@@ -115,11 +115,11 @@ const Header: React.FC<HeaderProps> = ({
 
   const menu = (
     <Menu>
-      <SubMenu key="sub1" title={title} icon={<SettingOutlined />}>
+      <SubMenu key='sub1' title={title} icon={<SettingOutlined />}>
         {user?.role !== "employee" && (
           <>
             <Menu.Item
-              key="1"
+              key='1'
               icon={<DashboardOutlined />}
               onClick={() => {
                 handleMenuClick("dashboard");
@@ -130,7 +130,7 @@ const Header: React.FC<HeaderProps> = ({
             </Menu.Item>
             {(user?.role === "admin" || user?.role === "invmanager") && (
               <Menu.Item
-                key="2"
+                key='2'
                 icon={<TeamOutlined />}
                 onClick={() => {
                   handleMenuClick("allStaffList");
@@ -142,7 +142,7 @@ const Header: React.FC<HeaderProps> = ({
             )}
             {user?.role === "admin" && (
               <Menu.Item
-                key="3"
+                key='3'
                 icon={<FileOutlined />}
                 onClick={() => navigate("/reports")}
               >
@@ -153,7 +153,7 @@ const Header: React.FC<HeaderProps> = ({
         )}
         {user?.role === "employee" && (
           <Menu.Item
-            key="7"
+            key='7'
             icon={<FaBell />}
             onClick={() => navigate("/profile")}
           >
@@ -162,13 +162,13 @@ const Header: React.FC<HeaderProps> = ({
         )}
       </SubMenu>
       <Menu.Item
-        key="4"
+        key='4'
         icon={<UserOutlined />}
         onClick={() => navigate("/profile")}
       >
         Profile
       </Menu.Item>
-      <Menu.Item key="5" icon={<LogoutOutlined />} onClick={showLogoutConfirm}>
+      <Menu.Item key='5' icon={<LogoutOutlined />} onClick={showLogoutConfirm}>
         Logout
       </Menu.Item>
     </Menu>
@@ -185,7 +185,7 @@ const Header: React.FC<HeaderProps> = ({
       <Row>
         <Col span={6} style={{ textAlign: "left" }}>
           <Button
-            type="text"
+            type='text'
             icon={
               collapsed ? (
                 <MenuUnfoldOutlined style={{ color: "#fff" }} />
@@ -198,7 +198,7 @@ const Header: React.FC<HeaderProps> = ({
         </Col>
         <Col span={12}>
           <Input
-            placeholder="Search Employee"
+            placeholder='Search Products...'
             allowClear
             onPressEnter={(e) => handleSearch(e.currentTarget.value)}
             style={{ border: "2px solid transparent" }}
@@ -208,7 +208,7 @@ const Header: React.FC<HeaderProps> = ({
         <Col span={6} style={{ textAlign: "right" }}>
           <Badge
             count={unreadCount}
-            size="small"
+            size='small'
             style={{
               backgroundColor: "#f5222d",
               marginRight: "22px",
@@ -228,7 +228,7 @@ const Header: React.FC<HeaderProps> = ({
           </Badge>
           <Dropdown overlay={menu} trigger={["click"]}>
             <Link
-              className="ant-dropdown-link"
+              className='ant-dropdown-link'
               onClick={(e) => e.preventDefault()}
               style={{ color: "#fff" }}
             >
@@ -247,12 +247,12 @@ const Header: React.FC<HeaderProps> = ({
         </Col>
       </Row>
       <Modal
-        title="Confirm Logout"
+        title='Confirm Logout'
         open={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
-        okText="Yes"
-        cancelText="No"
+        okText='Yes'
+        cancelText='No'
       >
         <p>Are you sure you want to log out?</p>
       </Modal>
